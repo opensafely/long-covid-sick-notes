@@ -1,0 +1,58 @@
+code,term
+9C8..,(Sickness notif GP) or (LOC1/2/3)
+9C82.,LOC 2-sickness notification
+9C83.,LOC 3-sickness payment record
+9C8Z.,LOC 1/2/3 - NOS
+9D1..,MED3 - doctor's statement
+9D11.,MED3 issued to patient
+9D12.,MED3 duplicate issued
+9D1Z.,MED3 - NOS
+9D2..,MED5 - doctor's special statement
+9D21.,MED5 issued to patient
+9D2Z.,MED5 - NOS
+9D3..,MED6 - vague diagnostic statement to RMO
+9D5..,Private sickness certificate
+9D7..,Forces sickness on leave certificate
+9D71.,Forces sickness on leave certification - fee not paid
+9D72.,Forces sickness on leave certification - receipt given
+9D7Z.,Forces sick on leave cert NOS
+9DF..,MED4 - doctors statement
+9DF0.,MED4 - issued to patient
+9DF1.,MED4 - duplicate issued
+Ua0Ur,On sick leave from work
+XE2by,LOC1/2/3- notific. of sickness
+XaBHC,LOC1/2/3 - notification of sickness status
+XaBHd,MED3 status
+XaBHe,MED4 status
+XaBHf,MED5 status
+XaBHg,MED6 status
+XaBHi,Forces sickness on leave certification status
+XaBIc,Sickness certificates
+XaBQ8,Sickness payment claim status
+XaBu9,Sickness notification-of GP
+XaCF3,SC1 - self certificate
+XaCFk,LOC 1/2/3 status
+XaEF4,MED3 issued - back to work
+XaK2J,Sick note generated from secondary care done by practice
+XaX1E,"eMED3 (2010) new statement issued, not fit for work"
+XaX1K,"eMED3 (2010) new statement issued, may be fit for work"
+XaX1L,"eMED3 (2010) duplicate issued, not fit for work"
+XaX1M,"eMED3 (2010) duplicate issued, may be fit for work"
+XaX1R,"MED3 (2010) issued by hand, not fit for work"
+XaX1S,"MED3 (2010) issued by hand, may be fit for work"
+XaXf1,MED3 (2010) issued to patient
+XaXf2,MED3 (2010) duplicate issued
+XaXf3,MED3 (2010) issued - recommend phased return to work
+XaXf4,MED3 (2010) issued - recommend altered hours
+XaXf5,MED3 (2010) issued - recommend amended duties
+XaXf7,MED3 (2010) issued - recommend workplace adaptation
+Y0898,Recorded cause of certified sickness absence from work
+Y08c1,Duration of sickness certificate (Weeks)
+Y08c2,Duration of sickness certificate (Months)
+Y0d09,MED3 - Specified conditions
+Y1712,Duration of sickness certificate (Days)
+Y2854,Employment status - Long term sickness
+Y6858,Forces sickness on leave cert.
+Y7613,MED4 Doctors statement
+Y7614,MED5 - doctors special stat.
+ZV680,[V]Issue of medical certificate
