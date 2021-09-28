@@ -1,4 +1,4 @@
-# {{project_name}}
+# Fit notes and associated diagnoses in long COVID patients
 
 This is the code and configuration for {{project_name}}
 
