@@ -73,6 +73,9 @@ study = StudyDefinition(
         date_format="YYYY-MM-DD",  
         return_expectations={"date": {"earliest": "2019-02-01"}, "incidence" : 0.15},
    ),
+    covid_diagnosis_date=patients.minimum_of(
+        "sgss_positive", "primary_care_covid", "hospital_covid"
+    ),
     patient_index_date=patients.minimum_of(
         "pneumonia_admission_date"
     ),
