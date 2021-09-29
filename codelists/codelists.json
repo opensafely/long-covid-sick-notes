@@ -36,11 +36,11 @@
       "downloaded_at": "2021-07-09 16:44:02.291147Z",
       "sha": "11a673a47d07e7537065775558e068cdb428437d"
     },
-    "opensafely-pneuonia-secondary-care.csv": {
-      "id": "opensafely/opensafely/pneumonia-secondary-care/2020-10-05",
-      "url": "https://www.opencodelists.org/codelist/opensafely/pneumonia-secondary-care/2020-10-05/",
-      "downloaded_at": "2021-09-29 13:29",
-      "sha": ""
+    "opensafely-pneumonia-secondary-care.csv": {
+      "id": "opensafely/pneumonia-secondary-care/2020-10-05",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/pneumonia-secondary-care/2020-10-05/",
+      "downloaded_at": "2021-09-29 13:30:21.487250Z",
+      "sha": "866ab4f0ff144330c1a0ea28116c9d2073cf379a"
     }
   }
 }

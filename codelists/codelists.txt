@@ -4,4 +4,4 @@ opensafely/covid-identification-in-primary-care-probable-covid-clinical-code/202
 opensafely/covid-identification-in-primary-care-probable-covid-sequelae/2020-07-16
 opensafely/ethnicity/2020-04-27
 user/alex-walker/sick-notes-ctv3/7680885a
-opensafely/opensafely/pneumonia-secondary-care/2020-10-05
+opensafely/pneumonia-secondary-care/2020-10-05
