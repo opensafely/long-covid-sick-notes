@@ -36,3 +36,8 @@ sick_notes_codes = codelist_from_csv(
     system="ctv3",
     column="code",
 )
+pneumonia_codelist = codelist_from_csv(
+    "codelists/opensafely-pneumonia-secondary-care.csv",
+    system="icd10",
+    column="ICD code",
+)

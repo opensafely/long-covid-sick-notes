@@ -67,6 +67,13 @@ outcome_variables = dict(
 )
 
 demographic_variables = dict(
+    age=patients.age_as_of(
+        "patient_index_date",
+        return_expectations={
+        "rate": "universal",
+        "int": {"distribution": "population_ages"},
+        },
+        ),
     age_group=patients.categorised_as(
         {
             "0-17": "age < 18",
@@ -94,7 +101,6 @@ demographic_variables = dict(
                 }
             },
         },
-        age=patients.age_as_of("patient_index_date"),
     ),
     sex=patients.sex(
         return_expectations={
