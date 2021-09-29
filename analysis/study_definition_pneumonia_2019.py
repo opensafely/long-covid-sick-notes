@@ -65,17 +65,17 @@ study = StudyDefinition(
         date_format="YYYY-MM-DD",
         return_expectations={"date": {"earliest": "index_date"}},
     ),
-    patient_index_date=patients.minimum_of(
-        "sgss_positive", "primary_care_covid", "hospital_covid"
-    ),
     pneumonia_admission_date=patients.admitted_to_hospital(
-        returning= "date_admitted" ,  
+        returning="date_admitted" ,  
         with_these_diagnoses=pneumonia_codelist,
-        on_or_after="2020-02-01",
+        on_or_after="2019-02-01",
         find_first_match_in_period=True,  
         date_format="YYYY-MM-DD",  
-        return_expectations={"date": {"earliest": "2020-02-01"}, "incidence" : 0.15},
+        return_expectations={"date": {"earliest": "2019-02-01"}, "incidence" : 0.15},
    ),
+    patient_index_date=patients.minimum_of(
+        "pneumonia_admission_date"
+    ),
     **demographic_variables,
     **clinical_variables,
     **outcome_variables
