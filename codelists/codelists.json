@@ -108,12 +108,12 @@
       "downloaded_at": "",
       "sha": ""
     },
-    // "opensafely-diabetes.csv": {
-    //   "id": "opensafely/diabetes/2020-04-15",
-    //   "url": "",
-    //   "downloaded_at": "",
-    //   "sha": ""
-    // },
+    "opensafely-diabetes.csv": {
+      "id": "opensafely/diabetes/2020-04-15",
+      "url": "",
+      "downloaded_at": "",
+      "sha": ""
+    },
     "opensafely-haematological-cancer.csv": {
       "id": "opensafely/haematological-cancer/2020-04-15",
       "url": "https://www.opencodelists.org/codelist/opensafely/haematological-cancer/2020-04-15/",
