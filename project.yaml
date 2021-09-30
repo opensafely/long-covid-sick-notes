@@ -5,8 +5,44 @@ expectations:
 
 actions:
 
-  generate_study_population:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition --output-format feather
+  generate_study_population_covid_2020:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_covid_2020 --output-dir=output/cohorts 
     outputs:
       highly_sensitive:
-        cohort: output/cohorts/input.feather
+        cohort: output/cohorts/input_covid_2020.csv
+
+  generate_study_population_general_2019:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_general_2019 --output-dir=output/cohorts 
+    outputs:
+      highly_sensitive:
+        cohort: output/cohorts/input_general_2019.csv
+
+  generate_study_population_general_2020:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_general_2020 --output-dir=output/cohorts 
+    outputs:
+      highly_sensitive:
+        cohort: output/cohorts/input_general_2020.csv
+
+  generate_study_population_pneumonia_2019:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_pneumonia_2019 --output-dir=output/cohorts 
+    outputs:
+      highly_sensitive:
+        cohort: output/cohorts/input_pneumonia_2019.csv
+
+  matching_2019:
+    run: python:latest python analysis/match_running.py "input_general_2019" "_2019" --output-dir=output/cohorts
+    needs: [generate_study_population_covid_2020, generate_study_population_general_2019]
+    outputs:
+      moderately_sensitive:
+        matching_report: output/cohorts/matching_report_2019.txt
+      highly_sensitive:
+        matched_cohort: output/cohorts/matched_matches_2019.csv
+
+  matching_2020:
+    run: python:latest python analysis/match_running.py "input_general_2020" "_2020" --output-dir=output/cohorts
+    needs: [generate_study_population_covid_2020, generate_study_population_general_2020]
+    outputs:
+      moderately_sensitive:
+        matching_report: output/cohorts/matching_report_2020.txt
+      highly_sensitive:
+        matched_cohort: output/cohorts/matched_matches_2020.csv
