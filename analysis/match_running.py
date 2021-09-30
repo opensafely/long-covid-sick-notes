@@ -1,18 +1,17 @@
 from osmatching import match
+import sys
 
-def fn_match(comparator, suffix):
-    match(
-        case_csv="input",
-        match_csv=comparator,
-        matches_per_case=5,
-        match_variables={
-            "sex": "category",
-            "age": 1,
-        },
-        index_date_variable="patient_index_date",
-        output_suffix=suffix,
-        output_path="output/cohorts",
-    )
+match(
+    case_csv="input_covid_2020",
+    match_csv=sys.argv[1],
+    matches_per_case=5,
+    match_variables={
+        "sex": "category",
+        "age": 1,
+        "stp": "category",
+    },
+    index_date_variable="patient_index_date",
+    output_suffix=sys.argv[2],
+    output_path="output/cohorts",
+)
 
-fn_match("input_general_2019", "_2019")
-fn_match("input_general_2020", "_2020")
