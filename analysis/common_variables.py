@@ -385,11 +385,11 @@ clinical_variables = dict(
         return_first_date_in_period=True,
         include_month=True,
     ),
-    # organ_transplant=patients.with_these_clinical_events(
-    #     organ_transplant_codes,
-    #     return_first_date_in_period=True,
-    #     include_month=True,
-    #     ),
+    organ_transplant=patients.with_these_clinical_events(
+        organ_transplant_codes,
+        return_first_date_in_period=True,
+        include_month=True,
+        ),
     dysplenia=patients.with_these_clinical_events(
         spleen_codes,
         return_first_date_in_period=True,

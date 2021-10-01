@@ -112,11 +112,11 @@ lung_cancer_codes = codelist_from_csv(
     system="ctv3", 
     column="CTV3ID",
 )
-# organ_transplant_codes = codelist_from_csv(
-#     "codelists/opensafely-solid-organ-transplantation.csv",
-#     system="ctv3",
-#     column="CTV3ID",
-# )
+organ_transplant_codes = codelist_from_csv(
+    "codelists/opensafely-solid-organ-transplantation.csv",
+    system="ctv3",
+    column="CTV3ID",
+)
 other_cancer_codes = codelist_from_csv(
     "codelists/opensafely-cancer-excluding-lung-and-haematological.csv",
     system="ctv3",
