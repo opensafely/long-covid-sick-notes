@@ -168,12 +168,6 @@
       "downloaded_at": "",
       "sha": ""
     },
-    // "opensafely-solid-organ-transplantation.csv": {
-    //   "id": "opensafely/solid-organ-transplantation/2020-04-10",
-    //   "url": "https://codelists.opensafely.org/codelist/opensafely/solid-organ-transplantation/2020-04-10/",
-    //   "downloaded_at": "",
-    //   "sha": ""
-    // },
     "opensafely-stroke-updated.csv": {
       "id": "opensafely/stroke-updated/2020-06-02",
       "url": "https://codelists.opensafely.org/codelist/opensafely/stroke-updated/2020-06-02/",
