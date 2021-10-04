@@ -130,6 +130,34 @@ def generate_common_variables(index_date_variable):
                 },
             },
         ),
+        practice_id=patients.registered_practice_as_of(
+            "index_date",
+            returning="pseudo_id",
+            return_expectations={
+                "int": {"distribution": "normal", "mean": 1000, "stddev": 100},
+                "incidence": 1,
+            },
+        ),
+        region=patients.registered_practice_as_of(
+            "index_date",
+            returning="nuts1_region_name",
+            return_expectations={
+                "rate": "universal",
+                "category": {
+                    "ratios": {
+                        "North East": 0.1,
+                        "North West": 0.1,
+                        "Yorkshire and The Humber": 0.1,
+                        "East Midlands": 0.1,
+                        "West Midlands": 0.1,
+                        "East": 0.1,
+                        "London": 0.2,
+                        "South East": 0.1,
+                        "South West": 0.1,
+                    },
+                },
+            },
+        ),
         imd=patients.categorised_as(
             {
                 "0": "DEFAULT",
