@@ -9,12 +9,11 @@ from cohortextractor import (
 
 from codelists import *
 
-from common_variables import (
-    demographic_variables,
-    clinical_variables,
-    outcome_variables,
-)
+from common_variables import generate_common_variables
 
+outcome_variables, demographic_variables, clinical_variables = generate_common_variables(
+    index_date_variable="patient_index_date")
+    
 study = StudyDefinition(
     default_expectations={
         "date": {"earliest": "1980-01-01", "latest": "today"},
@@ -64,9 +63,7 @@ study = StudyDefinition(
         date_format="YYYY-MM-DD",
         return_expectations={"date": {"earliest": "index_date"}},
     ),
-    patient_index_date=patients.minimum_of(
-        "sgss_positive", "primary_care_covid", "hospital_covid"
-    ),
+    patient_index_date="2019-02-01",
     **demographic_variables,
     **clinical_variables,
     **outcome_variables

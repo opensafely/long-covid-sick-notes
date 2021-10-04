@@ -9,11 +9,10 @@ from cohortextractor import (
 
 from codelists import *
 
-from common_variables import (
-    demographic_variables,
-    clinical_variables,
-    outcome_variables,
-)
+from common_variables import generate_common_variables
+
+outcome_variables, demographic_variables, clinical_variables = generate_common_variables(
+    index_date_variable="patient_index_date")
 
 study = StudyDefinition(
     default_expectations={
