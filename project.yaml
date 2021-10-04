@@ -30,7 +30,7 @@ actions:
         cohort: output/cohorts/input_pneumonia_2019.csv
 
   matching_2019:
-    run: python:latest python analysis/match_running.py "input_general_2019" "_2019" --output-dir=output/cohorts
+    run: python:latest python analysis/match_running.py "input_general_2019" "_2019" "2019-02-01" --output-dir=output/cohorts
     needs: [generate_study_population_covid_2020, generate_study_population_general_2019]
     outputs:
       moderately_sensitive:
@@ -39,7 +39,7 @@ actions:
         matched_cohort: output/cohorts/matched_matches_2019.csv
 
   matching_2020:
-    run: python:latest python analysis/match_running.py "input_general_2020" "_2020" --output-dir=output/cohorts
+    run: python:latest python analysis/match_running.py "input_general_2020" "_2020" "2020-02-01" --output-dir=output/cohorts
     needs: [generate_study_population_covid_2020, generate_study_population_general_2020]
     outputs:
       moderately_sensitive:
