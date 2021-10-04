@@ -12,7 +12,7 @@ from codelists import *
 from common_variables import generate_common_variables
 
 outcome_variables, demographic_variables, clinical_variables = generate_common_variables(
-    index_date_variable="patient_index_date")
+    index_date_variable="index_date")
 
 study = StudyDefinition(
     default_expectations={
@@ -29,7 +29,7 @@ study = StudyDefinition(
         AND NOT stp = ""
         """,
         has_follow_up=patients.registered_with_one_practice_between(
-            "patient_index_date - 1 year", "patient_index_date"
+            "index_date - 1 year", "index_date"
         ),
     ),
     index_date="2020-02-01",
@@ -63,7 +63,6 @@ study = StudyDefinition(
         date_format="YYYY-MM-DD",
         return_expectations={"date": {"earliest": "index_date"}},
     ),
-    patient_index_date="2020-02-01",
     **demographic_variables,
     **clinical_variables,
     **outcome_variables
