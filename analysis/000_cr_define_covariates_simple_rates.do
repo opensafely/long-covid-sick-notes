@@ -85,6 +85,8 @@ foreach var of varlist sgss_positive				///
 					   primary_care_covid  		    ///
 					   hospital_covid				///
 					   icu_admission				///
+					   died_date_ons				///
+					   deregistered					///
 					   bmi_date_measured 			///
 					   hypertension					///
 					   diabetes						///
@@ -251,7 +253,7 @@ tempname outcomeDist
 	postfile `outcomeDist' str20(outcome) str12(type) numEvents percent using $tabfigdir/outcome_distribution_$group.dta, replace
 
 * The default deregistration date is 9999-12-31, so:
-replace deregistered_date = . if deregistered_date > `end_date'
+replace deregistered = . if deregistered > `end_date'
 
 postclose `outcomeDist'
 										
