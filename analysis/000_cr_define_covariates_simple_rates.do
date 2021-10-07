@@ -48,11 +48,19 @@ di "STARTING COUNT FROM IMPORT:"
 noi safecount
 
 * Indexdate
-gen indexdate = date(patient_index_date, "YMD")
-format indexdate %td
+if "$group" == "covid_2020" {
+	gen indexdate = td(01/02/2020)
+}
+elif "$group" == "covid_2019" {
+	gen indexdate = td(01/02/2019)
+}
+else {
+	gen indexdate = date(patient_index_date, "YMD")
+	format indexdate %td
+	drop patient_index_date
+}
 
 drop if indexdate ==.
-drop patient_index_date
 
 * remove any patient discharged after end date
 drop if indexdate > `end_date'
