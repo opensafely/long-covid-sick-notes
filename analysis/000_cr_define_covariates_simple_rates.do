@@ -48,10 +48,10 @@ di "STARTING COUNT FROM IMPORT:"
 noi safecount
 
 * Indexdate
-if "$group" == "covid_2020" {
+if "$group" == "general_2020" {
 	gen indexdate = td(01/02/2020)
 }
-else if "$group" == "covid_2019" {
+else if "$group" == "general_2019" {
 	gen indexdate = td(01/02/2019)
 }
 else {
