@@ -46,3 +46,10 @@ actions:
         matching_report: output/cohorts/matching_report_2020.txt
       highly_sensitive:
         matched_cohort: output/cohorts/matched_matches_2020.csv
+
+  covid_rates_cohort:
+    run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "covid"
+    needs: [generate_study_population_covid_2020]
+    outputs:
+      highly_sensitive:
+        analysis_dataset: output/cohort_rates_covid.dta
