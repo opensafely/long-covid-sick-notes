@@ -51,7 +51,7 @@ noi safecount
 if "$group" == "covid_2020" {
 	gen indexdate = td(01/02/2020)
 }
-elif "$group" == "covid_2019" {
+else if "$group" == "covid_2019" {
 	gen indexdate = td(01/02/2019)
 }
 else {
