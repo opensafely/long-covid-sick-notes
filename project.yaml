@@ -58,7 +58,6 @@ actions:
         sex: categorical
         ethnicity: categorical
         imd: categorical
-        sick_note_1_date: date
     outputs:
       moderately_sensitive:
         cohort_report: output/cohorts/descriptives_input.html
