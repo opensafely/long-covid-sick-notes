@@ -74,3 +74,31 @@ actions:
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_pneumonia_2019.dta
+
+  covid_2020_rates:
+    run: stata-mp:latest analysis/001_cr_simple_rates.do "covid" --output-dir=output/tabfig
+    needs: [covid_2020_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_covid_2020.csv
+
+  general_2019_rates:
+    run: stata-mp:latest analysis/001_cr_simple_rates.do "general_2019" --output-dir=output/tabfig
+    needs: [general_2019_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_general_2019.csv
+
+  general_2020_rates:
+    run: stata-mp:latest analysis/001_cr_simple_rates.do "general_2020" --output-dir=output/tabfig
+    needs: [general_2020_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_general_2020.csv
+
+  pneumonia_2019_rates:
+    run: stata-mp:latest analysis/001_cr_simple_rates.do "pneumonia_2019" --output-dir=output/tabfig
+    needs: [pneumonia_2019_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_pneumonia_2019.csv
