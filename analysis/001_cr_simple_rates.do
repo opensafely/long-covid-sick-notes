@@ -32,14 +32,12 @@ tempname measures
 	postfile `measures' str16(group) str25(outcome) str12(time) ///
 	str20(variable) category personTime numEvents rate lc uc ///
 	using $tabfigdir/rates_summary_$group, replace
-
-foreach v in sick_note_1_date {
 	
 	preserve
 	cap drop time
 	
-	local out `v'
-	local end_date `v'_end_date
+	local out sick_note_1_date
+	local end_date sick_note_1_date_end_date
 	
 	stset `end_date', id(patient_id) failure(`out') enter(indexdate) origin(indexdate)
 		
@@ -79,6 +77,7 @@ foreach v in sick_note_1_date {
 					
 		}
 	}
+	
 * Stsplit data into 30 day periods
 	stsplit time, at(30(30)120)
 		
@@ -104,8 +103,6 @@ foreach v in sick_note_1_date {
 	}
  
   restore  
-
-}
 
 postclose `measures'
 
