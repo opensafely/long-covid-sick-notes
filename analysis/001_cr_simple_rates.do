@@ -38,7 +38,10 @@ foreach v in sick_note_1_date {
 	preserve
 	cap drop time
 	
-	stset `end_date' , id(patient_id) failure(`out') enter(indexdate)  origin(indexdate)
+	local out `v'
+	local end_date `v'_end_date
+	
+	stset `end_date', id(patient_id) failure(`out') enter(indexdate) origin(indexdate)
 		
 	* Overall rate 
 	stptime  
@@ -49,7 +52,7 @@ foreach v in sick_note_1_date {
 						(`events') (`r(rate)') 								///
 						(`r(lb)') (`r(ub)')
 		
-		* Stratified - additionally include long_hosp_stay for hosp patients
+	* Stratified - additionally include long_hosp_stay for hosp patients
 		
 	foreach c of global stratifiers {
 		
