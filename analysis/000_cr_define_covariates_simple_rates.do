@@ -263,6 +263,20 @@ tempname outcomeDist
 * The default deregistration date is 9999-12-31, so:
 replace deregistered = . if deregistered > `end_date'
 
+foreach out in sick_note_1_date {
+	gen min_end_date = min(died_date_ons_date, deregistered_date) // `out'_ons already captured in the study definition binary outcome
+
+	* Define outcome using all data
+	replace `out' = 0 if min_end_date > `end_date'
+	gen 	`out'_end_date = `end_date' // relevant end date
+	replace `out'_end_date = min_end_date if min_end_date!=.	 // not missing
+	replace `out'_end_date = `out'_end_date + 1 
+	format %td `out'_end_date 
+
+	drop min_end_date	
+
+}
+
 postclose `outcomeDist'
 										
 **** Tidy dataset
