@@ -76,7 +76,7 @@ actions:
         analysis_dataset: output/cohorts/cohort_rates_pneumonia_2019.dta
 
   covid_2020_rates:
-    run: stata-mp:latest analysis/001_cr_simple_rates.do "covid" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/001_cr_simple_rates.do "covid_2020" --output-dir=output/tabfig
     needs: [covid_2020_rates_cohort]
     outputs:
       moderately_sensitive:
