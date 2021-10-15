@@ -46,7 +46,7 @@ save $outdir/combined_covid_pneumonia.dta, replace
 * Append covid/gen pop. cohorts 
 ********************************************************************************
 
-for year in 2019 2020 {
+foreach year in 2019 2020 {
 	* Gen flag for covid patients  (case = 1)
 	use $outdir/cohort_rates_covid_2020, replace
 	gen case = 1 
