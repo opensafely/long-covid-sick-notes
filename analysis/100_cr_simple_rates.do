@@ -1,14 +1,14 @@
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 //
-// 001_cr_simple_rates.do
+// 100_cr_simple_rates.do
 //
 // This program generates absolute survival rates, 
 //   examining each individiual population separately 
 //
 // Authors: Robin (based on Alex & John)
 // Date: 8 Oct 2021
-// Updated: 8 Oct 2021
+// Updated: 15 Oct 2021
 // Input files: 
 // Output files: 
 //
