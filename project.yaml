@@ -114,10 +114,10 @@ actions:
         dataset2: output/cohorts/combined_covid_general_2019.dta
         dataset3: output/cohorts/combined_covid_general_2020.dta
 
-  cox_models:
-    run: stata-mp:latest analysis/201_cox_models.do
-    needs: [append_cohorts]
-    outputs:
-      moderately_sensitive:
-        log: output/cox_models.txt
-        dataset: output/tabfig/cox_model_summary.csv
+  # cox_models:
+  #   run: stata-mp:latest analysis/201_cox_models.do
+  #   needs: [append_cohorts]
+  #   outputs:
+  #     moderately_sensitive:
+  #       log: output/cox_models.txt
+  #       dataset: output/tabfig/cox_model_summary.csv
