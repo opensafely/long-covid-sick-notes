@@ -76,28 +76,28 @@ actions:
         analysis_dataset: output/cohorts/cohort_rates_pneumonia_2019.dta
 
   covid_2020_rates:
-    run: stata-mp:latest analysis/001_cr_simple_rates.do "covid_2020" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/100_cr_simple_rates.do "covid_2020" --output-dir=output/tabfig
     needs: [covid_2020_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_covid_2020.csv
 
   general_2019_rates:
-    run: stata-mp:latest analysis/001_cr_simple_rates.do "general_2019" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/100_cr_simple_rates.do "general_2019" --output-dir=output/tabfig
     needs: [general_2019_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_general_2019.csv
 
   general_2020_rates:
-    run: stata-mp:latest analysis/001_cr_simple_rates.do "general_2020" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/100_cr_simple_rates.do "general_2020" --output-dir=output/tabfig
     needs: [general_2020_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_general_2020.csv
 
   pneumonia_2019_rates:
-    run: stata-mp:latest analysis/001_cr_simple_rates.do "pneumonia_2019" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/100_cr_simple_rates.do "pneumonia_2019" --output-dir=output/tabfig
     needs: [pneumonia_2019_rates_cohort]
     outputs:
       moderately_sensitive:
@@ -113,3 +113,11 @@ actions:
         dataset: output/cohorts/combined_covid_pneumonia.dta
         dataset2: output/cohorts/combined_covid_general_2019.dta
         dataset3: output/cohorts/combined_covid_general_2020.dta
+
+  cox_models:
+    run: stata-mp:latest analysis/201_cox_models.do
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cox_models.txt
+        dataset: output/tabfig/cox_model_summary.csv
