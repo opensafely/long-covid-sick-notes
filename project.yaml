@@ -102,3 +102,14 @@ actions:
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_pneumonia_2019.csv
+
+  append_cohorts:
+    run: stata-mp:latest analysis/200_cr_data_management_matching.do --output-dir=output/cohorts
+    needs: [covid_2020_rates_cohort, pneumonia_2019_rates_cohort, general_2020_rates_cohort, general_2019_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/append_cohorts.txt
+      highly_sensitive: 
+        dataset: output/cohorts/combined_covid_pneumonia.dta
+        dataset2: output/cohorts/combined_covid_general_2019.dta
+        dataset3: output/cohorts/combined_covid_general_2020.dta
