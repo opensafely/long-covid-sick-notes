@@ -7,12 +7,14 @@
 //
 // Authors: Robin (based on Alex & John)
 // Date: 15 Oct 2021
-// Updated: 15 Oct 2021
+// Updated: 18 Oct 2021
 // Input files: 
 // Output files: 
 //
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
+
+set varabbrev off
 
 clear
 do `c(pwd)'/analysis/global.do
@@ -34,11 +36,14 @@ gen new_patient_id = _n
 global crude i.case
 global age_sex i.case i.male age1 age2 age3
 
-foreach v in sick_note_1_date_date {
+foreach v in sick_note_1_date {
 	
 	noi di "Starting analysis for `v' Outcome ..." 
 		
 	preserve
+	
+		local end_date `v'_end_date
+		local out `v'
 				
 		noi di "$group: stset in `a'" 
 		

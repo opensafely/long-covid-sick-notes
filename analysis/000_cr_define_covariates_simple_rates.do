@@ -8,7 +8,7 @@
 //
 // Authors: Robin (based on Alex & John)
 // Date: 6 Oct 2021
-// Updated: 14 Oct 2021
+// Updated: 18 Oct 2021
 // Input files: 
 // Output files: 
 //
@@ -122,18 +122,31 @@ foreach var of varlist sgss_positive				///
 					   sick_note_4_date 			///
 					   sick_note_5_date 			{
 
-capture confirm string variable `var'
-	if _rc!=0 {
-		assert `var'==.
-		rename `var' `var'_date
-	}
-	else {
-		rename `var' `var'_dstr
-		gen `var'_date = date(`var'_dstr, "YMD") 
-		order `var'_date, after(`var'_dstr)
-		drop `var'_dstr
-	}
-	format `var'_date %td
+	capture confirm string variable `var'
+		if _rc!=0 {
+			assert `var'==.
+			rename `var' `var'_date
+		}
+		else {
+			if  ("`var'" != "sick_note_1_date") &  ///
+				("`var'" != "sick_note_2_date") &  ///
+				("`var'" != "sick_note_3_date") &  ///
+				("`var'" != "sick_note_4_date") &  ///
+				("`var'" != "sick_note_5_date") {
+				rename `var' `var'_dstr
+				gen `var'_date = date(`var'_dstr, "YMD") 
+				order `var'_date, after(`var'_dstr)
+				drop `var'_dstr
+				format `var'_date %td
+			}
+			else {
+				rename `var' `var'_dstr
+				gen `var' = date(`var'_dstr, "YMD") 
+				order `var', after(`var'_dstr)
+				drop `var'_dstr
+				format `var' %td
+			}
+		}
 }
 
 * drop if died before discharge date

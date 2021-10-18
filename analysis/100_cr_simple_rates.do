@@ -8,7 +8,7 @@
 //
 // Authors: Robin (based on Alex & John)
 // Date: 8 Oct 2021
-// Updated: 15 Oct 2021
+// Updated: 18 Oct 2021
 // Input files: 
 // Output files: 
 //
@@ -38,7 +38,7 @@ tempname measures
 	preserve
 	cap drop time
 	
-	local out sick_note_1_date_date
+	local out sick_note_1_date
 	local end_date sick_note_1_date_end_date
 	
 	stset `end_date', id(patient_id) failure(`out') enter(indexdate) origin(indexdate)
