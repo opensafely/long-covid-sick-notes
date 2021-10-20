@@ -8,7 +8,7 @@
 //
 // Authors: Robin (based on Alex & John)
 // Date: 6 Oct 2021
-// Updated: 18 Oct 2021
+// Updated: 20 Oct 2021
 // Input files: 
 // Output files: 
 //
@@ -35,14 +35,17 @@ else {
 	local end_date td(01/11/2019)
 }
 
-if "$group" == "matched_matches_2019" | "$group" == "matched_matches_2020" {
-	import delimited $outdir/$group.csv
-	drop if case == 1 
-	global group "gen_population"
-}
-else {
-	import delimited $outdir/input_$group.csv
-}
+** Commented out matching code
+* if "$group" == "matched_matches_2019" | "$group" == "matched_matches_2020" {
+*	import delimited $outdir/$group.csv
+*	drop if case == 1 
+*	global group "gen_population"
+*}
+*else {
+*	import delimited $outdir/input_$group.csv
+*}
+
+import delimited $outdir/input_$group.csv
 
 di "STARTING COUNT FROM IMPORT:"
 noi safecount
