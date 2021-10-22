@@ -8,7 +8,7 @@
 //
 // Authors: Robin (based on Alex & John)
 // Date: 6 Oct 2021
-// Updated: 20 Oct 2021
+// Updated: 22 Oct 2021
 // Input files: 
 // Output files: 
 //
@@ -24,7 +24,7 @@ if "$group" == "covid_2020"  | "$group" == "general_2020" {
 	local last_year   td(01/02/2019)
 	local four_years_ago td(01/02/2015)	 
 	local fifteen_months_ago td(01/09/2019)
-	local end_date td(01/11/2020)
+	local end_date td(31/12/2020)
 
 }
 else {
@@ -32,7 +32,7 @@ else {
 	local last_year   td(01/02/2018)	
 	local four_years_ago td(01/02/2014)	 
 	local fifteen_months_ago td(01/09/2018)
-	local end_date td(01/11/2019)
+	local end_date td(31/12/2019)
 }
 
 ** Commented out matching code
@@ -123,7 +123,8 @@ foreach var of varlist sgss_positive				///
 					   sick_note_2_date 			///
 					   sick_note_3_date 			///
 					   sick_note_4_date 			///
-					   sick_note_5_date 			{
+					   sick_note_5_date 			///
+					   covid_diagnosis_date 	    {
 
 	capture confirm string variable `var'
 		if _rc!=0 {
@@ -135,12 +136,13 @@ foreach var of varlist sgss_positive				///
 				("`var'" != "sick_note_2_date") &  ///
 				("`var'" != "sick_note_3_date") &  ///
 				("`var'" != "sick_note_4_date") &  ///
-				("`var'" != "sick_note_5_date") {
-				rename `var' `var'_dstr
-				gen `var'_date = date(`var'_dstr, "YMD") 
-				order `var'_date, after(`var'_dstr)
-				drop `var'_dstr
-				format `var'_date %td
+				("`var'" != "sick_note_5_date") &  ///
+				("`var'" != "covid_diagnosis_date") {
+					rename `var' `var'_dstr
+					gen `var'_date = date(`var'_dstr, "YMD") 
+					order `var'_date, after(`var'_dstr)
+					drop `var'_dstr
+					format `var'_date %td
 			}
 			else {
 				rename `var' `var'_dstr
@@ -280,7 +282,12 @@ tempname outcomeDist
 replace deregistered = . if deregistered > `end_date'
 
 foreach out in sick_note_1_date {
-	gen min_end_date = min(died_date_ons_date, deregistered_date) // `out'_ons already captured in the study definition binary outcome
+	if "$group" == "covid_2020" {
+		gen min_end_date = min(died_date_ons_date, deregistered_date) // `out'_ons already captured in the study definition binary outcome
+	}
+	else {
+		gen min_end_date = min(died_date_ons_date, deregistered_date, covid_diagnosis_date)
+	}
 
 	* Define outcome using all data
 	replace `out' = 0 if min_end_date > `end_date'

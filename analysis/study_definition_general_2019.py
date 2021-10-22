@@ -63,6 +63,9 @@ study = StudyDefinition(
         date_format="YYYY-MM-DD",
         return_expectations={"date": {"earliest": "index_date"}},
     ),
+    covid_diagnosis_date=patients.minimum_of(
+        "sgss_positive", "primary_care_covid", "hospital_covid"
+    ),
     **demographic_variables,
     **clinical_variables,
     **outcome_variables
