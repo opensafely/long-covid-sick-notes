@@ -29,20 +29,95 @@ actions:
       highly_sensitive:
         cohort: output/cohorts/input_pneumonia_2019.csv
 
-  matching_2019:
-    run: python:latest python analysis/match_running.py "input_general_2019" "_2019" "2019-02-01" --output-dir=output/cohorts
-    needs: [generate_study_population_covid_2020, generate_study_population_general_2019]
-    outputs:
-      moderately_sensitive:
-        matching_report: output/cohorts/matching_report_2019.txt
-      highly_sensitive:
-        matched_cohort: output/cohorts/matched_matches_2019.csv
+  # matching_2019:
+  #   run: python:latest python analysis/match_running.py "input_general_2019" "_2019" "2019-02-01" --output-dir=output/cohorts
+  #   needs: [generate_study_population_covid_2020, generate_study_population_general_2019]
+  #   outputs:
+  #     moderately_sensitive:
+  #       matching_report: output/cohorts/matching_report_2019.txt
+  #     highly_sensitive:
+  #       matched_cohort: output/cohorts/matched_matches_2019.csv
 
-  matching_2020:
-    run: python:latest python analysis/match_running.py "input_general_2020" "_2020" "2020-02-01" --output-dir=output/cohorts
-    needs: [generate_study_population_covid_2020, generate_study_population_general_2020]
+  # matching_2020:
+  #   run: python:latest python analysis/match_running.py "input_general_2020" "_2020" "2020-02-01" --output-dir=output/cohorts
+  #   needs: [generate_study_population_covid_2020, generate_study_population_general_2020]
+  #   outputs:
+  #     moderately_sensitive:
+  #       matching_report: output/cohorts/matching_report_2020.txt
+  #     highly_sensitive:
+  #       matched_cohort: output/cohorts/matched_matches_2020.csv
+
+  covid_2020_rates_cohort:
+    run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "covid_2020" --output-dir=output/cohorts
+    needs: [generate_study_population_covid_2020]
+    outputs:
+      highly_sensitive:
+        analysis_dataset: output/cohorts/cohort_rates_covid_2020.dta
+
+  general_2019_rates_cohort:
+    run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "general_2019" --output-dir=output/cohorts
+    needs: [generate_study_population_general_2019]
+    outputs:
+      highly_sensitive:
+        analysis_dataset: output/cohorts/cohort_rates_general_2019.dta
+
+  general_2020_rates_cohort:
+    run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "general_2020" --output-dir=output/cohorts
+    needs: [generate_study_population_general_2020]
+    outputs:
+      highly_sensitive:
+        analysis_dataset: output/cohorts/cohort_rates_general_2020.dta
+
+  pneumonia_2019_rates_cohort:
+    run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "pneumonia_2019" --output-dir=output/cohorts
+    needs: [generate_study_population_pneumonia_2019]
+    outputs:
+      highly_sensitive:
+        analysis_dataset: output/cohorts/cohort_rates_pneumonia_2019.dta
+
+  covid_2020_rates:
+    run: stata-mp:latest analysis/100_cr_simple_rates.do "covid_2020" --output-dir=output/tabfig
+    needs: [covid_2020_rates_cohort]
     outputs:
       moderately_sensitive:
-        matching_report: output/cohorts/matching_report_2020.txt
-      highly_sensitive:
-        matched_cohort: output/cohorts/matched_matches_2020.csv
+        rates: output/tabfig/rates_summary_covid_2020.csv
+
+  general_2019_rates:
+    run: stata-mp:latest analysis/100_cr_simple_rates.do "general_2019" --output-dir=output/tabfig
+    needs: [general_2019_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_general_2019.csv
+
+  general_2020_rates:
+    run: stata-mp:latest analysis/100_cr_simple_rates.do "general_2020" --output-dir=output/tabfig
+    needs: [general_2020_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_general_2020.csv
+
+  pneumonia_2019_rates:
+    run: stata-mp:latest analysis/100_cr_simple_rates.do "pneumonia_2019" --output-dir=output/tabfig
+    needs: [pneumonia_2019_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_pneumonia_2019.csv
+
+  append_cohorts:
+    run: stata-mp:latest analysis/200_cr_data_management_matching.do --output-dir=output/cohorts
+    needs: [covid_2020_rates_cohort, pneumonia_2019_rates_cohort, general_2020_rates_cohort, general_2019_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/append_cohorts.txt
+      highly_sensitive: 
+        dataset: output/cohorts/combined_covid_pneumonia.dta
+        dataset2: output/cohorts/combined_covid_general_2019.dta
+        dataset3: output/cohorts/combined_covid_general_2020.dta
+
+  cox_models:
+    run: stata-mp:latest analysis/201_cox_models.do
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models.txt
+        dataset: output/tabfig/cox_model_summary.csv
