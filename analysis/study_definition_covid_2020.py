@@ -67,6 +67,9 @@ study = StudyDefinition(
     patient_index_date=patients.minimum_of(
         "sgss_positive", "primary_care_covid", "hospital_covid"
     ),
+    covid_diagnosis_date=patients.minimum_of(
+        "sgss_positive", "primary_care_covid", "hospital_covid"
+    ),
     covid_classification=patients.categorised_as(
         {
             "0": "DEFAULT",

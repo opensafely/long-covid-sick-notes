@@ -9,6 +9,4 @@ di "$tabfigdir"
 * Create directories required 
 capture mkdir "$tabfigdir"
 
-global dataEndDate td(01oct2020)
-
 adopath + $projectdir/analysis/ado
