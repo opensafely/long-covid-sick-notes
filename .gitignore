@@ -6,3 +6,4 @@ __pycache__
 output/*
 metadata/*
 venv/
+notebooks/.ipynb_checkpoints/describe_duration-checkpoint.ipynb
