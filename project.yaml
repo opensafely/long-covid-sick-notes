@@ -149,3 +149,16 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models.txt
         dataset: output/tabfig/cox_model_summary.csv
+
+  describe_duration:
+    run: jupyter:latest jupyter nbconvert /workspace/notebooks/describe_duration.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
+    needs: [reconcile_sick_note_spells_covid_2020, reconcile_sick_note_spells_general_2019, reconcile_sick_note_spells_general_2020, reconcile_sick_note_spells_pneumonia_2019]
+    outputs:
+      moderately_sensitive:
+        notebook: output/describe_duration.html
+        table: output/tabfig/med_iqr_overall.csv
+        table2: output/tabfig/med_iqr_age_group.csv
+        table3: output/tabfig/med_iqr_sex.csv
+        table4: output/tabfig/med_iqr_ethnicity.csv
+        table5: output/tabfig/med_iqr_imd.csv
+        table6: output/tabfig/med_iqr_region.csv
