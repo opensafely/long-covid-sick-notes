@@ -162,3 +162,10 @@ actions:
         table4: output/tabfig/med_iqr_ethnicity.csv
         table5: output/tabfig/med_iqr_imd.csv
         table6: output/tabfig/med_iqr_region.csv
+
+  rates_over_time:
+    run: jupyter:latest jupyter nbconvert /workspace/notebooks/rates_over_time.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
+    needs: [generate_study_population_covid_2020, generate_study_population_general_2019, generate_study_population_general_2020, generate_study_population_pneumonia_2019]
+    outputs:
+      moderately_sensitive:
+        notebook: output/rates_over_time.html
