@@ -156,3 +156,9 @@ actions:
     outputs:
       moderately_sensitive:
         notebook: output/describe_duration.html
+        table: output/tabfig/med_iqr_overall.csv
+        table2: output/tabfig/med_iqr_age_group.csv
+        table3: output/tabfig/med_iqr_sex.csv
+        table4: output/tabfig/med_iqr_ethnicity.csv
+        table5: output/tabfig/med_iqr_imd.csv
+        table6: output/tabfig/med_iqr_region.csv
