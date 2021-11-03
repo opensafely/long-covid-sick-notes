@@ -240,7 +240,11 @@ def generate_common_variables(index_date_variable):
             },
         ),
         deregistered=patients.date_deregistered_from_all_supported_practices(
-            date_format="YYYY-MM-DD"
+            date_format="YYYY-MM-DD",
+            return_expectations={
+                "date": {"earliest": "index_date"},
+                "incidence": 0.5,
+            },
         ),
     )
 
