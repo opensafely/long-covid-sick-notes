@@ -36,7 +36,7 @@ gen new_patient_id = _n
 global crude i.case
 global age_sex i.case i.male age1 age2 age3
 
-foreach v in sick_note_1_date {
+foreach v in sick_note {
 	
 	noi di "Starting analysis for `v' Outcome ..." 
 		
