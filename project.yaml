@@ -152,7 +152,7 @@ actions:
 
   describe_duration:
     run: jupyter:latest jupyter nbconvert /workspace/notebooks/describe_duration.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
-    needs: [reconcile_sick_note_spells_covid_2020, reconcile_sick_note_spells_general_2019, reconcile_sick_note_spells_general_2020, reconcile_sick_note_spells_pneumonia_2019]
+    needs: [covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, pneumonia_2019_rates_cohort]
     outputs:
       moderately_sensitive:
         notebook: output/describe_duration.html
