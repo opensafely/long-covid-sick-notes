@@ -281,12 +281,15 @@ tempname outcomeDist
 * The default deregistration date is 9999-12-31, so:
 replace deregistered = . if deregistered > `end_date'
 
-foreach out in sick_note_1_date {
+gen sick_note = 1 if sick_note_1_date != .
+recode sick_note . = 0
+
+foreach out in sick_note {
 	if "$group" == "covid_2020" {
-		gen min_end_date = min(died_date_ons_date, deregistered_date) // `out'_ons already captured in the study definition binary outcome
+		gen min_end_date = min(`out'_1_date, died_date_ons_date, deregistered_date) // `out'_ons already captured in the study definition binary outcome
 	}
 	else {
-		gen min_end_date = min(died_date_ons_date, deregistered_date, covid_diagnosis_date)
+		gen min_end_date = min(`out'_1_date, died_date_ons_date, deregistered_date, covid_diagnosis_date)
 	}
 
 	* Define outcome using all data
