@@ -42,10 +42,10 @@ else {
 *	global group "gen_population"
 *}
 *else {
-*	import delimited $outdir/input_$group.csv
+*	import delimited $outdir/input_${group}_with_duration.csv
 *}
 
-import delimited $outdir/input_$group.csv
+import delimited $outdir/input_${group}_with_duration.csv
 
 di "STARTING COUNT FROM IMPORT:"
 noi safecount
@@ -170,7 +170,6 @@ replace died_date_ons_date = . if died_date_ons_date>`end_date'
 * Sex
 assert inlist(sex, "M", "F")
 gen male = (sex=="M")
-drop sex
 label define sexLab 1 "male" 0 "female"
 label values male sexLab
 label var male "sex = 0 F, 1 M"
@@ -235,8 +234,6 @@ label define region_7 	1 "East"							///
 						7 "South West"
 label values region_7 region_7
 label var region_7 "Region of England (7 regions)"
-drop region_string
-
 	
 **************************
 *  Categorise variables  *
