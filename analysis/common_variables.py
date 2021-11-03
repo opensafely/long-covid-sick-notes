@@ -1,6 +1,12 @@
-from cohortextractor import patients, codelist, filter_codes_by_category, combine_codelists
+from cohortextractor import (
+    patients,
+    codelist,
+    filter_codes_by_category,
+    combine_codelists,
+)
 from codelists import *
 from datetime import datetime, timedelta
+
 
 def generate_common_variables(index_date_variable):
     outcome_variables = dict(
@@ -71,10 +77,10 @@ def generate_common_variables(index_date_variable):
         age=patients.age_as_of(
             f"{index_date_variable}",
             return_expectations={
-            "rate": "universal",
-            "int": {"distribution": "population_ages"},
+                "rate": "universal",
+                "int": {"distribution": "population_ages"},
             },
-            ),
+        ),
         age_group=patients.categorised_as(
             {
                 "0-17": "age < 18",
@@ -432,7 +438,7 @@ def generate_common_variables(index_date_variable):
             organ_transplant_codes,
             return_first_date_in_period=True,
             include_month=True,
-            ),
+        ),
         dysplenia=patients.with_these_clinical_events(
             spleen_codes,
             return_first_date_in_period=True,
@@ -496,6 +502,6 @@ def generate_common_variables(index_date_variable):
             ra_sle_psoriasis_codes,
             return_first_date_in_period=True,
             include_month=True,
-        ),    
+        ),
     )
-    return outcome_variables, demographic_variables, clinical_variables 
+    return outcome_variables, demographic_variables, clinical_variables
