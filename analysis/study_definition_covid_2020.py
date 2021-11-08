@@ -41,7 +41,7 @@ study = StudyDefinition(
         returning="date",
         date_format="YYYY-MM-DD",
         find_first_match_in_period=True,
-        return_expectations={"incidence": 0.1, "date": {"earliest": "index_date"}},
+        return_expectations={"incidence": 0.2, "date": {"earliest": "index_date"}},
     ),
     primary_care_covid=patients.with_these_clinical_events(
         any_primary_care_code,
