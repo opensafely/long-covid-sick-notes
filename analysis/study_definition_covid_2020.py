@@ -11,8 +11,11 @@ from codelists import *
 
 from common_variables import generate_common_variables
 
-outcome_variables, demographic_variables, clinical_variables = generate_common_variables(
-    index_date_variable="patient_index_date")
+(
+    outcome_variables,
+    demographic_variables,
+    clinical_variables,
+) = generate_common_variables(index_date_variable="patient_index_date")
 
 study = StudyDefinition(
     default_expectations={
@@ -57,12 +60,14 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         return_expectations={"incidence": 0.1, "date": {"earliest": "index_date"}},
     ),
-    icu_admission=patients.admitted_to_icu(
+    icu_admission=patients.admitted_to_hospital(
+        with_these_diagnoses=covid_codes,
+        returning="days_in_critical_care",
         find_first_match_in_period=True,
-        on_or_after="index_date",
-        returning="date_admitted",
-        date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest": "index_date"}},
+        return_expectations={
+            "int": {"distribution": "normal", "mean": 10, "stddev": 5},
+            "incidence": 0.1,
+        },
     ),
     patient_index_date=patients.minimum_of(
         "sgss_positive", "primary_care_covid", "hospital_covid"
@@ -79,8 +84,8 @@ study = StudyDefinition(
                                     AND NOT sgss_positive
                                     AND NOT hospital_covid
                                 """,
-            "hospitalised": "hospital_covid AND NOT icu_admission",
-            "critical care": "hospital_covid AND icu_admission",
+            "hospitalised": "hospital_covid AND NOT (icu_admission > 0)",
+            "critical care": "hospital_covid AND (icu_admission > 0)",
         },
         return_expectations={
             "rate": "universal",
