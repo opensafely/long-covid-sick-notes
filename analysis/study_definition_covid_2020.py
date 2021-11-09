@@ -65,7 +65,14 @@ study = StudyDefinition(
         returning="days_in_critical_care",
         find_first_match_in_period=True,
         return_expectations={
-            "int": {"distribution": "normal", "mean": 10, "stddev": 5},
+            "category": {
+                "ratios": {
+                    "0": 0.6,
+                    "1": 0.1,
+                    "2": 0.2,
+                    "3": 0.1,
+                }
+            },
             "incidence": 0.1,
         },
     ),
