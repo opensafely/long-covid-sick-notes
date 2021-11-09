@@ -29,11 +29,11 @@ study = StudyDefinition(
         AND (age >=18 AND age <= 110)
         AND (sex = "M" OR sex = "F")
         AND imd > 0
-        AND pneumonia_admission_date
+        AND patient_index_date
         AND NOT stp = ""
         """,
         has_follow_up=patients.registered_with_one_practice_between(
-            "pneumonia_admission_date - 1 year", "pneumonia_admission_date"
+            "patient_index_date - 1 year", "patient_index_date"
         ),
     ),
     index_date="2019-02-01",
@@ -60,8 +60,8 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         return_expectations={"incidence": 0.1, "date": {"earliest": "index_date"}},
     ),
+    patient_index_date=patients.admitted_to_hospital(
         returning="date_admitted",
-    pneumonia_admission_date=patients.admitted_to_hospital(
         with_these_diagnoses=pneumonia_codelist,
         on_or_after="2019-02-01",
         find_first_match_in_period=True,
@@ -70,9 +70,6 @@ study = StudyDefinition(
     ),
     covid_diagnosis_date=patients.minimum_of(
         "sgss_positive", "primary_care_covid", "hospital_covid"
-    ),
-    patient_index_date=patients.minimum_of(
-        "pneumonia_admission_date"
     ),
     **demographic_variables,
     **clinical_variables,
