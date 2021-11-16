@@ -60,8 +60,8 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         return_expectations={"incidence": 0.1, "date": {"earliest": "index_date"}},
     ),
-        returning="date_admitted",
     pneumonia_admission_date=patients.admitted_to_hospital(
+        returning="date_admitted",
         with_these_diagnoses=pneumonia_codelist,
         on_or_after="2019-02-01",
         find_first_match_in_period=True,
@@ -71,9 +71,7 @@ study = StudyDefinition(
     covid_diagnosis_date=patients.minimum_of(
         "sgss_positive", "primary_care_covid", "hospital_covid"
     ),
-    patient_index_date=patients.minimum_of(
-        "pneumonia_admission_date"
-    ),
+    patient_index_date=patients.minimum_of("pneumonia_admission_date"),
     **demographic_variables,
     **clinical_variables,
     **outcome_variables
