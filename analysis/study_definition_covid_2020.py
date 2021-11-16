@@ -60,7 +60,7 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         return_expectations={"incidence": 0.1, "date": {"earliest": "index_date"}},
     ),
-    icu_admission=patients.admitted_to_hospital(
+    days_in_critical_care=patients.admitted_to_hospital(
         with_these_diagnoses=covid_codes,
         returning="days_in_critical_care",
         find_first_match_in_period=True,
@@ -91,8 +91,20 @@ study = StudyDefinition(
                                     AND NOT sgss_positive
                                     AND NOT hospital_covid
                                 """,
-            "hospitalised": "hospital_covid AND NOT (icu_admission > 0)",
-            "critical care": "hospital_covid AND (icu_admission > 0)",
+            "hospitalised": """
+                            hospital_covid
+                            AND (
+                                days_in_critical_care = '0'
+                                OR days_in_critical_care = ''
+                                )
+                            """,
+            "critical care": """
+                            hospital_covid
+                            AND NOT (
+                                days_in_critical_care = '0'
+                                OR days_in_critical_care = ''
+                                )
+                            """,
         },
         return_expectations={
             "rate": "universal",
