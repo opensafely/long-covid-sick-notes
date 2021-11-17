@@ -11,8 +11,11 @@ from codelists import *
 
 from common_variables import generate_common_variables
 
-outcome_variables, demographic_variables, clinical_variables = generate_common_variables(
-    index_date_variable="patient_index_date")
+(
+    outcome_variables,
+    demographic_variables,
+    clinical_variables,
+) = generate_common_variables(index_date_variable="patient_index_date")
 
 study = StudyDefinition(
     default_expectations={
@@ -57,27 +60,18 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         return_expectations={"incidence": 0.1, "date": {"earliest": "index_date"}},
     ),
-    icu_admission=patients.admitted_to_icu(
-        find_first_match_in_period=True,
-        on_or_after="index_date",
-        returning="date_admitted",
-        date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest": "index_date"}},
-    ),
     pneumonia_admission_date=patients.admitted_to_hospital(
-        returning="date_admitted" ,  
+        returning="date_admitted",
         with_these_diagnoses=pneumonia_codelist,
         on_or_after="2019-02-01",
-        find_first_match_in_period=True,  
-        date_format="YYYY-MM-DD",  
-        return_expectations={"date": {"earliest": "2019-02-01"}, "incidence" : 0.15},
-   ),
+        find_first_match_in_period=True,
+        date_format="YYYY-MM-DD",
+        return_expectations={"date": {"earliest": "2019-02-01"}, "incidence": 0.15},
+    ),
     covid_diagnosis_date=patients.minimum_of(
         "sgss_positive", "primary_care_covid", "hospital_covid"
     ),
-    patient_index_date=patients.minimum_of(
-        "pneumonia_admission_date"
-    ),
+    patient_index_date=patients.minimum_of("pneumonia_admission_date"),
     **demographic_variables,
     **clinical_variables,
     **outcome_variables

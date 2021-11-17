@@ -95,7 +95,6 @@ if "$group" == "covid_2020" | "$group" == "pneumonia_2019"  {
 foreach var of varlist sgss_positive				///
 					   primary_care_covid  		    ///
 					   hospital_covid				///
-					   icu_admission				///
 					   died_date_ons				///
 					   deregistered					///
 					   bmi_date_measured 			///

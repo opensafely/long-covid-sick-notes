@@ -11,9 +11,12 @@ from codelists import *
 
 from common_variables import generate_common_variables
 
-outcome_variables, demographic_variables, clinical_variables = generate_common_variables(
-    index_date_variable="index_date")
-    
+(
+    outcome_variables,
+    demographic_variables,
+    clinical_variables,
+) = generate_common_variables(index_date_variable="index_date")
+
 study = StudyDefinition(
     default_expectations={
         "date": {"earliest": "1980-01-01", "latest": "today"},
@@ -55,13 +58,6 @@ study = StudyDefinition(
         date_format="YYYY-MM-DD",
         find_first_match_in_period=True,
         return_expectations={"incidence": 0.1, "date": {"earliest": "index_date"}},
-    ),
-    icu_admission=patients.admitted_to_icu(
-        find_first_match_in_period=True,
-        on_or_after="index_date",
-        returning="date_admitted",
-        date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest": "index_date"}},
     ),
     covid_diagnosis_date=patients.minimum_of(
         "sgss_positive", "primary_care_covid", "hospital_covid"
