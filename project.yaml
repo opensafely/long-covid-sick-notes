@@ -29,6 +29,24 @@ actions:
       highly_sensitive:
         cohort: output/cohorts/input_pneumonia_2019.csv
 
+  matching_2019:
+    run: python:latest python analysis/match_running.py "2019" --output-dir=output/cohorts
+    needs: [generate_study_population_covid_2020, generate_study_population_general_2019]
+    outputs:
+      moderately_sensitive:
+        matching_report: output/cohorts/matching_report_2019.txt
+      highly_sensitive:
+        matched_cohort: output/cohorts/matched_matches_2019.csv
+
+  matching_2020:
+    run: python:latest python analysis/match_running.py "2020" --output-dir=output/cohorts
+    needs: [generate_study_population_covid_2020, generate_study_population_general_2020]
+    outputs:
+      moderately_sensitive:
+        matching_report: output/cohorts/matching_report_2020.txt
+      highly_sensitive:
+        matched_cohort: output/cohorts/matched_matches_2020.csv
+
   reconcile_sick_note_spells_covid_2020:
     run: python:latest python analysis/reconcile_sick_note_spells.py "_covid_2020"
     needs: [generate_study_population_covid_2020]
@@ -56,24 +74,6 @@ actions:
     outputs:
       highly_sensitive:
         cohort_with_duration: output/cohorts/input_pneumonia_2019_with_duration.csv
-
-  # matching_2019:
-  #   run: python:latest python analysis/match_running.py "input_general_2019" "_2019" "2019-02-01" --output-dir=output/cohorts
-  #   needs: [generate_study_population_covid_2020, generate_study_population_general_2019]
-  #   outputs:
-  #     moderately_sensitive:
-  #       matching_report: output/cohorts/matching_report_2019.txt
-  #     highly_sensitive:
-  #       matched_cohort: output/cohorts/matched_matches_2019.csv
-
-  # matching_2020:
-  #   run: python:latest python analysis/match_running.py "input_general_2020" "_2020" "2020-02-01" --output-dir=output/cohorts
-  #   needs: [generate_study_population_covid_2020, generate_study_population_general_2020]
-  #   outputs:
-  #     moderately_sensitive:
-  #       matching_report: output/cohorts/matching_report_2020.txt
-  #     highly_sensitive:
-  #       matched_cohort: output/cohorts/matched_matches_2020.csv
 
   covid_2020_rates_cohort:
     run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "covid_2020" --output-dir=output/cohorts
