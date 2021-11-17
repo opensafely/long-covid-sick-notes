@@ -37,6 +37,9 @@ replace case = 0 if case ==.
 bysort patient_id: gen flag = _n
 safecount if flag == 2
 
+* drop if not hopitalised 
+drop if hosp_expo_date == .
+
 noi di "number of patients in both cohorts is `r(N)'"
 
 drop flag 

@@ -77,28 +77,28 @@ actions:
 
   covid_2020_rates_cohort:
     run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "covid_2020" --output-dir=output/cohorts
-    needs: [generate_study_population_covid_2020]
+    needs: [reconcile_sick_note_spells_covid_2020]
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_covid_2020.dta
 
   general_2019_rates_cohort:
     run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "general_2019" --output-dir=output/cohorts
-    needs: [generate_study_population_general_2019]
+    needs: [reconcile_sick_note_spells_general_2019]
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_general_2019.dta
 
   general_2020_rates_cohort:
     run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "general_2020" --output-dir=output/cohorts
-    needs: [generate_study_population_general_2020]
+    needs: [reconcile_sick_note_spells_general_2020]
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_general_2020.dta
 
   pneumonia_2019_rates_cohort:
     run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "pneumonia_2019" --output-dir=output/cohorts
-    needs: [generate_study_population_pneumonia_2019]
+    needs: [reconcile_sick_note_spells_pneumonia_2019]
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_pneumonia_2019.dta
@@ -152,7 +152,7 @@ actions:
 
   describe_duration:
     run: jupyter:latest jupyter nbconvert /workspace/notebooks/describe_duration.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
-    needs: [reconcile_sick_note_spells_covid_2020, reconcile_sick_note_spells_general_2019, reconcile_sick_note_spells_general_2020, reconcile_sick_note_spells_pneumonia_2019]
+    needs: [covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, pneumonia_2019_rates_cohort]
     outputs:
       moderately_sensitive:
         notebook: output/describe_duration.html
