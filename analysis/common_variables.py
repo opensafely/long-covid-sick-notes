@@ -257,7 +257,7 @@ def generate_common_variables(index_date_variable):
     clinical_variables = dict(
         efrailty=patients.with_these_decision_support_values(
             "electronic_frailty_index",
-            on_or_before=f"{index_date_variable}",
+            on_or_before=f"{index_date_variable} - 1 day",
             find_last_match_in_period=True,
             returning="numeric_value",
             return_expectations={
@@ -265,24 +265,65 @@ def generate_common_variables(index_date_variable):
             },
         ),
         emergency_care=patients.attended_emergency_care(
-            on_or_before=f"{index_date_variable} - 1 month",
+            on_or_before=f"{index_date_variable} - 1 day",
             returning="binary_flag",
             return_expectations={"incidence": 0.2},
         ),
+        emergency_care_admit_date=patients.attended_emergency_care(
+            on_or_before=f"{index_date_variable} - 1 day",
+            returning="date_arrived",
+            return_expectations={"incidence": 0.2},
+            date_format="YYYY-MM-DD",
+        ),
         previous_sick_note=patients.with_these_clinical_events(
             sick_notes_codes,
-            on_or_before=f"{index_date_variable} - 1 month",
+            on_or_before=f"{index_date_variable} - 1 day",
+            returning='binary_flag',
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
             return_expectations={"incidence": 0.2},
         ),
         bmi=patients.most_recent_bmi(
-            on_or_after=f"{index_date_variable} - 10 year",
+            between=[f"{index_date_variable} - 10 year",f"{index_date_variable} - 1 day"],
             minimum_age_at_measurement=16,
             include_measurement_date=True,
-            include_month=True,
+            date_format="YYYY-MM-DD",
             return_expectations={
                 "incidence": 0.98,
                 "float": {"distribution": "normal", "mean": 35, "stddev": 10},
             },
+        ),
+        obese_1 = patients.satisfying(
+            """
+            bmi >= 30 AND bmi < 35
+            """
+        ),
+        obese_2 = patients.satisfying(
+            """
+            bmi >= 35 AND bmi < 40
+            """
+        ),
+        obese_3 = patients.satisfying(
+            """
+            bmi >= 40
+            """
+        ),
+        ever_smoked=patients.with_these_clinical_events(
+                filter_codes_by_category(clear_smoking_codes, include=["S", "E"]),
+                returning="binary_flag",
+                on_or_before=f"{index_date_variable} - 1 day",
+                include_date_of_match=True,
+                date_format="YYYY-MM-DD",
+                find_first_match_in_period=True,
+        ),
+        current_smoker=patients.with_these_clinical_events(
+                filter_codes_by_category(clear_smoking_codes, include=["S"]),
+                returning="binary_flag",
+                on_or_before=f"{index_date_variable} - 1 day",
+                include_date_of_match=True,
+                date_format="YYYY-MM-DD",
+                find_last_match_in_period=True,
         ),
         smoking_status=patients.categorised_as(
             {
@@ -305,10 +346,6 @@ def generate_common_variables(index_date_variable):
                 on_or_before=f"{index_date_variable} - 1 day",
                 returning="category",
             ),
-            ever_smoked=patients.with_these_clinical_events(
-                filter_codes_by_category(clear_smoking_codes, include=["S", "E"]),
-                on_or_before=f"{index_date_variable} - 1 day",
-            ),
             smoked_last_18_months=patients.with_these_clinical_events(
                 filter_codes_by_category(clear_smoking_codes, include=["S"]),
                 between=[f"{index_date_variable} - 548 day", f"{index_date_variable}"],
@@ -316,18 +353,24 @@ def generate_common_variables(index_date_variable):
         ),
         hypertension=patients.with_these_clinical_events(
             hypertension_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            date_format="YYYY-MM-DD",
+            find_last_match_in_period=True,
         ),
         diabetes=patients.with_these_clinical_events(
             diabetes_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            date_format="YYYY-MM-DD",
+            find_last_match_in_period=True,
         ),
         hba1c_mmol_per_mol_1=patients.with_these_clinical_events(
             hba1c_new_codes,
             find_last_match_in_period=True,
-            between=[f"{index_date_variable} - 730 day", f"{index_date_variable}"],
+            between=[f"{index_date_variable} - 730 day", f"{index_date_variable} - 1 day"],
             returning="numeric_value",
             include_date_of_match=False,
             return_expectations={
@@ -338,7 +381,7 @@ def generate_common_variables(index_date_variable):
         hba1c_percentage_1=patients.with_these_clinical_events(
             hba1c_old_codes,
             find_last_match_in_period=True,
-            between=[f"{index_date_variable} - 730 day", f"{index_date_variable}"],
+            between=[f"{index_date_variable} - 730 day", f"{index_date_variable} - 1 day"],
             returning="numeric_value",
             include_date_of_match=False,
             return_expectations={
@@ -346,11 +389,30 @@ def generate_common_variables(index_date_variable):
                 "incidence": 0.98,
             },
         ),
-        chronic_respiratory_disease=patients.with_these_clinical_events(
+        chronic_resp_dis=patients.with_these_clinical_events(
             chronic_respiratory_disease_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
+        asthma_code_ever=patients.with_these_clinical_events(
+            asthma_codes,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
+        ),
+        recent_asthma_code=patients.with_these_clinical_events(
+                asthma_codes,
+                returning="binary_flag",
+                between=[f"{index_date_variable} - 3 year", f"{index_date_variable} - 1 day"],
+                include_date_of_match=True,
+                find_last_match_in_period=True,
+                date_format="YYYY-MM-DD",
+            ),
         asthma=patients.categorised_as(
             {
                 "0": "DEFAULT",
@@ -380,128 +442,168 @@ def generate_common_variables(index_date_variable):
             return_expectations={
                 "category": {"ratios": {"0": 0.8, "1": 0.1, "2": 0.1}},
             },
-            recent_asthma_code=patients.with_these_clinical_events(
-                asthma_codes,
-                between=["2017-02-01", "2020-02-01"],
-            ),
-            asthma_code_ever=patients.with_these_clinical_events(asthma_codes),
             copd_code_ever=patients.with_these_clinical_events(
-                chronic_respiratory_disease_codes
+                chronic_respiratory_disease_codes,
+                on_or_before = f"{index_date_variable} - 1 day",
             ),
             prednisolone_last_year=patients.with_these_medications(
                 pred_codes,
-                between=["2019-02-01", "2020-02-01"],
+                between=[f"{index_date_variable} - 1 year", f"{index_date_variable} - 1 day"],
                 returning="number_of_matches_in_period",
             ),
         ),
-        chronic_cardiac_disease=patients.with_these_clinical_events(
+        asthma_binary = patients.satisfying(
+            """
+            asthma != 0
+            """
+        ),
+        chronic_cardiac_dis=patients.with_these_clinical_events(
             chronic_cardiac_disease_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
         lung_cancer=patients.with_these_clinical_events(
             lung_cancer_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
         haem_cancer=patients.with_these_clinical_events(
             haem_cancer_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
         other_cancer=patients.with_these_clinical_events(
             other_cancer_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
-        chronic_liver_disease=patients.with_these_clinical_events(
+        chronic_liver_dis=patients.with_these_clinical_events(
             chronic_liver_disease_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
         other_neuro=patients.with_these_clinical_events(
             other_neuro,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
         dementia=patients.with_these_clinical_events(
             dementia,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
-        stroke_for_dementia_defn=patients.with_these_clinical_events(
+        stroke_for_dementia=patients.with_these_clinical_events(
             stroke_for_dementia_defn,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
         organ_transplant=patients.with_these_clinical_events(
             organ_transplant_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
         dysplenia=patients.with_these_clinical_events(
             spleen_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
         sickle_cell=patients.with_these_clinical_events(
             sickle_cell_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
         aplastic_anaemia=patients.with_these_clinical_events(
             aplastic_codes,
-            return_last_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
         hiv=patients.with_these_clinical_events(
             hiv_codes,
-            returning="category",
-            find_first_match_in_period=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
             include_date_of_match=True,
-            include_month=True,
-            return_expectations={
-                "category": {"ratios": {"43C3.": 0.8, "XaFuL": 0.2}},
-            },
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
-        permanent_immunodeficiency=patients.with_these_clinical_events(
+        permanent_immunodef=patients.with_these_clinical_events(
             permanent_immune_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
-        temporary_immunodeficiency=patients.with_these_clinical_events(
+        temporary_immunodef=patients.with_these_clinical_events(
             temp_immune_codes,
-            return_last_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
         bp_sys=patients.mean_recorded_value(
             systolic_blood_pressure_codes,
             on_most_recent_day_of_measurement=True,
-            on_or_before="2020-02-01",
-            include_measurement_date=True,
-            include_month=True,
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_measurement_date=False,
             return_expectations={
                 "float": {"distribution": "normal", "mean": 80, "stddev": 10},
-                "date": {"latest": "2020-02-29"},
                 "incidence": 0.95,
             },
         ),
         bp_dias=patients.mean_recorded_value(
             diastolic_blood_pressure_codes,
             on_most_recent_day_of_measurement=True,
-            on_or_before="2020-02-01",
-            include_measurement_date=True,
-            include_month=True,
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_measurement_date=False,
             return_expectations={
                 "float": {"distribution": "normal", "mean": 120, "stddev": 10},
-                "date": {"latest": "2020-02-29"},
                 "incidence": 0.95,
             },
         ),
         ra_sle_psoriasis=patients.with_these_clinical_events(
             ra_sle_psoriasis_codes,
-            return_first_date_in_period=True,
-            include_month=True,
+            returning="binary_flag",
+            on_or_before=f"{index_date_variable} - 1 day",
+            include_date_of_match=True,
+            find_last_match_in_period=True,
+            date_format="YYYY-MM-DD",
         ),
     )
     return outcome_variables, demographic_variables, clinical_variables
