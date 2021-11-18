@@ -26,7 +26,7 @@ study = StudyDefinition(
     population=patients.satisfying(
         """
             has_follow_up
-        AND (age >=18 AND age <= 110)
+        AND (age >=18 AND age < 65)
         AND (sex = "M" OR sex = "F")
         AND imd > 0
         AND pneumonia_admission_date
