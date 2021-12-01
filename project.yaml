@@ -34,42 +34,42 @@ actions:
     needs: [generate_study_population_covid_2020, generate_study_population_general_2019]
     outputs:
       moderately_sensitive:
-        matching_report: output/cohorts/matching_report_2019.txt
+        matching_report: output/cohorts/matching_report_general_2019.txt
       highly_sensitive:
-        matched_cohort: output/cohorts/matched_matches_2019.csv
+        matched_cohort: output/cohorts/matched_matches_general_2019.csv
 
   matching_2020:
     run: python:latest python analysis/match_running.py "2020" --output-dir=output/cohorts
     needs: [generate_study_population_covid_2020, generate_study_population_general_2020]
     outputs:
       moderately_sensitive:
-        matching_report: output/cohorts/matching_report_2020.txt
+        matching_report: output/cohorts/matching_report_general_2020.txt
       highly_sensitive:
-        matched_cohort: output/cohorts/matched_matches_2020.csv
+        matched_cohort: output/cohorts/matched_matches_general_2020.csv
 
   reconcile_sick_note_spells_covid_2020:
-    run: python:latest python analysis/reconcile_sick_note_spells.py "_covid_2020"
+    run: python:latest python analysis/reconcile_sick_note_spells.py "_covid_2020" "input"
     needs: [generate_study_population_covid_2020]
     outputs:
       highly_sensitive:
         cohort_with_duration: output/cohorts/input_covid_2020_with_duration.csv
 
   reconcile_sick_note_spells_general_2019:
-    run: python:latest python analysis/reconcile_sick_note_spells.py "_general_2019"
-    needs: [generate_study_population_general_2019]
+    run: python:latest python analysis/reconcile_sick_note_spells.py "_general_2019" "matched_matches"
+    needs: [matching_2019]
     outputs:
       highly_sensitive:
         cohort_with_duration: output/cohorts/input_general_2019_with_duration.csv
 
   reconcile_sick_note_spells_general_2020:
-    run: python:latest python analysis/reconcile_sick_note_spells.py "_general_2020"
-    needs: [generate_study_population_general_2020]
+    run: python:latest python analysis/reconcile_sick_note_spells.py "_general_2020" "matched_matches"
+    needs: [matching_2020]
     outputs:
       highly_sensitive:
         cohort_with_duration: output/cohorts/input_general_2020_with_duration.csv
 
   reconcile_sick_note_spells_pneumonia_2019:
-    run: python:latest python analysis/reconcile_sick_note_spells.py "_pneumonia_2019"
+    run: python:latest python analysis/reconcile_sick_note_spells.py "_pneumonia_2019" "input"
     needs: [generate_study_population_pneumonia_2019]
     outputs:
       highly_sensitive:

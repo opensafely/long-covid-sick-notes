@@ -20,7 +20,7 @@ match(
     },
     closest_match_variables=["age"],
     index_date_variable="patient_index_date",
-    output_suffix=f"_{year}",
+    output_suffix=f"_general_{year}",
     output_path="output/cohorts",
     input_path="output/cohorts",
     matching_type="frequency",

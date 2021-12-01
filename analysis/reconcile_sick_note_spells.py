@@ -8,7 +8,7 @@ NUMBER_OF_SICK_NOTES = 5
 date_cols = [f"sick_note_{n}_date" for n in range(1, NUMBER_OF_SICK_NOTES + 1)]
 
 df = pd.read_csv(
-    f"output/cohorts/input{sys.argv[1]}.csv",
+    f"output/cohorts/{sys.argv[2]}{sys.argv[1]}.csv",
     index_col="patient_id",
     parse_dates=date_cols,
 )
