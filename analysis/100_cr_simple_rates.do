@@ -23,10 +23,10 @@ global group `1'
 use $outdir/cohort_rates_$group, clear 
 
 if "$group" == "covid_2020" | "$group" == "pneumonia_2019"  { 
-	global stratifiers "agegroup male ethnicity long_hosp_stay"
+	global stratifiers "age_group male ethnicity long_hosp_stay"
 }
 else {
-	global stratifiers "agegroup male ethnicity"
+	global stratifiers "age_group male ethnicity"
 }
 
 tempname measures

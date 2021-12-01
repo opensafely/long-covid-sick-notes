@@ -91,42 +91,12 @@ if "$group" == "covid_2020" | "$group" == "pneumonia_2019"  {
 ******************************
 *  Convert strings to dates  *
 ******************************
-* To be added: dates related to outcomes
 foreach var of varlist sgss_positive					///
 					   primary_care_covid  		    	///
 					   hospital_covid					///
 					   died_date_ons					///
 					   deregistered						///
-					   emergency_care_admit_date		///
-					   previous_sick_note_date			///
-					   bmi_date_measured 				///
-					   ever_smoked_date					///
-					   current_smoker_date				///
-					   hypertension_date				///
-					   diabetes_date					///
-					   chronic_resp_dis_date			///
-					   asthma_code_ever_date 			///
-					   recent_asthma_code_date			///
-					   chronic_cardiac_dis_date			///
-					   lung_cancer_date					///
-					   haem_cancer_date		  		    ///
-					   other_cancer_date				///
-					   chronic_liver_dis_date			///
-					   other_neuro_date					///
-					   dementia_date			 		///
-					   stroke_for_dementia_date   		///
-					   organ_transplant_date			///
-					   dysplenia_date					///
-					   sickle_cell_date					///
-					   aplastic_anaemia_date  			///
-					   permanent_immunodef_date 		///
-					   temporary_immunodef_date 		///
-					   ra_sle_psoriasis_date  			///
 					   sick_note_1_date 				///
-					   sick_note_2_date 				///
-					   sick_note_3_date 				///
-					   sick_note_4_date 				///
-					   sick_note_5_date 				///
 					   covid_diagnosis_date 	    	{
 
 	capture confirm string variable `var'
@@ -239,27 +209,11 @@ label var region_7 "Region of England (7 regions)"
 *  Categorise variables  *
 **************************
 
-* Create categorised age
-recode 	age 			min/49.9999=1 	///
-						50/59.9999=2 	///
-						60/69.9999=3 	///
-						70/79.9999=4 	///
-						80/max=5, 		///
-						gen(agegroup) 
-
-label define agegroup 	1 "18-<50" 		///
-						2 "50-<60" 		///
-						3 "60-<70" 		///
-						4 "70-<80" 		///
-						5 "80+"
-label values agegroup agegroup
-
-
 * Check there are no missing ages
 assert age<.
-assert agegroup<.
 
 * Create restricted cubic splines fir age
+cap drop age1
 mkspline age = age, cubic nknots(4)
 
 ***************************
@@ -302,19 +256,6 @@ foreach out in sick_note {
 
 postclose `outcomeDist'
 										
-**** Tidy dataset
-
-*if "$group" == "covid" | "$group" == "pneumonia"  { 
-*	keep  patient_id hosp_expo_date previous_* agegroup ethnicity af aki_exclusion_flag /// 
-*	 indexdate male region_7 dvt* pe* stroke* anticoag_rx agegroup ///
-*	 af *_end_date long_hosp_stay mi* heart_failure* aki* mi* t1dm* t2dm* age* died_date_ons
-*}
-*else { 
-*	keep patient_id previous_* agegroup ethnicity af aki_exclusion_flag /// 
-*	 indexdate male region_7 dvt* pe* stroke* anticoag_rx agegroup ///
-*	 af *_end_date mi* heart_failure* aki* mi* t1dm* t2dm* age* died_date_ons
-*}
-
 order patient_id indexdate
 
 save $outdir/cohort_rates_$group, replace
