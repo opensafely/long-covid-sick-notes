@@ -208,6 +208,9 @@ label var region_7 "Region of England (7 regions)"
 **************************
 *  Categorise variables  *
 **************************
+rename age_group temp
+encode temp, gen(age_group)
+drop temp
 
 * Check there are no missing ages
 assert age<.
