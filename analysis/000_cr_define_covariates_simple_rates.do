@@ -91,39 +91,13 @@ if "$group" == "covid_2020" | "$group" == "pneumonia_2019"  {
 ******************************
 *  Convert strings to dates  *
 ******************************
-* To be added: dates related to outcomes
-foreach var of varlist sgss_positive				///
-					   primary_care_covid  		    ///
-					   hospital_covid				///
-					   died_date_ons				///
-					   deregistered					///
-					   bmi_date_measured 			///
-					   hypertension					///
-					   diabetes						///
-					   chronic_respiratory_disease	///
-					   chronic_cardiac_disease		///
-					   lung_cancer	 				///
-					   haem_cancer   			    ///
-					   other_cancer					///
-					   chronic_liver_disease		///
-					   other_neuro					///
-					   dementia				 		///
-					   stroke_for_dementia_defn   	///
-					   organ_transplant				///
-					   dysplenia					///
-					   sickle_cell					///
-					   aplastic_anaemia  			///
-					   permanent_immunodeficiency 	///
-					   temporary_immunodeficiency  	///
-					   bp_sys_date_measured 		///
-					   bp_dias_date_measured		///
-					   ra_sle_psoriasis  			///
-					   sick_note_1_date 			///
-					   sick_note_2_date 			///
-					   sick_note_3_date 			///
-					   sick_note_4_date 			///
-					   sick_note_5_date 			///
-					   covid_diagnosis_date 	    {
+foreach var of varlist sgss_positive					///
+					   primary_care_covid  		    	///
+					   hospital_covid					///
+					   died_date_ons					///
+					   deregistered						///
+					   sick_note_1_date 				///
+					   covid_diagnosis_date 	    	{
 
 	capture confirm string variable `var'
 		if _rc!=0 {
@@ -131,12 +105,9 @@ foreach var of varlist sgss_positive				///
 			rename `var' `var'_date
 		}
 		else {
-			if  ("`var'" != "sick_note_1_date") &  ///
-				("`var'" != "sick_note_2_date") &  ///
-				("`var'" != "sick_note_3_date") &  ///
-				("`var'" != "sick_note_4_date") &  ///
-				("`var'" != "sick_note_5_date") &  ///
-				("`var'" != "covid_diagnosis_date") {
+			if  ("`var'" == "primary_care_covid") |  ///
+				("`var'" == "hospital_covid") 	  |  ///
+				("`var'" == "deregistered") 	  {
 					rename `var' `var'_dstr
 					gen `var'_date = date(`var'_dstr, "YMD") 
 					order `var'_date, after(`var'_dstr)
@@ -158,7 +129,7 @@ drop if died_date_ons <= indexdate
 
 * Note: There may be deaths recorded after end of our study 
 * Set these to missing
-replace died_date_ons_date = . if died_date_ons_date>`end_date'
+replace died_date_ons = . if died_date_ons>`end_date'
 
 **********************
 *  Recode variables  *
@@ -237,28 +208,15 @@ label var region_7 "Region of England (7 regions)"
 **************************
 *  Categorise variables  *
 **************************
-
-* Create categorised age
-recode 	age 			min/49.9999=1 	///
-						50/59.9999=2 	///
-						60/69.9999=3 	///
-						70/79.9999=4 	///
-						80/max=5, 		///
-						gen(agegroup) 
-
-label define agegroup 	1 "18-<50" 		///
-						2 "50-<60" 		///
-						3 "60-<70" 		///
-						4 "70-<80" 		///
-						5 "80+"
-label values agegroup agegroup
-
+rename age_group temp
+encode temp, gen(age_group)
+drop temp
 
 * Check there are no missing ages
 assert age<.
-assert agegroup<.
 
 * Create restricted cubic splines fir age
+cap drop age1
 mkspline age = age, cubic nknots(4)
 
 ***************************
@@ -282,10 +240,10 @@ recode sick_note . = 0
 
 foreach out in sick_note {
 	if "$group" == "covid_2020" {
-		gen min_end_date = min(`out'_1_date, died_date_ons_date, deregistered_date) // `out'_ons already captured in the study definition binary outcome
+		gen min_end_date = min(`out'_1_date, died_date_ons, deregistered_date) // `out'_ons already captured in the study definition binary outcome
 	}
 	else {
-		gen min_end_date = min(`out'_1_date, died_date_ons_date, deregistered_date, covid_diagnosis_date)
+		gen min_end_date = min(`out'_1_date, died_date_ons, deregistered_date, covid_diagnosis_date)
 	}
 
 	* Define outcome using all data
@@ -301,19 +259,6 @@ foreach out in sick_note {
 
 postclose `outcomeDist'
 										
-**** Tidy dataset
-
-*if "$group" == "covid" | "$group" == "pneumonia"  { 
-*	keep  patient_id hosp_expo_date previous_* agegroup ethnicity af aki_exclusion_flag /// 
-*	 indexdate male region_7 dvt* pe* stroke* anticoag_rx agegroup ///
-*	 af *_end_date long_hosp_stay mi* heart_failure* aki* mi* t1dm* t2dm* age* died_date_ons_date
-*}
-*else { 
-*	keep patient_id previous_* agegroup ethnicity af aki_exclusion_flag /// 
-*	 indexdate male region_7 dvt* pe* stroke* anticoag_rx agegroup ///
-*	 af *_end_date mi* heart_failure* aki* mi* t1dm* t2dm* age* died_date_ons_date
-*}
-
 order patient_id indexdate
 
 save $outdir/cohort_rates_$group, replace
