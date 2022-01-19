@@ -7,8 +7,32 @@ from cohortextractor import (
 from codelists import *
 from datetime import datetime, timedelta
 
+# Code to loop over codelists and generate column variables
+def make_variable(code):
+    return {
+        f"snomed_{code}": (
+            patients.with_these_clinical_events(
+                codelist([code], system="snomed"),
+                between=("sick_note_1_date","sick_note_1_date"),
+                returning="number_of_matches_in_period",
+                include_date_of_match=False,
+                date_format="YYYY-MM-DD",
+                return_expectations={
+                    "incidence": 0.1,
+                    "int": {"distribution": "normal", "mean": 3, "stddev": 1},
+                },
+            )
+        )
+    }
+
+def loop_over_codes(code_list):
+    variables = {}
+    for code in code_list:
+        variables.update(make_variable(code))
+    return variables
 
 def generate_common_variables(index_date_variable):
+
     outcome_variables = dict(
         sick_note_1_date=patients.with_these_clinical_events(
             sick_notes_codes,
@@ -71,6 +95,24 @@ def generate_common_variables(index_date_variable):
             )
             for n in range(1, 6)
         },
+        first_sick_note_code=patients.with_these_clinical_events(
+            any_symptoms_codes,
+            between=("sick_note_1_date","sick_note_1_date"),
+            returning="code",
+            find_first_match_in_period=True,
+            return_expectations={
+                "incidence": 0.05,
+                "category": {
+                    "ratios": {
+                        "1010442006": 0.2,
+                        "10294000": 0.2,
+                        "106010004": 0.3,
+                        "10823571000119104": 0.2,
+                        "1048491000000106": 0.1,
+                    }
+                },
+            },
+        ),
     )
 
     demographic_variables = dict(
