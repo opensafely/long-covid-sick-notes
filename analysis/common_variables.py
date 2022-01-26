@@ -5,31 +5,39 @@ from cohortextractor import (
     combine_codelists,
 )
 from codelists import *
-from datetime import datetime, timedelta
+from variable_loop import get_codelist_variable
 
-# Code to loop over codelists and generate column variables
-def make_variable(code):
-    return {
-        f"snomed_{code}": (
-            patients.with_these_clinical_events(
-                codelist([code], system="snomed"),
-                between=("sick_note_1_date","sick_note_1_date"),
-                returning="number_of_matches_in_period",
-                include_date_of_match=False,
-                date_format="YYYY-MM-DD",
-                return_expectations={
-                    "incidence": 0.1,
-                    "int": {"distribution": "normal", "mean": 3, "stddev": 1},
-                },
-            )
-        )
-    }
+variables = {
+    "diag_central_nervous_system": [central_nervous_system_codes],
+    "diag_pregnancy_complication": [pregnancy_complication_codes],
+    "diag_congenital_disease": [congenital_disease_codes],
+    "diag_auditory_disorder": [auditory_disorder_codes],
+    "diag_cardio_disorder": [cardio_disorder_codes],
+    "diag_bloodcell_disorder": [bloodcell_disorder_codes],
+    "diag_connective_tissue": [connective_tissue_disorder_codes],
+    "diag_digestive_disorder": [digestive_disorder_codes],
+    "diag_endocrine_disorder": [endocrine_disorder_codes],
+    "diag_fetus_newborn_disorder": [fetus_newborn_disorder_codes],
+    "diag_hematopoietic_disorder": [hematopoietic_disorder_codes],
+    "diag_immune_disorder": [immune_disorder_codes],
+    "diag_labor_delivery_disorder": [labor_delivery_disorder_codes],
+    "diag_musculoskeletal_disorder": [musculoskeletal_disorder_codes],
+    "diag_nervous_disorder": [nervous_disorder_codes],
+    "diag_puerperium_disorder": [puerperium_disorder_codes],
+    "diag_respiratory_disorder": [respiratory_disorder_codes],
+    "diag_skin_disorder": [skin_disorder_codes],
+    "diag_genitourinary_disorder": [genitourinary_disorder_codes],
+    "diag_infectious_disease": [infectious_disease_codes],
+    "diag_mental_disorder": [mental_disorder_codes],
+    "diag_metabolic_disease": [metabolic_disease_codes],
+    "diag_neoplastic_disease": [neoplastic_disease_codes],
+    "diag_nutritional_disorder": [nutritional_disorder_codes],
+    "diag_poisoning": [poisoning_codes],
+    "diag_trauma": [trauma_codes],
+    "diag_visual_disorder": [visual_disorder_codes],
+}
 
-def loop_over_codes(code_list):
-    variables = {}
-    for code in code_list:
-        variables.update(make_variable(code))
-    return variables
+covariates = {k: get_codelist_variable(v) for k, v in variables.items()}
 
 def generate_common_variables(index_date_variable):
 
@@ -95,24 +103,7 @@ def generate_common_variables(index_date_variable):
             )
             for n in range(1, 6)
         },
-        first_sick_note_code=patients.with_these_clinical_events(
-            any_symptoms_codes,
-            between=("sick_note_1_date","sick_note_1_date"),
-            returning="code",
-            find_first_match_in_period=True,
-            return_expectations={
-                "incidence": 0.05,
-                "category": {
-                    "ratios": {
-                        "1010442006": 0.2,
-                        "10294000": 0.2,
-                        "106010004": 0.3,
-                        "10823571000119104": 0.2,
-                        "1048491000000106": 0.1,
-                    }
-                },
-            },
-        ),
+        **covariates,
     )
 
     demographic_variables = dict(
