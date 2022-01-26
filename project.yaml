@@ -155,7 +155,7 @@ actions:
     needs: [covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, pneumonia_2019_rates_cohort]
     outputs:
       moderately_sensitive:
-        notebook: output/describe_duration.html
+        notebook: output/describe_duration_diagnoses.html
         table: output/tabfig/med_mean_overall.csv
         table2: output/tabfig/med_mean_age_group.csv
         table3: output/tabfig/med_mean_sex.csv
