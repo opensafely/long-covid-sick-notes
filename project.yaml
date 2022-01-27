@@ -162,8 +162,7 @@ actions:
         table4: output/tabfig/med_mean_ethnicity.csv
         table5: output/tabfig/med_mean_imd.csv
         table6: output/tabfig/med_mean_region.csv
-        subplots: output/tabfig/num_diag_*.png 
-        subplots2: output/tabfig/pct_diag_*.png
+        subplots: output/tabfig/diag_*.png 
 
   rates_over_time:
     run: jupyter:latest jupyter nbconvert /workspace/notebooks/rates_over_time.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
