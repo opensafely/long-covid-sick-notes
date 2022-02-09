@@ -38,9 +38,10 @@ global crude i.case
 * Age and sex adjusted
 global age_sex i.case i.male age1 age2 age3
 * Age, sex, ethnicity, region, imd
-global demographics age_sex region_9 imd
+global demographics i.case i.male age1 age2 age3 region_9 imd
 * Demographics + clinical
-global demo_clinical demographics i.emergency_care i.obese smoking_status i.hypertension ///
+global demo_clinical i.case i.male age1 age2 age3 region_9 imd /// 
+					 i.emergency_care i.obese smoking_status i.hypertension ///
 					 i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
 					 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_disease ///
 					 i.other_neuro i.organ_transplant i.dysplenia i.hiv i.permanent_immunodef ///
