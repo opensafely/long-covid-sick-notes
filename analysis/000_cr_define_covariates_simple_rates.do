@@ -215,7 +215,7 @@ drop temp
 * Check there are no missing ages
 assert age<.
 
-* Create restricted cubic splines fir age
+* Create restricted cubic splines for age
 cap drop age1
 mkspline age = age, cubic nknots(4)
 

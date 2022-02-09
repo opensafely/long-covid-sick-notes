@@ -33,8 +33,18 @@ use $outdir/combined_covid_`an'.dta, replace
 drop patient_id
 gen new_patient_id = _n
 
+* Crude
 global crude i.case
+* Age and sex adjusted
 global age_sex i.case i.male age1 age2 age3
+* Age, sex, ethnicity, region, imd
+global demographics age_sex region_9 imd
+* Demographics + clinical
+global demo_clinical demographics i.emergency_care i.obese smoking_status i.hypertension ///
+					 i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
+					 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_disease ///
+					 i.other_neuro i.organ_transplant i.dysplenia i.hiv i.permanent_immunodef ///
+					 i.by_sys i.bp_dias i.ra_sle_psoriasis
 
 foreach v in sick_note {
 	
@@ -49,7 +59,7 @@ foreach v in sick_note {
 		
 		stset `end_date', id(new_patient_id) failure(`out') enter(indexdate) origin(indexdate)
 		
-		foreach adjust in crude age_sex {
+		foreach adjust in crude age_sex demographics demo_clinical {
 			stcox $`adjust', vce(robust)
 
 			matrix b = r(table)
