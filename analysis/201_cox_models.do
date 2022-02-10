@@ -33,19 +33,23 @@ use $outdir/combined_covid_`an'.dta, replace
 drop patient_id
 gen new_patient_id = _n
 
+* Encode smoking status
+encode smoking_status, gen(smoking_category)
+
 * Crude
 global crude i.case
 * Age and sex adjusted
 global age_sex i.case i.male age1 age2 age3
 * Age, sex, ethnicity, region, imd
-global demographics i.case i.male age1 age2 age3 region_9 imd
+global demographics i.case i.male age1 age2 age3 i.region_9 i.imd
 * Demographics + clinical
-global demo_clinical i.case i.male age1 age2 age3 region_9 imd /// 
-					 i.emergency_care i.obese i.hypertension ///
+
+global demo_clinical i.case i.male age1 age2 age3 i.region_9 i.imd /// 
+					 i.emergency_care i.obese i.hypertension i.smoking_category ///
 					 i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
 					 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
- 					 i.other_neuro i.dysplenia i.hiv i.permanent_immunodef // excluded smoking 
-					 
+ 					 i.other_neuro i.dysplenia i.hiv i.permanent_immunodef
+
 foreach v in sick_note {
 	
 	noi di "Starting analysis for `v' Outcome ..." 
