@@ -45,10 +45,11 @@ global demographics i.case i.male age1 age2 age3 i.region_9 i.imd
 * Demographics + clinical
 
 global demo_clinical i.case i.male age1 age2 age3 i.region_9 i.imd /// 
-					 i.emergency_care i.obese i.hypertension i.smoking_category ///
+					 i.emergency_care i.obese i.smoking_category i.hypertension ///
 					 i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
 					 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
- 					 i.other_neuro i.dysplenia i.hiv i.permanent_immunodef
+ 					 i.other_neuro i.organ_transplant i.dysplenia i.hiv ///
+					 i.permanent_immunodef i.ra_sle_psoriasis
 
 foreach v in sick_note {
 	
