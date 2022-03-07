@@ -28,7 +28,7 @@ tempname measures
 		ptime_comparator num_events_comparator rate_comparator hr lc uc ///
 		using $tabfigdir/cox_model_summary, replace
 		
-foreach an in pneumonia general_2019 general_2020 {
+foreach an in pneumonia general_2019 general_2020 general_2021 {
 use $outdir/combined_covid_`an'.dta, replace
 drop patient_id
 gen new_patient_id = _n
