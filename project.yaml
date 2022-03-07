@@ -203,9 +203,10 @@ actions:
       highly_sensitive: 
         dataset: output/cohorts/combined_covid_2020_pneumonia.dta
         dataset2: output/cohorts/combined_covid_2021_pneumonia.dta
-        dataset3: output/cohorts/combined_covid_general_2019.dta
-        dataset4: output/cohorts/combined_covid_general_2020.dta
-        dataset5: output/cohorts/combined_covid_general_2021.dta
+        dataset3: output/cohorts/combined_covid_2020_general_2019.dta
+        dataset4: output/cohorts/combined_covid_2021_general_2019.dta
+        dataset5: output/cohorts/combined_covid_general_2020.dta
+        dataset6: output/cohorts/combined_covid_general_2021.dta
 
   cox_models:
     run: stata-mp:latest analysis/201_cox_models.do
