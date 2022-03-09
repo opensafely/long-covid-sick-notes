@@ -21,35 +21,16 @@ global group `1'
 
 if "$group" == "covid_2020"  | "$group" == "general_2020" { 
 	local start_date  td(01/02/2020)
-	local last_year   td(01/02/2019)
-	local four_years_ago td(01/02/2015)	 
-	local fifteen_months_ago td(01/09/2019)
 	local end_date td(30/11/2020)
 }
 else if "$group" == "covid_2021"  | "$group" == "general_2021" { 
 	local start_date  td(01/02/2021)
-	local last_year   td(01/02/2020)
-	local four_years_ago td(01/02/2016)	 
-	local fifteen_months_ago td(01/09/2020)
 	local end_date td(30/11/2021)
 }
 else {
 	local start_date  td(01/02/2019)
-	local last_year   td(01/02/2018)	
-	local four_years_ago td(01/02/2014)	 
-	local fifteen_months_ago td(01/09/2018)
 	local end_date td(30/11/2019)
 }
-
-** Commented out matching code
-* if "$group" == "matched_matches_2019" | "$group" == "matched_matches_2020" {
-*	import delimited $outdir/$group.csv
-*	drop if case == 1 
-*	global group "gen_population"
-*}
-*else {
-*	import delimited $outdir/input_${group}_with_duration.csv
-*}
 
 import delimited $outdir/input_${group}_with_duration.csv
 
