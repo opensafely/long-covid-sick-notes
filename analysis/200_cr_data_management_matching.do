@@ -27,31 +27,34 @@ ls $outdir/
 cap log close
 log using $outdir/append_cohorts.txt, replace t
 
-* Gen flag for covid patients  (case = 1)
-use $outdir/cohort_rates_covid_2020, replace
-gen case = 1 
-append using $outdir/cohort_rates_pneumonia_2019, force
-replace case = 0 if case ==.
+foreach year in 2020 2021 {
+	* Gen flag for covid patients  (case = 1)
+	use $outdir/cohort_rates_covid_`year', replace
+	gen case = 1 
+	append using $outdir/cohort_rates_pneumonia_2019, force
+	replace case = 0 if case ==.
 
-* count patients from pneumonia group who are among covid group
-bysort patient_id: gen flag = _n
-safecount if flag == 2
+	* count patients from pneumonia group who are among covid group
+	bysort patient_id: gen flag = _n
+	safecount if flag == 2
 
-* drop if not hopitalised 
-drop if hosp_expo_date == .
+	* drop if not hopitalised 
+	drop if hosp_expo_date == .
 
-noi di "number of patients in both cohorts is `r(N)'"
+	noi di "number of patients in both cohorts is `r(N)'"
 
-drop flag 
-save $outdir/combined_covid_pneumonia.dta, replace
-
+	drop flag 
+	save $outdir/combined_covid_`year'_pneumonia.dta, replace
+}
+	
 ********************************************************************************
 * Append covid/gen pop. cohorts 
 ********************************************************************************
 
-foreach year in 2019 2020 {
+foreach year in 2020 2021 {
+	*** 2020 and 2021
 	* Gen flag for covid patients  (case = 1)
-	use $outdir/cohort_rates_covid_2020, replace
+	use $outdir/cohort_rates_covid_`year', replace
 	gen case = 1 
 	append using $outdir/cohort_rates_general_`year', force
 	replace case = 0 if case ==.
@@ -64,6 +67,22 @@ foreach year in 2019 2020 {
 
 	drop flag 
 	save $outdir/combined_covid_general_`year'.dta, replace
+
+	*** 2019
+	* Gen flag for covid patients  (case = 1)
+	use $outdir/cohort_rates_covid_`year', replace
+	gen case = 1 
+	append using $outdir/cohort_rates_general_2019, force
+	replace case = 0 if case ==.
+
+	* count patients from general group who are among covid group
+	bysort patient_id: gen flag = _n
+	safecount if flag == 2
+
+	noi di "number of patients in both cohorts is `r(N)'"
+
+	drop flag 
+	save $outdir/combined_covid_`year'_general_2019.dta, replace
 }
 
 log close

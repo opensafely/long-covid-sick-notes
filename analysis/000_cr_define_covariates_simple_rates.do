@@ -21,29 +21,16 @@ global group `1'
 
 if "$group" == "covid_2020"  | "$group" == "general_2020" { 
 	local start_date  td(01/02/2020)
-	local last_year   td(01/02/2019)
-	local four_years_ago td(01/02/2015)	 
-	local fifteen_months_ago td(01/09/2019)
-	local end_date td(31/12/2020)
-
+	local end_date td(30/11/2020)
+}
+else if "$group" == "covid_2021"  | "$group" == "general_2021" { 
+	local start_date  td(01/02/2021)
+	local end_date td(30/11/2021)
 }
 else {
 	local start_date  td(01/02/2019)
-	local last_year   td(01/02/2018)	
-	local four_years_ago td(01/02/2014)	 
-	local fifteen_months_ago td(01/09/2018)
-	local end_date td(31/12/2019)
+	local end_date td(30/11/2019)
 }
-
-** Commented out matching code
-* if "$group" == "matched_matches_2019" | "$group" == "matched_matches_2020" {
-*	import delimited $outdir/$group.csv
-*	drop if case == 1 
-*	global group "gen_population"
-*}
-*else {
-*	import delimited $outdir/input_${group}_with_duration.csv
-*}
 
 import delimited $outdir/input_${group}_with_duration.csv
 
@@ -53,6 +40,9 @@ noi safecount
 * Indexdate
 if "$group" == "general_2020" {
 	gen indexdate = td(01/02/2020)
+}
+else if "$group" == "general_2021" {
+	gen indexdate = td(01/02/2021)
 }
 else if "$group" == "general_2019" {
 	gen indexdate = td(01/02/2019)
@@ -68,14 +58,14 @@ drop if indexdate ==.
 * remove any patient discharged after end date
 drop if indexdate > `end_date'
 
-if "$group" == "covid_2020" { 
+if "$group" == "covid_2020" | "$group" == "covid_2021" { 
 	gen hosp_expo_date = date(hospital_covid, "YMD")
 }
 if "$group" == "pneumonia_2019"  { 
 	gen hosp_expo_date = date(pneumonia_admission_date, "YMD")
 }
 
-if "$group" == "covid_2020" | "$group" == "pneumonia_2019"  { 
+if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "pneumonia_2019"  { 
 	format hosp_expo_date %td
 	* Length of stay
 	gen length_of_stay = indexdate - hosp_expo_date + 1
@@ -239,7 +229,7 @@ gen sick_note = 1 if sick_note_1_date != .
 recode sick_note . = 0
 
 foreach out in sick_note {
-	if "$group" == "covid_2020" {
+	if "$group" == "covid_2020" | "$group" == "covid_2021" {
 		gen min_end_date = min(`out'_1_date, died_date_ons, deregistered_date) // `out'_ons already captured in the study definition binary outcome
 	}
 	else {

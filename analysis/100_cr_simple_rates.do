@@ -22,7 +22,7 @@ global group `1'
 
 use $outdir/cohort_rates_$group, clear 
 
-if "$group" == "covid_2020" | "$group" == "pneumonia_2019"  { 
+if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "pneumonia_2019"  { 
 	global stratifiers "age_group male ethnicity long_hosp_stay"
 }
 else {
