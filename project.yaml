@@ -6,37 +6,37 @@ expectations:
 actions:
 
   generate_study_population_covid_2020:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_covid_2020 --output-dir=output/cohorts 
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_covid_2020 --output-dir=output/cohorts --with-end-date-fix
     outputs:
       highly_sensitive:
         cohort: output/cohorts/input_covid_2020.csv
 
   generate_study_population_covid_2021:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_covid_2021 --output-dir=output/cohorts 
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_covid_2021 --output-dir=output/cohorts --with-end-date-fix
     outputs:
       highly_sensitive:
         cohort: output/cohorts/input_covid_2021.csv
 
   generate_study_population_general_2019:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_general_2019 --output-dir=output/cohorts 
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_general_2019 --output-dir=output/cohorts --with-end-date-fix
     outputs:
       highly_sensitive:
         cohort: output/cohorts/input_general_2019.csv
 
   generate_study_population_general_2020:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_general_2020 --output-dir=output/cohorts 
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_general_2020 --output-dir=output/cohorts --with-end-date-fix
     outputs:
       highly_sensitive:
         cohort: output/cohorts/input_general_2020.csv
 
   generate_study_population_general_2021:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_general_2021 --output-dir=output/cohorts 
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_general_2021 --output-dir=output/cohorts --with-end-date-fix
     outputs:
       highly_sensitive:
         cohort: output/cohorts/input_general_2021.csv
 
   generate_study_population_pneumonia_2019:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_pneumonia_2019 --output-dir=output/cohorts 
+    run: cohortextractor:latest generate_cohort --study-definition study_definition_pneumonia_2019 --output-dir=output/cohorts --with-end-date-fix
     outputs:
       highly_sensitive:
         cohort: output/cohorts/input_pneumonia_2019.csv
