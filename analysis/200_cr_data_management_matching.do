@@ -56,7 +56,7 @@ foreach year in 2020 2021 {
 	* Gen flag for covid patients  (case = 1)
 	use $outdir/cohort_rates_covid_`year', replace
 	gen case = 1 
-	append using $outdir/cohort_rates_general_`year', force
+	append using $outdir/cohort_rates_matched_`year', force
 	replace case = 0 if case ==.
 
 	* count patients from general group who are among covid group
@@ -72,7 +72,7 @@ foreach year in 2020 2021 {
 	* Gen flag for covid patients  (case = 1)
 	use $outdir/cohort_rates_covid_`year', replace
 	gen case = 1 
-	append using $outdir/cohort_rates_general_2019, force
+	append using $outdir/cohort_rates_matched_2019, force
 	replace case = 0 if case ==.
 
 	* count patients from general group who are among covid group

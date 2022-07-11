@@ -19,11 +19,11 @@ clear
 do `c(pwd)'/analysis/global.do
 global group `1'
 
-if "$group" == "covid_2020"  | "$group" == "general_2020" { 
+if "$group" == "covid_2020"  | "$group" == "matched_2020" { 
 	local start_date  td(01/02/2020)
 	local end_date td(30/11/2020)
 }
-else if "$group" == "covid_2021"  | "$group" == "general_2021" { 
+else if "$group" == "covid_2021"  | "$group" == "matched_2021" { 
 	local start_date  td(01/02/2021)
 	local end_date td(30/11/2021)
 }
