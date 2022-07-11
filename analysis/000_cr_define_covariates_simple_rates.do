@@ -38,20 +38,9 @@ di "STARTING COUNT FROM IMPORT:"
 noi safecount
 
 * Indexdate
-if "$group" == "general_2020" {
-	gen indexdate = td(01/02/2020)
-}
-else if "$group" == "general_2021" {
-	gen indexdate = td(01/02/2021)
-}
-else if "$group" == "general_2019" {
-	gen indexdate = td(01/02/2019)
-}
-else {
-	gen indexdate = date(patient_index_date, "YMD")
-	format indexdate %td
-	drop patient_index_date
-}
+gen indexdate = date(patient_index_date, "YMD")
+format indexdate %td
+drop patient_index_date
 
 drop if indexdate ==.
 
