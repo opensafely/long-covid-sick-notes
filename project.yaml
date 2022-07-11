@@ -6,44 +6,65 @@ expectations:
 actions:
 
   generate_study_population_covid_2020:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_covid_2020 --output-dir=output/cohorts 
+    run: cohortextractor:latest generate_cohort
+      --study-definition study_definition_covid_2020
+      --output-dir=output/cohorts
+      --output-format=csv.gz
     outputs:
       highly_sensitive:
-        cohort: output/cohorts/input_covid_2020.csv
+        cohort: output/cohorts/input_covid_2020.csv.gz
 
   generate_study_population_covid_2021:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_covid_2021 --output-dir=output/cohorts 
+    run: cohortextractor:latest generate_cohort
+      --study-definition study_definition_covid_2021
+      --output-dir=output/cohorts
+      --output-format=csv.gz
     outputs:
       highly_sensitive:
-        cohort: output/cohorts/input_covid_2021.csv
+        cohort: output/cohorts/input_covid_2021.csv.gz
 
-  generate_study_population_general_2019:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_general_2019 --output-dir=output/cohorts 
+  generate_study_population_general_match_vars_2019:
+    run: cohortextractor:latest generate_cohort
+      --study-definition study_definition_general_match_vars
+      --output-dir=output/cohorts
+      --output-format=csv.gz
+      --index-date-range="2019-02-01"
     outputs:
       highly_sensitive:
-        cohort: output/cohorts/input_general_2019.csv
+        cohort: output/cohorts/input_general_match_vars_2019-02-01.csv.gz
 
-  generate_study_population_general_2020:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_general_2020 --output-dir=output/cohorts 
+  generate_study_population_general_match_vars_2020:
+    run: cohortextractor:latest generate_cohort
+      --study-definition study_definition_general_match_vars
+      --output-dir=output/cohorts
+      --output-format=csv.gz
+      --index-date-range="2020-02-01"
     outputs:
       highly_sensitive:
-        cohort: output/cohorts/input_general_2020.csv
+        cohort: output/cohorts/input_general_match_vars_2020-02-01.csv.gz
 
-  generate_study_population_general_2021:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_general_2021 --output-dir=output/cohorts 
+  generate_study_population_general_match_vars_2021:
+    run: cohortextractor:latest generate_cohort
+      --study-definition study_definition_general_match_vars
+      --output-dir=output/cohorts
+      --output-format=csv.gz
+      --index-date-range="2021-02-01"
     outputs:
       highly_sensitive:
-        cohort: output/cohorts/input_general_2021.csv
+        cohort: output/cohorts/input_general_match_vars_2021-02-01.csv.gz
 
   generate_study_population_pneumonia_2019:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition_pneumonia_2019 --output-dir=output/cohorts 
+    run: cohortextractor:latest generate_cohort
+      --study-definition study_definition_pneumonia_2019
+      --output-dir=output/cohorts
+      --output-format=csv.gz
     outputs:
       highly_sensitive:
-        cohort: output/cohorts/input_pneumonia_2019.csv
+        cohort: output/cohorts/input_pneumonia_2019.csv.gz
 
   matching_2019:
     run: python:latest python analysis/match_running.py "2019" --output-dir=output/cohorts
-    needs: [generate_study_population_covid_2020, generate_study_population_general_2019]
+    needs: [generate_study_population_covid_2020, generate_study_population_general_match_vars_2019]
     outputs:
       moderately_sensitive:
         matching_report: output/cohorts/matching_report_general_2019.txt
@@ -52,7 +73,7 @@ actions:
 
   matching_2020:
     run: python:latest python analysis/match_running.py "2020" --output-dir=output/cohorts
-    needs: [generate_study_population_covid_2020, generate_study_population_general_2020]
+    needs: [generate_study_population_covid_2020, generate_study_population_general_match_vars_2020]
     outputs:
       moderately_sensitive:
         matching_report: output/cohorts/matching_report_general_2020.txt
@@ -61,7 +82,7 @@ actions:
 
   matching_2021:
     run: python:latest python analysis/match_running.py "2021" --output-dir=output/cohorts
-    needs: [generate_study_population_covid_2021, generate_study_population_general_2021]
+    needs: [generate_study_population_covid_2021, generate_study_population_general_match_vars_2021]
     outputs:
       moderately_sensitive:
         matching_report: output/cohorts/matching_report_general_2021.txt
