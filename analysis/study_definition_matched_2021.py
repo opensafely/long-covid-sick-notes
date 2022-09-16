@@ -15,7 +15,9 @@ from common_variables import generate_common_variables
     outcome_variables,
     demographic_variables,
     clinical_variables,
-) = generate_common_variables(index_date_variable="index_date")
+) = generate_common_variables(index_date_variable="patient_index_date")
+
+MATCHES = "output/cohorts/matched_matches_general_2021.csv"
 
 study = StudyDefinition(
     default_expectations={
@@ -23,19 +25,13 @@ study = StudyDefinition(
         "rate": "uniform",
         "incidence": 0.7,
     },
-    population=patients.satisfying(
-        """
-            has_follow_up
-        AND (age >=18 AND age < 65)
-        AND (sex = "M" OR sex = "F")
-        AND imd > 0
-        AND NOT stp = ""
-        """,
-        has_follow_up=patients.registered_with_one_practice_between(
-            "index_date - 1 year", "index_date"
-        ),
+    population=patients.which_exist_in_file(MATCHES),
+    index_date="2021-01-01",  # Ignored
+    patient_index_date=patients.with_value_from_file(
+        MATCHES,
+        returning="patient_index_date",
+        returning_type="date",
     ),
-    index_date="2020-02-01",
     # COVID infection
     sgss_positive=patients.with_test_result_in_sgss(
         pathogen="SARS-CoV-2",
