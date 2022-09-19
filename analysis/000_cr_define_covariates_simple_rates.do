@@ -138,6 +138,7 @@ label values ethnicity ethnicity_lab
 
 * Region
 rename region region_string
+tab region_string, m
 assert inlist(region_string, 								///
 					"East Midlands", 						///
 					"East",  								///
