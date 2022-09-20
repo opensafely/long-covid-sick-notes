@@ -138,8 +138,7 @@ label values ethnicity ethnicity_lab
 
 * Region
 rename region region_string
-tab region_string, m
-assert inlist(region_string, 								///
+/* assert inlist(region_string, 								///
 					"East Midlands", 						///
 					"East",  								///
 					"London", 								///
@@ -148,7 +147,7 @@ assert inlist(region_string, 								///
 					"South East", 							///
 					"South West",							///
 					"West Midlands", 						///
-					"Yorkshire and The Humber") 
+					"Yorkshire and The Humber")  */
 * Nine regions
 gen     region_9 = 1 if region_string=="East Midlands"
 replace region_9 = 2 if region_string=="East"
