@@ -117,7 +117,7 @@ replace died_date_ons = . if died_date_ons>`end_date'
 /*  Demographics  */
 
 * Sex
-assert inlist(sex, "M", "F")
+* assert inlist(sex, "M", "F")
 gen male = (sex=="M")
 label define sexLab 1 "male" 0 "female"
 label values male sexLab
@@ -192,7 +192,7 @@ encode temp, gen(age_group)
 drop temp
 
 * Check there are no missing ages
-assert age<.
+* assert age<.
 
 * Create restricted cubic splines for age
 cap drop age1
