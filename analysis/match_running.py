@@ -25,7 +25,6 @@ match(
         "sex": "category",
         "age": 1,
         "stp": "category",
-        "patient_index_date": "month_only",
     },
     closest_match_variables=["age"],
     index_date_variable="patient_index_date",
