@@ -78,10 +78,10 @@ foreach v in sick_note {
 
 		foreach adjust in crude age_sex demo_eth demo_eth_clinical demo_noeth demo_noeth_clinical {
 			
-			foreach ref in 0 30 60 90 120 150 180 {
+			foreach mon in 0 30 60 90 120 150 180 {
 
 				* reparameterise the model to estimate "case" effect in each time window
-				fvset base `ref' month
+				fvset base `mon' month
 				stcox $`adjust', vce(robust) 
 
 				matrix b = r(table) 
@@ -90,19 +90,19 @@ foreach v in sick_note {
 				local lc = b[5,2]
 				local uc = b[6,2]
 
-				stptime if case == 1 & month == `ref'
+				stptime if case == 1 & month == `mon'
 				local rate_covid = `r(rate)'
 				local ptime_covid = `r(ptime)'
 				local events_covid .
 				if `r(failures)' == 0 | `r(failures)' > 5 local events_covid `r(failures)'
 			
-				stptime if case == 0 & month == `ref'
+				stptime if case == 0 & month == `mon'
 				local rate_comparator = `r(rate)'
 				local ptime_comparator = `r(ptime)'
 				local events_comparator .
 				if `r(failures)' == 0 | `r(failures)' > 5 local events_comparator `r(failures)'
 
-				post `measures'  ("`an'") ("`v'") ("`out'") ("`adjust'") ("`ref'") ///
+				post `measures'  ("`an'") ("`v'") ("`out'") ("`adjust'") ("`mon'") ///
 					(`hr') (`lc') (`uc') ///
 					(`ptime_covid') (`events_covid') (`rate_covid') ///
 					(`ptime_comparator') (`events_comparator')  (`rate_comparator') 
