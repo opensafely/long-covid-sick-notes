@@ -267,6 +267,14 @@ actions:
         log: output/cohorts/cox_models.txt
         dataset: output/tabfig/cox_model_summary.csv
 
+  cox_models_split:
+    run: stata-mp:latest analysis/202_cox_models_split.do
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split.txt
+        dataset: output/tabfig/cox_model_split_summary.csv
+
   describe_duration_diagnoses:
     run: jupyter:latest jupyter nbconvert /workspace/notebooks/describe_duration_diagnoses.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
     needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort]
