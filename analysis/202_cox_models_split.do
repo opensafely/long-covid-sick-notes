@@ -79,7 +79,7 @@ foreach v in sick_note {
 
 		tab month sick_note
 
-		foreach adjust in crude  {
+		foreach adjust in crude age_sex demo_eth demo_eth_clinical demo_noeth demo_noeth_clinical {
 			
 			foreach mon in 0 30 90 150 {
 
