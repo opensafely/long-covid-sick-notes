@@ -74,11 +74,11 @@ foreach v in sick_note {
 		
 		stset `end_date', id(new_patient_id) failure(`out') enter(indexdate) origin(indexdate)
 		
-        stsplit month, at(30, 60, 90, 120, 150, 180)
+        stsplit month, at(30, 90, 150)
 
 		foreach adjust in crude age_sex demo_eth demo_eth_clinical demo_noeth demo_noeth_clinical {
 			
-			foreach mon in 0 30 60 90 120 150 180 {
+			foreach mon in 0 30 90 150 {
 
 				* reparameterise the model to estimate "case" effect in each time window
 				fvset base `mon' month
