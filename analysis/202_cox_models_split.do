@@ -61,6 +61,7 @@ global demo_noeth_clinical i.case##i.month i.male age1 age2 age3 i.region_9 i.im
 						   i.other_neuro i.organ_transplant i.dysplenia i.hiv ///
 						   i.permanent_immunodef i.ra_sle_psoriasis
 
+
 foreach v in sick_note {
 	
 	noi di "Starting analysis for `v' Outcome ..." 
@@ -76,7 +77,9 @@ foreach v in sick_note {
 		
         stsplit month, at(30, 90, 150)
 
-		foreach adjust in crude age_sex demo_eth demo_eth_clinical demo_noeth demo_noeth_clinical {
+		tab month sick_note
+
+		foreach adjust in crude  {
 			
 			foreach mon in 0 30 90 150 {
 
