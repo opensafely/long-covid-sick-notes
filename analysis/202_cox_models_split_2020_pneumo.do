@@ -80,15 +80,15 @@ foreach v in sick_note {
 
 		foreach adjust in crude age_sex demo_eth demo_eth_clinical demo_noeth demo_noeth_clinical {
             
-            foreach mon in 0 30 90 150 {
+ 			foreach mon in 0 30 90 150 {
 				
-			    stcox $`adjust', vce(robust) 
+				stcox $`adjust', vce(robust) 
 
-                lincom 1.case + 1.case#`mon'.month, hr
+				lincom 1.case + 1.case#`mon'.month, hr
 
-			    local hr = r(estimate)
-                local lc = r(lb)
-                local uc = r(ub)
+				local hr = r(estimate)
+				local lc = r(lb)
+				local uc = r(ub)
 
 				stptime if case == 1 & month == `mon'
 				local rate_covid = `r(rate)'
