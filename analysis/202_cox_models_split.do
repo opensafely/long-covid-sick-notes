@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 //
-// 202_cox_models_stsplit.do
+// 202_cox_models_stsplit_2021_gen_2019.do
 //
 // This program runs Cox models to perform survival analysis.
 //
@@ -18,9 +18,10 @@ set varabbrev off
 
 clear
 do `c(pwd)'/analysis/global.do
+global group `1'
 
 cap log close
-log using $outdir/cox_models_split.txt, replace t
+log using $outdir/cox_models_split_$group.txt, replace t
 
 tempname measures
 	postfile `measures' ///
@@ -28,10 +29,9 @@ tempname measures
 		hr lc uc  ///
 		ptime_covid events_covid rate_covid /// 
 		ptime_comparator events_comparator rate_comparator ///
-		using $tabfigdir/cox_model_split_summary, replace
+		using $tabfigdir/cox_model_split_summary_$group, replace
 		
-foreach an in 2020_pneumonia 2021_pneumonia 2020_general_2019 2021_general_2019 general_2020 general_2021 {
-use $outdir/combined_covid_`an'.dta, replace
+use $outdir/combined_covid_$group.dta, replace
 drop patient_id
 gen new_patient_id = _n
 
@@ -80,47 +80,44 @@ foreach v in sick_note {
 		tab month sick_note
 
 		foreach adjust in crude age_sex demo_eth demo_eth_clinical demo_noeth demo_noeth_clinical {
-			
+            
 			foreach mon in 0 30 90 150 {
-
-				* reparameterise the model to estimate "case" effect in each time window
-				fvset base `mon' month
+				
 				stcox $`adjust', vce(robust) 
 
-				matrix b = r(table) 
+				lincom 1.case + 1.case#`mon'.month, hr
 
-				local hr = b[1,2]
-				local lc = b[5,2]
-				local uc = b[6,2]
+				local hr = r(estimate)
+				local lc = r(lb)
+				local uc = r(ub)
 
 				stptime if case == 1 & month == `mon'
 				local rate_covid = `r(rate)'
 				local ptime_covid = `r(ptime)'
 				local events_covid .
-				if `r(failures)' == 0 | `r(failures)' > 5 local events_covid `r(failures)'
+				local events_covid round(`r(failures)'/ 7 ) * 7
 			
 				stptime if case == 0 & month == `mon'
 				local rate_comparator = `r(rate)'
 				local ptime_comparator = `r(ptime)'
 				local events_comparator .
-				if `r(failures)' == 0 | `r(failures)' > 5 local events_comparator `r(failures)'
+				local events_comparator round(`r(failures)'/ 7 ) * 7
 
-				post `measures'  ("`an'") ("`v'") ("`out'") ("`adjust'") ("`mon'") ///
+				post `measures'  ("$group") ("`v'") ("`out'") ("`adjust'") ("`mon'") ///
 					(`hr') (`lc') (`uc') ///
 					(`ptime_covid') (`events_covid') (`rate_covid') ///
 					(`ptime_comparator') (`events_comparator')  (`rate_comparator') 
 
 			}
 		}
-			
 	}
 	restore	
-}
+
 
 postclose `measures'
 
 * Change postfiles to csv
-use $tabfigdir/cox_model_split_summary, replace
+use $tabfigdir/cox_model_split_summary_$group, replace
 
-export delimited using $tabfigdir/cox_model_split_summary.csv, replace
+export delimited using $tabfigdir/cox_model_split_summary_$group, replace
 log close
