@@ -53,7 +53,7 @@ global demo_eth_clinical i.case##i.month i.male age1 age2 age3 i.ethnicity i.reg
 						 i.permanent_immunodef i.ra_sle_psoriasis
 * Age, sex, region, imd WITHOUT ETHNICITY
 global demo_noeth i.case##i.month i.male age1 age2 age3 i.region_9 i.imd
-* Demographics + clinical WITH ETHNICITY
+* Demographics + clinical WITHOUT ETHNICITY
 global demo_noeth_clinical i.case##i.month i.male age1 age2 age3 i.region_9 i.imd /// 
 						   i.obese i.smoking_category i.hypertension ///
 						   i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
