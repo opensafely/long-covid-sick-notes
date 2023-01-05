@@ -1,6 +1,6 @@
 ################################################################
 # This script:
-# - Calculates number of people each each diagnosis category
+# - Calculates number of people in each diagnosis category
 #     within each cohort and visualises the results
 #
 # Author: Andrea Schaffer
@@ -28,11 +28,11 @@ dir_create(here::here("output", "tabfig"), showWarnings = FALSE, recurse = TRUE)
 covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta"))
                     
 covidhosp20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
-  subset(!is.na("hospital_covid_date"))
+  subset(!is.na("hosp_expo_date"))
 
 covid21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta"))
 covidhosp21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta")) %>%
-  subset(!is.na("hospital_covid_date"))
+  subset(!is.na("hosp_expo_date"))
 
 pneumo19 <- read_dta(here::here("output", "cohorts", "cohort_rates_pneumonia_2019.dta"))
 

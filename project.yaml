@@ -328,3 +328,19 @@ actions:
         table5: output/tabfig/med_mean_imd.csv
         table6: output/tabfig/med_mean_region.csv
         subplots: output/tabfig/diag_*.png 
+
+
+  table1:
+    run: r:latest analysis/1_table1_demo_clinical.R
+    needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        table: output/tabfig/table1_*.csv
+
+  visualise_diagnoses:
+    run: r:latest analysis/2_visualise_diagnoses.R
+    needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        table: output/tabfig/diag_by_cohort.csv
+        plot: output/tabfig/diag_all.png        
