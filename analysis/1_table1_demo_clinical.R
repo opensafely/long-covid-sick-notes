@@ -106,12 +106,6 @@ freq <- function(cohort, var, name) {
                  smoking_status == "N" ~ "Never smoker",
                  smoking_status == "M" ~ "Missing",
                  TRUE ~ NA_character_
-               ),
-               asthma = fct_case_when(
-                 asthma == "0" ~ "No",
-                 asthma == "1" ~ "Asthma, predisolone=0 or >4",
-                 asthma == "2" ~ "Asthma, prednisolone>0 and <5",
-                 TRUE ~ NA_character_
                )
         ) %>%
         group_by(total) %>%
