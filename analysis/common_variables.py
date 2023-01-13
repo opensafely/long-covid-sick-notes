@@ -375,25 +375,11 @@ def generate_common_variables(index_date_variable):
                     asthma_code_ever AND NOT
                     copd_code_ever
                     )
-                ) AND (
-                    prednisolone_last_year = 0 OR 
-                    prednisolone_last_year > 4
                 )
-            """,
-                "2": """
-                (
-                    recent_asthma_code OR (
-                    asthma_code_ever AND NOT
-                    copd_code_ever
-                    )
-                ) AND
-                prednisolone_last_year > 0 AND
-                prednisolone_last_year < 5
-                
-            """,
+                """,
             },
             return_expectations={
-                "category": {"ratios": {"0": 0.8, "1": 0.1, "2": 0.1}},
+                "category": {"ratios": {"0": 0.8, "1": 0.2}},
             },
             asthma_code_ever=patients.with_these_clinical_events(
                 asthma_codes,
@@ -411,14 +397,6 @@ def generate_common_variables(index_date_variable):
             copd_code_ever=patients.with_these_clinical_events(
                 chronic_respiratory_disease_codes,
                 on_or_before=f"{index_date_variable} - 1 day",
-            ),
-            prednisolone_last_year=patients.with_these_medications(
-                pred_codes,
-                between=[
-                    f"{index_date_variable} - 1 year",
-                    f"{index_date_variable} - 1 day",
-                ],
-                returning="number_of_matches_in_period",
             ),
         ),
         chronic_cardiac_dis=patients.with_these_clinical_events(

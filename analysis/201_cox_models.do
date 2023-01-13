@@ -24,7 +24,8 @@ log using $outdir/cox_models.txt, replace t
 
 tempname measures
 	postfile `measures' ///
-		str20(comparator) str20(outcome) str25(analysis) str10(adjustment) ptime_covid num_events_covid rate_covid /// 
+		str20(comparator) str20(outcome) str25(analysis) str10(adjustment) ///
+		ptime_covid num_events_covid rate_covid /// 
 		ptime_comparator num_events_comparator rate_comparator hr lc uc ///
 		using $tabfigdir/cox_model_summary, replace
 		
@@ -84,13 +85,13 @@ foreach v in sick_note {
 			local rate_covid = `r(rate)'
 			local ptime_covid = `r(ptime)'
 			local events_covid .
-			if `r(failures)' == 0 | `r(failures)' > 5 local events_covid `r(failures)'
+			local events_covid round(`r(failures)'/ 7 ) * 7
 			
 			stptime if case == 0
 			local rate_comparator = `r(rate)'
 			local ptime_comparator = `r(ptime)'
 			local events_comparator .
-			if `r(failures)' == 0 | `r(failures)' > 5 local events_comparator `r(failures)'
+			local events_comparator round(`r(failures)'/ 7 ) * 7
 
 			post `measures'  ("`an'") ("`v'") ("`out'") ("`adjust'")  ///
 							(`ptime_covid') (`events_covid') (`rate_covid') (`ptime_comparator') (`events_comparator')  (`rate_comparator')  ///
