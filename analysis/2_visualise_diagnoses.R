@@ -64,7 +64,9 @@ cohort %>% select(c("patient_id", starts_with("diag_"))) %>%
     melt(id = c("total"), value.name = "count", variable.name = "diagnosis") %>%
     
     mutate(# Rounding
+           count = case_when(count > 5 ~ count),
            count = round(count / 7) * 7,
+           total = case_when(total > 5 ~ total),
            total = round(total / 7) * 7,
            
            # Calculate percent of population + 95%CI with each category
