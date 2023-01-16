@@ -27,11 +27,11 @@ dir_create(here::here("output", "tabfig"), showWarnings = FALSE, recurse = TRUE)
 
 covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta"))
 covidhosp20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
-  subset(!is.na("hosp_expo_date"))
+  subset(!is.na(hosp_expo_date))
 
 covid21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta"))
 covidhosp21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta")) %>%
-  subset(!is.na("hosp_expo_date"))
+  subset(!is.na(hosp_expo_date))
 
 pneumo19 <- read_dta(here::here("output", "cohorts", "cohort_rates_pneumonia_2019.dta"))
 
@@ -58,14 +58,13 @@ freq <- function(cohort, var, name) {
       cohort %>% 
         mutate(total = n(),
                age_group = fct_case_when(
-                 age_group == 1 ~ "0-17 y",
-                 age_group == 2 ~ "18-24 y",
-                 age_group == 3 ~ "25-34 y",
-                 age_group == 4 ~ "35-44 y",
-                 age_group == 5 ~ "45-54 y",
-                 age_group == 6 ~ "55-69 y",
-                 age_group == 7 ~ "70-79 y",
-                 age_group == 8 ~ "80 y"
+                 age_group == 1 ~ "18-24 y",
+                 age_group == 2 ~ "25-34 y",
+                 age_group == 3 ~ "35-44 y",
+                 age_group == 4 ~ "45-54 y",
+                 age_group == 5 ~ "55-69 y",
+                 age_group == 6 ~ "70-79 y",
+                 age_group == 7 ~ "80 y"
                ),
                male = fct_case_when(
                  male == 1 ~ "Male",
@@ -159,7 +158,7 @@ write.csv(table1_covid2020, here::here("output", "tabfig", "table1_covid_2020.cs
                                        row.names = FALSE)
 
 table1_covid2021 <- combine(covid21)
-write.csv(table1_covid2020, here::here("output", "tabfig", "table1_covid_2021.csv"),
+write.csv(table1_covid2021, here::here("output", "tabfig", "table1_covid_2021.csv"),
                                        row.names = FALSE)
           
 table1_covidhosp2020 <- combine(covidhosp20)
@@ -167,7 +166,7 @@ write.csv(table1_covidhosp2020, here::here("output", "tabfig", "table1_covid_hos
           row.names = FALSE)
 
 table1_covidhosp2021 <- combine(covidhosp21)
-write.csv(table1_covid2020, here::here("output", "tabfig", "table1_covid_hosp_2021.csv"),
+write.csv(table1_covidhosp2021, here::here("output", "tabfig", "table1_covid_hosp_2021.csv"),
           row.names = FALSE)
 
 table1_pneumo2019 <- combine(pneumo19)
