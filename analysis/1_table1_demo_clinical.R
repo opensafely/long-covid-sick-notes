@@ -25,14 +25,13 @@ dir_create(here::here("output", "tabfig"), showWarnings = FALSE, recurse = TRUE)
 
 ##### Read in data for each cohort #####
 
-covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta"))
+covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) 
 covidhosp20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
   subset(!is.na(hosp_expo_date))
 
 covid21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta"))
 covidhosp21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta")) %>%
   subset(!is.na(hosp_expo_date))
-
 pneumo19 <- read_dta(here::here("output", "cohorts", "cohort_rates_pneumonia_2019.dta"))
 
 gen19 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2019.dta"))
@@ -55,16 +54,16 @@ fct_case_when <- function(...) {
 # Frequencies for each demographic/clinical variable
 freq <- function(cohort, var, name) {
     
-      cohort %>% 
+      cohort1 <- cohort %>% 
         mutate(total = n(),
+
                age_group = fct_case_when(
                  age_group == 1 ~ "18-24 y",
                  age_group == 2 ~ "25-34 y",
                  age_group == 3 ~ "35-44 y",
                  age_group == 4 ~ "45-54 y",
-                 age_group == 5 ~ "55-69 y",
-                 age_group == 6 ~ "70-79 y",
-                 age_group == 7 ~ "80 y"
+                 age_group == 5 ~ "55-64 y",
+                 TRUE ~ NA_character_
                ),
                male = fct_case_when(
                  male == 1 ~ "Male",
@@ -106,15 +105,33 @@ freq <- function(cohort, var, name) {
                  smoking_status == "M" ~ "Missing",
                  TRUE ~ NA_character_
                )
-        ) %>%
-        group_by(total) %>%
-        count({{var}}) %>%
-        rename(category = {{var}}) %>%
-        mutate(variable = name, category = as.factor(category),
-               n = round(n / 7) * 7,
-               total = round(total / 7) * 7,
-               pcent = n / total * 100) 
-     
+        ) 
+  
+  counts <- cohort1 %>%
+    group_by(total) %>%
+    count({{var}}) %>%
+    rename(category = {{var}}) %>%
+    mutate(variable = name, 
+           category = as.factor(category),
+           n = round(n / 7) * 7,
+           total = round(total / 7) * 7,
+           pcent_total = n / total * 100)
+  
+  summ <- cohort1 %>%
+    subset(sick_note == 1) %>% 
+    group_by({{var}}) %>%
+    summarise( n_sick_note = sum(sick_note),
+        p25_sick_note_duration = quantile(first_sick_note_duration, .25, na.rm = TRUE),
+        med_sick_note_duration = quantile(first_sick_note_duration, .5, na.rm = TRUE),
+        p75_sick_note_duration = quantile(first_sick_note_duration, .75, na.rm = TRUE), 
+        mean_sick_note_duration = mean(first_sick_note_duration, na.rm = TRUE))  %>%
+    rename(category = {{var}}) %>%
+    mutate(n_sick_note = round(n_sick_note / 7) * 7)
+  
+  table <- merge(counts, summ, by = c("category")) %>%
+    mutate(pcent_sick_note = n_sick_note / n * 100)
+  
+  return(table)
 }
 
 # Combine frequencies for all variable for table
