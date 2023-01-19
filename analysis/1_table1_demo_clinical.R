@@ -177,7 +177,8 @@ combine <- function(cohort) {
     freq(cohort, permanent_immunodef, "Other permanent immunodeficiency"),
     
     freq(cohort, ra_sle_psoriasis, "RA/SLE/psoriasis"),
-    freq(cohort, smoking_status, "Smoking status")
+    freq(cohort, smoking_status, "Smoking status"),
+    freq(cohort, long_hosp_stay, "Long hospital stay")
   ) 
 
 }
