@@ -46,21 +46,7 @@ missing <- function(cohort, name) {
   cohort %>%
     transmute(total = n(),
            n_sick_note = sum(sick_note == 1),
-           sick_note_1 = sum(!is.na(sick_note_1_date)),
-           sick_note_2 = sum(!is.na(sick_note_2_date)),
-           sick_note_3 = sum(!is.na(sick_note_3_date)),
-           sick_note_4 = sum(!is.na(sick_note_4_date)),
-           sick_note_5 = sum(!is.na(sick_note_5_date)),
-           sick_note_dur_1 = sum(!is.na(sick_note_1_duration)),
-           sick_note_dur_2 = sum(!is.na(sick_note_2_duration)),
-           sick_note_dur_3 = sum(!is.na(sick_note_3_duration)),
-           sick_note_dur_4 = sum(!is.na(sick_note_4_duration)),
-           sick_note_dur_5 = sum(!is.na(sick_note_5_duration)),
-           p_sick_note_1 = sick_note_dur_1 / sick_note_1 *100,
-           p_sick_note_2 = sick_note_dur_2 / sick_note_2 *100,
-           p_sick_note_3 = sick_note_dur_3 / sick_note_3 *100,
-           p_sick_note_4 = sick_note_dur_4 / sick_note_4 *100,
-           p_sick_note_5 = sick_note_dur_5 / sick_note_5 *100,
+           sick_note_dur = sum(!is.na(first_sick_note_duration)),
            group = name) %>%
     distinct()
 }
@@ -85,4 +71,27 @@ miss_all <- rbind(miss_covid20, miss_covid21, miss_covidhosp20,
 
 write.csv(miss_all, here::here("output", "tabfig", "sick_note_missing.csv"),
           row.names = FALSE)
+
+
+##### Overwrite old files   #####
+
+tmp <- subset(miss_all, group == "tmp") %>% dplyr::select(group)
+
+write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_covid20.csv"),
+          row.names = FALSE)
+write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_covid21.csv"),
+          row.names = FALSE)
+write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_covidhosp20.csv"),
+          row.names = FALSE)
+write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_covidhosp21.csv"),
+          row.names = FALSE)
+write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_pneumo19.csv"),
+          row.names = FALSE)
+write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_gen20.csv"),
+          row.names = FALSE)
+write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_gen19.csv"),
+          row.names = FALSE)
+write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_gen21.csv"),
+          row.names = FALSE)
+
 
