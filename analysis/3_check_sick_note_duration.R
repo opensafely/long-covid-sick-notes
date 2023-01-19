@@ -61,7 +61,8 @@ missing <- function(cohort, name) {
            p_sick_note_3 = sick_note_dur_3 / sick_note_3 *100,
            p_sick_note_4 = sick_note_dur_4 / sick_note_4 *100,
            p_sick_note_5 = sick_note_dur_5 / sick_note_5 *100,
-           group = name) 
+           group = name) %>%
+    distinct()
 }
 
 
@@ -70,34 +71,18 @@ missing <- function(cohort, name) {
 
 
 miss_covid20 <- missing(covid20, "COVID2020")
-write.csv(miss_covid20, here::here("output", "tabfig", "sick_note_missing_covid20.csv"),
-                                       row.names = FALSE)
-
 miss_covid21 <- missing(covid21, "COVID2021")
-write.csv(miss_covid21, here::here("output", "tabfig", "sick_note_missing_covid21.csv"),
-          row.names = FALSE)
-
 miss_covidhosp20 <- missing(covidhosp20, "COVID hospitalised 2020")
-write.csv(miss_covidhosp20, here::here("output", "tabfig", "sick_note_missing_covidhosp20.csv"),
-          row.names = FALSE)
-
 miss_covidhosp21 <- missing(covidhosp20, "COVID hospitalised 2021")
-write.csv(miss_covidhosp21, here::here("output", "tabfig", "sick_note_missing_covidhosp21.csv"),
-          row.names = FALSE)
-
 miss_pneumo19 <- missing(pneumo19, "Pneumonia19")
-write.csv(miss_pneumo19, here::here("output", "tabfig", "sick_note_missing_pneumo19.csv"),
-          row.names = FALSE)
-
 miss_gen19 <- missing(gen19, "General2019")
-write.csv(miss_gen19, here::here("output", "tabfig", "sick_note_missing_gen19.csv"),
-          row.names = FALSE)
-
 miss_gen20 <- missing(gen20, "General2020")
-write.csv(miss_gen20, here::here("output", "tabfig", "sick_note_missing_gen20.csv"),
-          row.names = FALSE)
-
 miss_gen21 <- missing(gen21, "General2021")
-write.csv(miss_gen21, here::here("output", "tabfig", "sick_note_missing_gen21.csv"),
+
+miss_all <- rbind(miss_covid20, miss_covid21, miss_covidhosp20,
+                  miss_covidhosp21, miss_pneumo19, miss_gen19, miss_gen20,
+                  miss_gen21)
+
+write.csv(miss_all, here::here("output", "tabfig", "sick_note_missing.csv"),
           row.names = FALSE)
 

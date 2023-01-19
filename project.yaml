@@ -350,4 +350,4 @@ actions:
     needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort]
     outputs:
       moderately_sensitive:
-        table: output/tabfig/sick_note_missing_*.csv
+        table: output/tabfig/sick_note_missing.csv
