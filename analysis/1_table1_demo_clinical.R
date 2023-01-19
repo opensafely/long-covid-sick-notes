@@ -107,29 +107,44 @@ freq <- function(cohort, var, name) {
                )
         ) 
   
+  # Counts within each variable category
   counts <- cohort1 %>%
     group_by(total) %>%
     count({{var}}) %>%
     rename(category = {{var}}) %>%
     mutate(variable = name, 
-           category = as.factor(category),
+          category = as.factor(category),
+          # Rounding and redaction
+          n = case_when(n > 5 ~ n),
            n = round(n / 7) * 7,
+          total = case_when(total > 5 ~ total),
            total = round(total / 7) * 7,
-           pcent_total = n / total * 100)
+          pcent_total = n / total * 100)
   
+  # Number who received a sick note
   summ <- cohort1 %>%
     subset(sick_note == 1) %>% 
     group_by({{var}}) %>%
-    summarise( n_sick_note = sum(sick_note),
+    summarise( n_sick_note = sum(sick_note)) %>%
+    rename(category = {{var}}) %>%
+    mutate(n_sick_note = case_when(n_sick_note > 5 ~ n_sick_note),
+          n_sick_note = round(n_sick_note / 7) * 7)
+
+  # Sick note duration
+  summ2 <- cohort1 %>%
+    subset(sick_note == 1 & !is.na(first_sick_note_duration)) %>%
+    group_by({{var}}) %>%
+    summarise(n_sick_note_notmiss = sum(sick_note),
         p25_sick_note_duration = quantile(first_sick_note_duration, .25, na.rm = TRUE),
         med_sick_note_duration = quantile(first_sick_note_duration, .5, na.rm = TRUE),
         p75_sick_note_duration = quantile(first_sick_note_duration, .75, na.rm = TRUE), 
         mean_sick_note_duration = mean(first_sick_note_duration, na.rm = TRUE))  %>%
-    rename(category = {{var}}) %>%
-    mutate(n_sick_note = round(n_sick_note / 7) * 7)
+    rename(category = {{var}}) 
   
-  table <- merge(counts, summ, by = c("category")) %>%
-    mutate(pcent_sick_note = n_sick_note / n * 100)
+  table <- merge(merge(counts, summ, by = c("category")), summ2, by = c("category")) %>%
+    mutate(pcent_sick_note = n_sick_note / n * 100,
+           n_sick_note_notmiss = case_when(n_sick_note_notmiss > 5 ~ n_sick_note_notmiss),
+           n_sick_note_notmiss = round(n_sick_note_notmiss / 7) * 7)
   
   return(table)
 }
