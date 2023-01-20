@@ -21,6 +21,7 @@ library(RColorBrewer)
 
 ## Create directories if needed
 dir_create(here::here("output", "tabfig"), showWarnings = FALSE, recurse = TRUE)
+dir_create(here::here("output", "cohorts"), showWarnings = FALSE, recurse = TRUE)
 
 
 ##### Read in data for each cohort #####
@@ -42,7 +43,7 @@ gen21 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2021.dta
 ###### Function to calculate number of sick note information that is missing #####
 
 missing <- function(cohort, name) {
-  
+
   cohort %>%
     transmute(total = n(),
            n_sick_note = sum(sick_note == 1),
@@ -166,3 +167,10 @@ missing_all <- rbind(miss_raw(covid20, "COVID2020"),
                      miss_raw(gen19, "General2019"),
                      miss_raw(gen20, "General2020"),
                      miss_raw(gen21, "General2021"))
+
+
+
+write.csv(missing_all, here::here("output", "tabfig", "sick_note_missing_raw.csv"),
+          row.names = FALSE)
+
+
