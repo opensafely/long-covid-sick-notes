@@ -52,7 +52,6 @@ missing <- function(cohort, name) {
 }
 
 
-
 ##### Create separate table/csv file for each cohort #####
 
 
@@ -95,3 +94,75 @@ write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_gen21.csv"),
           row.names = FALSE)
 
 
+###### Check original variables #######
+
+library(data.table)
+covid20 <- fread(here::here("output", "cohorts", "input_covid_2020.csv.gz"))
+covid21 <- fread(here::here("output", "cohorts", "input_covid_2021.csv.gz"))
+pneumo19 <- fread(here::here("output", "cohorts", "input_pneumonia_2019.csv.gz"))
+gen19 <- fread(here::here("output", "cohorts", "input_matched_2019.csv.gz"))
+gen20 <- fread(here::here("output", "cohorts", "input_matched_2020.csv.gz"))
+gen21 <- fread(here::here("output", "cohorts", "input_matched_2021.csv.gz"))
+
+
+miss_raw <- function(data, name) {
+  
+  sicknote1  <- data %>%
+    subset(!is.na(sick_note_1_date)) %>%
+    transmute( n_sick_note = n(),
+               notmiss_dur_days = sum(!is.na(sick_note_1_duration_days)),
+               notmiss_dur_weeks = sum(!is.na(sick_note_1_duration_weeks)),
+               notmiss_dur_mos = sum(!is.na(sick_note_1_duration_months)),
+               group = name, var = 1) %>%
+    distinct()
+  
+  sicknote2  <- data %>%
+    subset(!is.na(sick_note_2_date)) %>%
+    transmute( n_sick_note = n(),
+               notmiss_dur_days = sum(!is.na(sick_note_2_duration_days)),
+               notmiss_dur_weeks = sum(!is.na(sick_note_2_duration_weeks)),
+               notmiss_dur_mos = sum(!is.na(sick_note_2_duration_months)),
+               group = name, var = 2) %>%
+    distinct()
+  
+  sicknote3  <- data %>%
+    subset(!is.na(sick_note_3_date)) %>%
+    transmute( n_sick_note = n(),
+               notmiss_dur_days = sum(!is.na(sick_note_3_duration_days)),
+               notmiss_dur_weeks = sum(!is.na(sick_note_3_duration_weeks)),
+               notmiss_dur_mos=  sum(!is.na(sick_note_3_duration_months)),
+               group = name, var = 3) %>%
+    distinct()
+  
+   sicknote4  <- data %>%
+    subset(!is.na(sick_note_4_date)) %>%
+    transmute( n_sick_note = n(),
+               notmiss_dur_days = sum(!is.na(sick_note_4_duration_days)),
+               notmiss_dur_weeks = sum(!is.na(sick_note_4_duration_weeks)),
+               notmiss_dur_mos = sum(!is.na(sick_note_4_duration_months)),
+               group = name, var = 4) %>%
+     distinct()
+    
+    sicknote5 <- data %>%
+    subset(!is.na(sick_note_5_date)) %>%
+    transmute( n_sick_note = n(),
+               notmiss_dur_days = sum(!is.na(sick_note_5_duration_days)),
+               notmiss_dur_weeks = sum(!is.na(sick_note_5_duration_weeks)),
+               notmiss_dur_mos = sum(!is.na(sick_note_5_duration_months)),
+               group = name, var = 5) %>%
+      distinct()
+  
+    sicknotes <- rbind(sicknote1, sicknote2, sicknote3, sicknote4, sicknote5) %>%
+      mutate(pcent_dur_days = notmiss_dur_days / n_sick_note * 100,
+             pcent_dur_weeks = notmiss_dur_weeks / n_sick_note * 100,
+             pcent_dur_mos = notmiss_dur_mos / n_sick_note * 100)
+ 
+    return(sicknotes)
+}
+
+missing_all <- rbind(miss_raw(covid20, "COVID2020"),
+                     miss_raw(covid21, "COVID2021"),
+                     miss_raw(pneumo19, "Pneumo2019"),
+                     miss_raw(gen19, "General2019"),
+                     miss_raw(gen20, "General2020"),
+                     miss_raw(gen21, "General2021"))
