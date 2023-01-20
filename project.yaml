@@ -347,7 +347,9 @@ actions:
 
   check_missing:
     run: r:latest analysis/3_check_sick_note_duration.R
-    needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort]
+    needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort,
+            generate_study_population_matched_2019, generate_study_population_matched_2020, generate_study_population_matched_2021,
+            generate_study_population_covid_2020,generate_study_population_covid_2021, generate_study_population_pneumonia_2019]
     outputs:
       moderately_sensitive:
-        table: output/tabfig/sick_note_missing.csv
+        table: output/tabfig/sick_note_missing*.csv
