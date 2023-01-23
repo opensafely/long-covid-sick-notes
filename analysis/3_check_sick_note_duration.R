@@ -114,7 +114,6 @@ miss_raw <- function(data, name) {
 
 }
 
-
 missing_all <- rbind(miss_raw(covid20, "COVID2020"),
                      miss_raw(covid21, "COVID2021"),
                      miss_raw(pneumo19, "Pneumo2019"),
@@ -132,7 +131,7 @@ miss_raw_gp <- function(data, name) {
   days <- data %>% 
     mutate(n_sick_note = n(),
            days_gp = ifelse(sick_note_1_duration_days > 0,
-                            ceiling(sick_note_1_duration_days / 7), 0)) %>%
+                            ceiling(sick_note_1_duration_days / 7) * 7, 0)) %>%
     group_by(days_gp, n_sick_note) %>%
     summarise(n = n()) %>%
     mutate(group = name, period = "Days",
@@ -143,8 +142,8 @@ miss_raw_gp <- function(data, name) {
       mutate(n_sick_note = n(),
              weeks_gp = ceiling(sick_note_1_duration_weeks)) %>%
       group_by(weeks_gp, n_sick_note) %>%
-      tally(weeks_gp) %>%
-      mutate(group = name, period = "Weeks",
+    summarise(n = n()) %>%
+    mutate(group = name, period = "Weeks",
              pcent = n / n_sick_note * 100) %>%
       rename(category = weeks_gp )
     
@@ -152,8 +151,8 @@ miss_raw_gp <- function(data, name) {
       mutate(n_sick_note = n(),
              months_gp = ceiling(sick_note_1_duration_months)) %>%
       group_by(months_gp, n_sick_note) %>%
-      tally(months_gp) %>%
-      mutate(group = name, period = "Months",
+    summarise(n = n()) %>%
+    mutate(group = name, period = "Months",
              pcent = n / n_sick_note * 100) %>%
       rename(category = months_gp )
       
