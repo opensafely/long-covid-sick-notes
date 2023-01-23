@@ -97,6 +97,7 @@ dir_create(here::here("output", "cohorts"), showWarnings = FALSE, recurse = TRUE
 
 ###### Check original variables #######
 
+# Load data
 library(data.table)
 covid20 <- fread(here::here("output", "cohorts", "input_covid_2020.csv.gz"))
 covid21 <- fread(here::here("output", "cohorts", "input_covid_2021.csv.gz"))
@@ -105,72 +106,87 @@ gen19 <- fread(here::here("output", "cohorts", "input_matched_2019.csv.gz"))
 gen20 <- fread(here::here("output", "cohorts", "input_matched_2020.csv.gz"))
 gen21 <- fread(here::here("output", "cohorts", "input_matched_2021.csv.gz"))
 
+# # Function to calculate proportion where duration is missing 
+# # among people with a sick note
+# miss_raw <- function(data, name) {
+#   
+#   data %>%
+#     subset(!is.na(sick_note_1_date)) %>%
+#     mutate(all_miss = (sick_note_1_duration_days == 0 &
+#                          sick_note_1_duration_weeks == 0 &
+#                          sick_note_1_duration_months == 0)) %>%
+#     transmute( n_sick_note = n(),
+#                miss_dur_days = sum(sick_note_1_duration_days == 0),
+#                miss_dur_weeks = sum(sick_note_1_duration_weeks == 0),
+#                miss_dur_mos = sum(sick_note_1_duration_months == 0),
+#                miss_dur_all = sum(all_miss),
+#                group = name) %>%
+#     distinct() %>%
+#       mutate(pcent_dur_days = miss_dur_days / n_sick_note * 100,
+#              pcent_dur_weeks = miss_dur_weeks / n_sick_note * 100,
+#              pcent_dur_mos = miss_dur_mos / n_sick_note * 100,
+#              pcent_dur_all = miss_dur_all / n_sick_note * 100)
+#   
+#  
+# }
+# 
+#
+# missing_all <- rbind(miss_raw(covid20, "COVID2020"),
+#                      miss_raw(covid21, "COVID2021"),
+#                      miss_raw(pneumo19, "Pneumo2019"),
+#                      miss_raw(gen19, "General2019"),
+#                      miss_raw(gen20, "General2020"),
+#                      miss_raw(gen21, "General2021"))
+# 
+# write.csv(missing_all, here::here("output", "tabfig", "sick_note_missing_raw.csv"),
+#           row.names = FALSE)
 
-miss_raw <- function(data, name) {
+
+# Function to calculate frequency distribution of duration variables
+miss_raw_gp <- function(data, name) {
   
-  sicknote1  <- data %>%
+  days <- data %>% 
     subset(!is.na(sick_note_1_date)) %>%
-    transmute( n_sick_note = n(),
-               notmiss_dur_days = sum(sick_note_1_duration_days>0),
-               notmiss_dur_weeks = sum(sick_note_1_duration_weeks>0),
-               notmiss_dur_mos = sum(sick_note_1_duration_months>0),
-               group = name, var = 1) %>%
-    distinct()
-  
-  sicknote2  <- data %>%
-    subset(!is.na(sick_note_2_date)) %>%
-    transmute( n_sick_note = n(),
-               notmiss_dur_days = sum(sick_note_2_duration_days>0),
-               notmiss_dur_weeks = sum(sick_note_2_duration_weeks>0),
-               notmiss_dur_mos = sum(sick_note_2_duration_months>0),
-               group = name, var = 2) %>%
-    distinct()
-  
-  sicknote3  <- data %>%
-    subset(!is.na(sick_note_3_date)) %>%
-    transmute( n_sick_note = n(),
-               notmiss_dur_days = sum(sick_note_3_duration_days>0),
-               notmiss_dur_weeks = sum(sick_note_3_duration_weeks>0),
-               notmiss_dur_mos=  sum(sick_note_3_duration_months>0),
-               group = name, var = 3) %>%
-    distinct()
-  
-   sicknote4  <- data %>%
-    subset(!is.na(sick_note_4_date)) %>%
-    transmute( n_sick_note = n(),
-               notmiss_dur_days = sum(sick_note_4_duration_days>0),
-               notmiss_dur_weeks = sum(sick_note_4_duration_weeks>0),
-               notmiss_dur_mos = sum(sick_note_4_duration_months>0),
-               group = name, var = 4) %>%
-     distinct()
+    mutate(days_gp = ifelse(sick_note_1_duration_days > 0,
+                            ceiling(sick_note_1_duration_days / 7), 0)) %>%
+    group_by(days_gp) %>%
+    tally(days_gp) %>%
+    mutate(group = name, period = "Days") %>%
+    rename(category = days_gp )
     
-    sicknote5 <- data %>%
-    subset(!is.na(sick_note_5_date)) %>%
-    transmute( n_sick_note = n(),
-               notmiss_dur_days = sum(sick_note_5_duration_days>0),
-               notmiss_dur_weeks = sum(sick_note_5_duration_weeks>0),
-               notmiss_dur_mos = sum(sick_note_5_duration_months>0),
-               group = name, var = 5) %>%
-      distinct()
+  weeks <- data %>% 
+      subset(!is.na(sick_note_1_date)) %>%
+      mutate(weeks_gp = ceiling(sick_note_1_duration_weeks)) %>%
+      group_by(weeks_gp) %>%
+      tally(weeks_gp) %>%
+      mutate(group = name, period = "Weeks") %>%
+      rename(category = weeks_gp )
+    
+  months <- data %>% 
+      subset(!is.na(sick_note_1_date)) %>%
+      mutate(months_gp = ceiling(sick_note_1_duration_months)) %>%
+      group_by(months_gp) %>%
+      tally(months_gp) %>%
+      mutate(group = name, period = "Months") %>%
+      rename(category = months_gp )
+      
+  all <- rbind(days, weeks, months)
   
-    sicknotes <- rbind(sicknote1, sicknote2, sicknote3, sicknote4, sicknote5) %>%
-      mutate(pcent_dur_days = notmiss_dur_days / n_sick_note * 100,
-             pcent_dur_weeks = notmiss_dur_weeks / n_sick_note * 100,
-             pcent_dur_mos = notmiss_dur_mos / n_sick_note * 100)
- 
-    return(sicknotes)
+  return(all)
+  
 }
 
-missing_all <- rbind(miss_raw(covid20, "COVID2020"),
-                     miss_raw(covid21, "COVID2021"),
-                     miss_raw(pneumo19, "Pneumo2019"),
-                     miss_raw(gen19, "General2019"),
-                     miss_raw(gen20, "General2020"),
-                     miss_raw(gen21, "General2021"))
 
+missing_cat_all <- rbind(miss_raw_gp(covid20, "COVID2020"),
+                         miss_raw_gp(covid21, "COVID2021"),
+                         miss_raw_gp(pneumo19, "Pneumo2019"),
+                         miss_raw_gp(gen19, "General2019"),
+                         miss_raw_gp(gen20, "General2020"),
+                         miss_raw_gp(gen21, "General2021"))
 
-
-write.csv(missing_all, here::here("output", "tabfig", "sick_note_missing_raw.csv"),
+write.csv(missing_cat_all, here::here("output", "tabfig", "sick_note_missing_raw_gp.csv"),
           row.names = FALSE)
+
+
 
 
