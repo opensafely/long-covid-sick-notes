@@ -72,46 +72,30 @@ dir_create(here::here("output", "cohorts"), showWarnings = FALSE, recurse = TRUE
 # write.csv(miss_all, here::here("output", "tabfig", "sick_note_missing.csv"),
 #           row.names = FALSE)
 # 
-# 
-# ##### Overwrite old files   #####
-# 
-# tmp <- subset(miss_all, group == "tmp") %>% dplyr::select(group)
-# 
-# write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_covid20.csv"),
-#           row.names = FALSE)
-# write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_covid21.csv"),
-#           row.names = FALSE)
-# write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_covidhosp20.csv"),
-#           row.names = FALSE)
-# write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_covidhosp21.csv"),
-#           row.names = FALSE)
-# write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_pneumo19.csv"),
-#           row.names = FALSE)
-# write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_gen20.csv"),
-#           row.names = FALSE)
-# write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_gen19.csv"),
-#           row.names = FALSE)
-# write.csv(tmp, here::here("output", "tabfig", "sick_note_missing_gen21.csv"),
-#           row.names = FALSE)
-
 
 ###### Check original variables #######
 
 # Load data
 library(data.table)
-covid20 <- fread(here::here("output", "cohorts", "input_covid_2020.csv.gz"))
-covid21 <- fread(here::here("output", "cohorts", "input_covid_2021.csv.gz"))
-pneumo19 <- fread(here::here("output", "cohorts", "input_pneumonia_2019.csv.gz"))
-gen19 <- fread(here::here("output", "cohorts", "input_matched_2019.csv.gz"))
-gen20 <- fread(here::here("output", "cohorts", "input_matched_2020.csv.gz"))
-gen21 <- fread(here::here("output", "cohorts", "input_matched_2021.csv.gz"))
+covid20 <- fread(here::here("output", "cohorts", "input_covid_2020.csv.gz")) %>%
+  subset(!is.na(sick_note_1_date))
+covid21 <- fread(here::here("output", "cohorts", "input_covid_2021.csv.gz"))%>%
+  subset(!is.na(sick_note_1_date)) 
+pneumo19 <- fread(here::here("output", "cohorts", "input_pneumonia_2019.csv.gz")) %>%
+  subset(!is.na(sick_note_1_date))
+gen19 <- fread(here::here("output", "cohorts", "input_matched_2019.csv.gz")) %>%
+  subset(!is.na(sick_note_1_date))
+gen20 <- fread(here::here("output", "cohorts", "input_matched_2020.csv.gz")) %>%
+  subset(!is.na(sick_note_1_date))
+gen21 <- fread(here::here("output", "cohorts", "input_matched_2021.csv.gz")) %>%
+  subset(!is.na(sick_note_1_date))
+
 
 # Function to calculate proportion where duration is missing
 # among people with a first sick note
 miss_raw <- function(data, name) {
 
   data %>%
-    subset(!is.na(sick_note_1_date)) %>%
     mutate(all_miss = ((sick_note_1_duration_days == 0|is.na(sick_note_1_duration_days)) &
                          (sick_note_1_duration_weeks == 0|is.na(sick_note_1_duration_weeks)) &
                          (sick_note_1_duration_months == 0|is.na(sick_note_1_duration_months)))) %>%
@@ -122,7 +106,7 @@ miss_raw <- function(data, name) {
                miss_dur_all = sum(all_miss),
                group = name) %>%
     distinct() %>%
-      mutate(pcent_dur_days = miss_dur_days / n_sick_note * 100,
+    mutate(pcent_dur_days = miss_dur_days / n_sick_note * 100,
              pcent_dur_weeks = miss_dur_weeks / n_sick_note * 100,
              pcent_dur_mos = miss_dur_mos / n_sick_note * 100,
              pcent_dur_all = miss_dur_all / n_sick_note * 100)
@@ -146,18 +130,16 @@ write.csv(missing_all, here::here("output", "tabfig", "sick_note_missing_raw.csv
 miss_raw_gp <- function(data, name) {
   
   days <- data %>% 
-    subset(!is.na(sick_note_1_date)) %>%
     mutate(n_sick_note = n(),
            days_gp = ifelse(sick_note_1_duration_days > 0,
                             ceiling(sick_note_1_duration_days / 7), 0)) %>%
     group_by(days_gp, n_sick_note) %>%
-    tally(days_gp) %>%
+    summarise(n = n()) %>%
     mutate(group = name, period = "Days",
            pcent = n / n_sick_note * 100) %>%
     rename(category = days_gp ) 
 
   weeks <- data %>% 
-      subset(!is.na(sick_note_1_date)) %>%
       mutate(n_sick_note = n(),
              weeks_gp = ceiling(sick_note_1_duration_weeks)) %>%
       group_by(weeks_gp, n_sick_note) %>%
@@ -167,7 +149,6 @@ miss_raw_gp <- function(data, name) {
       rename(category = weeks_gp )
     
   months <- data %>% 
-      subset(!is.na(sick_note_1_date)) %>%
       mutate(n_sick_note = n(),
              months_gp = ceiling(sick_note_1_duration_months)) %>%
       group_by(months_gp, n_sick_note) %>%
