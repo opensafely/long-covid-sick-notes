@@ -359,3 +359,10 @@ actions:
     outputs:
       moderately_sensitive:
         table: output/tabfig/sick_note_missing*.csv
+
+  check_los:
+    run: r:latest analysis/4_check_hospital_los.R
+    needs: [reconcile_sick_note_spells_covid_2020, reconcile_sick_note_spells_covid_2021, reconcile_sick_note_spells_pneumonia_2019]
+    outputs:
+      moderately_sensitive:
+        table: output/tabfig/los_checks.csv
