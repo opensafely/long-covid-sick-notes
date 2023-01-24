@@ -29,12 +29,24 @@ dir_create(here::here("output", "cohorts"), showWarnings = FALSE, recurse = TRUE
 covid20 <- read_csv(here::here("output", "cohorts", "input_covid_2020_with_duration.csv"),
                     col_types = cols (
                       hospital_covid = col_date(format = "%Y-%m-%d"),
-                      patient_index_date = col_date(format = "%Y-%m-%d")
+                      patient_index_date = col_date(format = "%Y-%m-%d"),
+                      sgss_positive = col_date(format = "%Y-%m-%d"),
+                      primary_care_covid = col_date(format = "%Y-%m-%d")
                     )) %>%
-  dplyr::select(c(patient_id, patient_index_date, hospital_covid)) %>%
+  dplyr::select(c(patient_id, patient_index_date, hospital_covid, sgss_positive,
+                  primary_care_covid)) %>%
   subset((patient_index_date < as.Date("2020-11-01"))|is.na(patient_index_date)) %>%
   mutate(n = n()) %>%
-  subset(!is.na(hospital_covid)) %>%
+  # Only select people where the hospitalisation was the first recorded COVID event
+  subset(!is.na(hospital_covid) &
+          (
+            is.na(sgss_positive) | 
+              (hospital_covid <= sgss_positive & !is.na(sgss_positive))
+          ) &
+          (
+            is.na(primary_care_covid) | 
+              (hospital_covid <= primary_care_covid & !is.na(primary_care_covid))
+          )) %>%
   mutate(n_hosp = n(),
           index_before_hosp = ifelse(patient_index_date < hospital_covid, 1, 0),
           los = patient_index_date - hospital_covid + 1,
@@ -45,16 +57,27 @@ covid20 <- read_csv(here::here("output", "cohorts", "input_covid_2020_with_durat
             los_median = quantile(los, .5, na.rm = TRUE),
             los_p75 = quantile(los, .75, na.rm = TRUE)) 
 
-# Load data
 covid21 <- read_csv(here::here("output", "cohorts", "input_covid_2021_with_duration.csv"),
                     col_types = cols (
                       hospital_covid = col_date(format = "%Y-%m-%d"),
-                      patient_index_date = col_date(format = "%Y-%m-%d")
+                      patient_index_date = col_date(format = "%Y-%m-%d"),
+                      sgss_positive = col_date(format = "%Y-%m-%d"),
+                      primary_care_covid = col_date(format = "%Y-%m-%d")
                     )) %>%
-  dplyr::select(c(patient_id, patient_index_date, hospital_covid)) %>%
+  dplyr::select(c(patient_id, patient_index_date, hospital_covid, sgss_positive,
+                  primary_care_covid)) %>%
   subset((patient_index_date < as.Date("2021-11-01"))|is.na(patient_index_date)) %>%
   mutate(n = n()) %>%
-  subset(!is.na(hospital_covid)) %>%
+  # Only select people where the hospitalisation was the first recorded COVID event
+  subset(!is.na(hospital_covid) &
+           (
+             is.na(sgss_positive) | 
+               (hospital_covid <= sgss_positive & !is.na(sgss_positive))
+           ) &
+           (
+             is.na(primary_care_covid) | 
+               (hospital_covid <= primary_care_covid & !is.na(primary_care_covid))
+           )) %>%
   mutate(n_hosp = n(),
          index_before_hosp = ifelse(patient_index_date < hospital_covid, 1, 0),
          los = patient_index_date - hospital_covid + 1,
@@ -65,7 +88,6 @@ covid21 <- read_csv(here::here("output", "cohorts", "input_covid_2021_with_durat
             los_median = quantile(los, .5, na.rm = TRUE),
             los_p75 = quantile(los, .75, na.rm = TRUE)) 
 
-# Load data
 pneumo19 <- read_csv(here::here("output", "cohorts", "input_pneumonia_2019_with_duration.csv"),
                       col_types = cols (
                       pneumonia_admission_date = col_date(format = "%Y-%m-%d"),
