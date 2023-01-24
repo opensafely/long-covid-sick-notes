@@ -167,6 +167,8 @@ actions:
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_covid_2020.dta
+      moderately_sensitive:
+        plot: output/tabfig/length_of_stay*.svg
 
   covid_2021_rates_cohort:
     run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "covid_2021" --output-dir=output/cohorts
@@ -174,6 +176,8 @@ actions:
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_covid_2021.dta
+      moderately_sensitive:
+        plot: output/tabfig/length_of_stay*.svg
 
   general_2019_rates_cohort:
     run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "matched_2019" --output-dir=output/cohorts
@@ -202,6 +206,8 @@ actions:
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_pneumonia_2019.dta
+      moderately_sensitive:
+        plot: output/tabfig/length_of_stay*.svg
 
   covid_2020_rates:
     run: stata-mp:latest analysis/100_cr_simple_rates.do "covid_2020" --output-dir=output/tabfig
