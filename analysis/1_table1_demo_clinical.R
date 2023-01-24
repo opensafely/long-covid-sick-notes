@@ -215,7 +215,7 @@ table1_covidhosp2021 <- rbind(combine(covidhosp21), combine_hosp(covidhosp20))
 write.csv(table1_covidhosp2021, here::here("output", "tabfig", "table1_covid_hosp_2021.csv"),
           row.names = FALSE)
 
-table1_pneumo2019 <- combine(pneumo19)
+table1_pneumo2019 <- rbind(combine(pneumo19), combine_hosp(pneumo19))
 write.csv(table1_pneumo2019, here::here("output", "tabfig", "table1_pneumo_2019.csv"),
           row.names = FALSE)
 
