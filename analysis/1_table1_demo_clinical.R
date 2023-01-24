@@ -130,22 +130,26 @@ freq <- function(cohort, var, name) {
     mutate(n_sick_note = case_when(n_sick_note > 5 ~ n_sick_note),
           n_sick_note = round(n_sick_note / 7) * 7)
 
-  # Sick note duration
-  summ2 <- cohort1 %>%
-    subset(sick_note == 1 & !is.na(first_sick_note_duration)) %>%
-    group_by({{var}}) %>%
-    summarise(n_sick_note_notmiss = sum(sick_note),
-        p25_sick_note_duration = quantile(first_sick_note_duration, .25, na.rm = TRUE),
-        med_sick_note_duration = quantile(first_sick_note_duration, .5, na.rm = TRUE),
-        p75_sick_note_duration = quantile(first_sick_note_duration, .75, na.rm = TRUE), 
-        mean_sick_note_duration = mean(first_sick_note_duration, na.rm = TRUE))  %>%
-    rename(category = {{var}}) 
+  # # Sick note duration
+  # summ2 <- cohort1 %>%
+  #   subset(sick_note == 1 & !is.na(first_sick_note_duration)) %>%
+  #   group_by({{var}}) %>%
+  #   summarise(n_sick_note_notmiss = sum(sick_note),
+  #       p25_sick_note_duration = quantile(first_sick_note_duration, .25, na.rm = TRUE),
+  #       med_sick_note_duration = quantile(first_sick_note_duration, .5, na.rm = TRUE),
+  #       p75_sick_note_duration = quantile(first_sick_note_duration, .75, na.rm = TRUE), 
+  #       mean_sick_note_duration = mean(first_sick_note_duration, na.rm = TRUE))  %>%
+  #   rename(category = {{var}}) 
   
-  table <- merge(merge(counts, summ, by = c("category")), summ2, by = c("category")) %>%
-    mutate(pcent_sick_note = n_sick_note / n * 100,
-           n_sick_note_notmiss = case_when(n_sick_note_notmiss > 5 ~ n_sick_note_notmiss),
-           n_sick_note_notmiss = round(n_sick_note_notmiss / 7) * 7)
+  table <- merge(counts, summ, by = c("category")) %>%
+    mutate(pcent_sick_note = n_sick_note / n * 100)
   
+  
+  col_order <- c("variable", "category", "n", "total", "pcent_total", "n_sick_note",
+                 "pcent_sick_note")
+  
+  table <- table[, col_order]
+
   return(table)
 }
 
@@ -177,7 +181,15 @@ combine <- function(cohort) {
     freq(cohort, permanent_immunodef, "Other permanent immunodeficiency"),
     
     freq(cohort, ra_sle_psoriasis, "RA/SLE/psoriasis"),
-    freq(cohort, smoking_status, "Smoking status"),
+    freq(cohort, smoking_status, "Smoking status")
+  ) 
+  
+}
+
+# Combine frequencies for all variable for table
+# Long hospital stay (>median) only
+combine_hosp <- function(cohort) {
+  comb <- rbind( 
     freq(cohort, long_hosp_stay, "Long hospital stay")
   ) 
 
@@ -185,6 +197,7 @@ combine <- function(cohort) {
 
 
 ##### Create separate table/csv file for each cohort #####
+
 
 table1_covid2020 <- combine(covid20)
 write.csv(table1_covid2020, here::here("output", "tabfig", "table1_covid_2020.csv"),
@@ -194,11 +207,11 @@ table1_covid2021 <- combine(covid21)
 write.csv(table1_covid2021, here::here("output", "tabfig", "table1_covid_2021.csv"),
                                        row.names = FALSE)
           
-table1_covidhosp2020 <- combine(covidhosp20)
+table1_covidhosp2020 <- rbind(combine(covidhosp20), combine_hosp(covidhosp20))
 write.csv(table1_covidhosp2020, here::here("output", "tabfig", "table1_covid_hosp_2020.csv"),
           row.names = FALSE)
 
-table1_covidhosp2021 <- combine(covidhosp21)
+table1_covidhosp2021 <- rbind(combine(covidhosp21), combine_hosp(covidhosp20))
 write.csv(table1_covidhosp2021, here::here("output", "tabfig", "table1_covid_hosp_2021.csv"),
           row.names = FALSE)
 
