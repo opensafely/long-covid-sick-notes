@@ -166,16 +166,16 @@ actions:
     needs: [reconcile_sick_note_spells_covid_2020]
     outputs:
       highly_sensitive:
-        analysis_dataset: output/cohorts/cohort_rates_covid_2020.dta
+        analysis_dataset: output/cohorts/cohort_rates_*.dta
       moderately_sensitive:
         plot: output/tabfig/length_of_sta*.svg
-
+  
   covid_2021_rates_cohort:
     run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "covid_2021" --output-dir=output/cohorts
     needs: [reconcile_sick_note_spells_covid_2021]
     outputs:
       highly_sensitive:
-        analysis_dataset: output/cohorts/cohort_rates_covid_2021.dta
+        analysis_dataset: output/cohorts/cohort_rates*.dta
       moderately_sensitive:
         plot: output/tabfig/length_of_stay*.svg
 
@@ -216,12 +216,26 @@ actions:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_covid_2020.csv
 
+  covid_hosp_2020_rates:
+    run: stata-mp:latest analysis/100_cr_simple_rates.do "hosp_covid_2020" --output-dir=output/tabfig
+    needs: [covid_2020_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_hosp_covid_2020.csv
+
   covid_2021_rates:
     run: stata-mp:latest analysis/100_cr_simple_rates.do "covid_2021" --output-dir=output/tabfig
     needs: [covid_2021_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_covid_2021.csv
+
+  covid_hosp_2021_rates:
+    run: stata-mp:latest analysis/100_cr_simple_rates.do "hosp_covid_2021" --output-dir=output/tabfig
+    needs: [covid_2021_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_hosp_covid_2021.csv
 
   general_2019_rates:
     run: stata-mp:latest analysis/100_cr_simple_rates.do "matched_2019" --output-dir=output/tabfig
@@ -365,4 +379,4 @@ actions:
     needs: [reconcile_sick_note_spells_covid_2020, reconcile_sick_note_spells_covid_2021, reconcile_sick_note_spells_pneumonia_2019]
     outputs:
       moderately_sensitive:
-        table: output/tabfig/los_checks.csv
+        table: output/tabfig/check_hosp_timing.csv
