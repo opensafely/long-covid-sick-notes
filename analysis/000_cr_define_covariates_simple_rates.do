@@ -42,7 +42,7 @@ gen indexdate = date(patient_index_date, "YMD")
 format indexdate %td
 drop patient_index_date
 
-drop if indexdate ==.
+drop if indexdate == .
 
 * remove any patient discharged after end date
 drop if indexdate > `end_date'
@@ -230,12 +230,3 @@ postclose `outcomeDist'
 order patient_id indexdate
 
 save $outdir/cohort_rates_$group, replace
-
-
-if "$group" == "covid_2020" | "$group" == "covid_2021" { 
-
-	drop if hosp_first == .
-
-}
-
-save $outdir/cohort_rates_hosp_$group, replace
