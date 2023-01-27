@@ -8,7 +8,7 @@
 //
 // Authors: Robin (based on Alex & John)
 // Date: 6 Oct 2021
-// Updated: 24 Jan 2023
+// Updated: 25 Jan 2023
 // Input files: 
 // Output files: 
 //
@@ -50,25 +50,11 @@ drop if indexdate > `end_date'
 if "$group" == "covid_2020" | "$group" == "covid_2021" { 
 	gen hosp_expo_date = date(hospital_covid, "YMD")
 }
+
 if "$group" == "pneumonia_2019"  { 
 	gen hosp_expo_date = date(pneumonia_admission_date, "YMD")
 }
 
-if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "pneumonia_2019"  { 
-	format hosp_expo_date %td
-	* Length of stay
-	gen length_of_stay = indexdate - hosp_expo_date + 1
-	replace length_of_stay = . if hosp_expo_date == .
-
-	label var length_of_stay "Length of stay in hospital (days)"
-	hist length_of_stay, name(length_of_stay_$group, replace) graphregion(color(white)) col(navy%50) ylab(,angle(h)) lcol(navy%20)
-	graph export $tabfigdir/length_of_stay_$group.svg , as(svg) replace
-
-	* Create flag for patients staying in hospital longer than the median length
-	summ length_of_stay if length_of_stay != ., detail
-	gen long_hosp_stay = cond(length_of_stay >= `r(p50)' , 1, 0)
-	replace long_hosp_stay = . if hosp_expo_date == .
-}
 
 ******************************
 *  Convert strings to dates  *
@@ -244,3 +230,12 @@ postclose `outcomeDist'
 order patient_id indexdate
 
 save $outdir/cohort_rates_$group, replace
+
+
+if "$group" == "covid_2020" | "$group" == "covid_2021" { 
+
+	drop if hosp_first == .
+
+}
+
+save $outdir/cohort_rates_hosp_$group, replace

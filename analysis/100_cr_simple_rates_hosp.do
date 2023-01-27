@@ -24,11 +24,18 @@ use $outdir/cohort_rates_$group, clear
 
 global stratifiers "age_group male ethnicity region_9 imd"
 
+* Drop if not hospitalised
+drop if hosp_expo_date == .
+
+* Redefine indexdate to admission date
+drop indexdate
+gen indexdate = hosp_expo_date 
+
 tempname measures
 																	 
 	postfile `measures' str16(group) str25(outcome) str12(time) ///
 	str20(variable) category personTime numEvents rate lc uc ///
-	using $tabfigdir/rates_summary_$group, replace
+	using $tabfigdir/rates_summary_hosp_$group, replace
 	
 	preserve
 	cap drop time
@@ -104,12 +111,11 @@ tempname measures
 postclose `measures'
 
 * Change postfiles to csv
-use $tabfigdir/rates_summary_$group, replace
+use $tabfigdir/rates_summary_hosp_$group, replace
 
 * Change from per person-day to per 100 person-months
 gen rate_ppm = 100*(rate * 365.25 / 12)
 gen lc_ppm = 100*(lc * 365.25 /12)
 gen uc_ppm = 100*(uc * 365.25 /12)
 
-export delimited using $tabfigdir/rates_summary_$group.csv, replace
-
+export delimited using $tabfigdir/rates_summary_hosp_$group.csv, replace
