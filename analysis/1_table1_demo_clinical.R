@@ -186,14 +186,6 @@ combine <- function(cohort) {
   
 }
 
-# Combine frequencies for all variable for table
-# Long hospital stay (>median) only
-combine_hosp <- function(cohort) {
-  comb <- rbind( 
-    freq(cohort, long_hosp_stay, "Long hospital stay")
-  ) 
-
-}
 
 
 ##### Create separate table/csv file for each cohort #####
@@ -207,15 +199,15 @@ table1_covid2021 <- combine(covid21)
 write.csv(table1_covid2021, here::here("output", "tabfig", "table1_covid_2021.csv"),
                                        row.names = FALSE)
           
-table1_covidhosp2020 <- rbind(combine(covidhosp20), combine_hosp(covidhosp20))
+table1_covidhosp2020 <- combine(covidhosp20)
 write.csv(table1_covidhosp2020, here::here("output", "tabfig", "table1_covid_hosp_2020.csv"),
           row.names = FALSE)
 
-table1_covidhosp2021 <- rbind(combine(covidhosp21), combine_hosp(covidhosp20))
+table1_covidhosp2021 <- combine(covidhosp20)
 write.csv(table1_covidhosp2021, here::here("output", "tabfig", "table1_covid_hosp_2021.csv"),
           row.names = FALSE)
 
-table1_pneumo2019 <- rbind(combine(pneumo19), combine_hosp(pneumo19))
+table1_pneumo2019 <- combine(pneumo19)
 write.csv(table1_pneumo2019, here::here("output", "tabfig", "table1_pneumo_2019.csv"),
           row.names = FALSE)
 

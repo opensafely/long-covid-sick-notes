@@ -29,7 +29,7 @@ drop if hosp_expo_date == .
 
 * Redefine indexdate to admission date
 drop indexdate
-gen indexdate = hosp_expo_date 
+gen indexdate = hosp_expo_date
 
 tempname measures
 																	 
