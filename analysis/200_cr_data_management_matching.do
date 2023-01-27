@@ -8,7 +8,7 @@
 //
 // Authors: Robin (based on Alex & John)
 // Date: 15 Oct 2021
-// Updated: 15 Oct 2021
+// Updated: 25 Jan 2023
 // Input files: 
 // Output files: 
 //
@@ -38,8 +38,12 @@ foreach year in 2020 2021 {
 	bysort patient_id: gen flag = _n
 	safecount if flag == 2
 
-	* drop if not hopitalised 
+	* drop if not hospitalised 
 	drop if hosp_expo_date == .
+
+	* replace indexdate with admission date
+	drop indexdate
+	gen indexdate = hosp_expo_date
 
 	noi di "number of patients in both cohorts is `r(N)'"
 
