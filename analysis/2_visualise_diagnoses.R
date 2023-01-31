@@ -45,8 +45,9 @@ gen21 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2021.dta
 
 diag <- function(cohort, name){
   
-cohort %>% select(c("patient_id", starts_with("diag_"))) %>%
+cohort %>% dplyr::select(c("patient_id", starts_with("diag_"), "sick_note")) %>%
     
+    subset(sick_note ==1 ) %>%
     # Calculate total population for denominator
     mutate(total = n()) %>%
     
