@@ -46,12 +46,27 @@ gen21 <- read("cohort_rates_matched_2021.dta")
 
 ###### Create distribution of end dates #########
 tab <- function(data) {
-    data %>%
+    end <- data %>%
       mutate(total = n()) %>%
       arrange(end_month, sick_note) %>%
       group_by(sick_note, end_month, total) %>%
-      summarise(cnt = n())
- }
+      summarise(n_end = n()) %>%
+      rename(month = end_month)
+    
+    index <- data %>%
+      mutate(total = n()) %>%
+      arrange(index_month, sick_note) %>%
+      group_by(sick_note, index_month, total) %>%
+      summarise(n_index = n()) %>%
+      rename(month = index_month)
+    
+    both <- merge(end, index, by = c("month","total","sick_note"))
+    
+    return(both)
+    
+    
+}
+
 
 
 ####### Save files ##########
@@ -70,6 +85,3 @@ write_csv(gen20_tab, here::here("output", "tabfig", "end_date_gen20.csv"))
 
 gen21_tab <- tab(gen21)
 write_csv(gen21_tab, here::here("output", "tabfig", "end_date_gen21.csv"))
-
-
-
