@@ -364,4 +364,3 @@ actions:
     outputs:
       moderately_sensitive:
         table: output/tabfig/end_date_*.csv
-

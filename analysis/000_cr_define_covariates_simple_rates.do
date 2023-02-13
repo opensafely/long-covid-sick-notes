@@ -95,14 +95,15 @@ foreach var of varlist sgss_positive					///
 }
 
 * drop if died before discharge date
-drop if died_date_ons <= indexdate
-
+drop if died_date_ons < indexdate
 * Drop if deregistered before indexdate
 drop if deregistered < indexdate
 
 * Note: There may be deaths recorded after end of our study 
 * Set these to missing
 replace died_date_ons = . if died_date_ons>`end_date'
+
+replace sick_note_1_date = . if sick_note_1_date < indexdate
 
 
 **********************
@@ -223,7 +224,7 @@ foreach out in sick_note {
 	* Define outcome using all data
 	replace `out' = 0 if min_end_date > `end_date'
 	gen 	`out'_end_date = `end_date' // relevant end date
-	replace `out'_end_date = min(min_end_date, `end_date') if min_end_date!=.	 // not missing
+	replace `out'_end_date = min_end_date if min_end_date!=. & min_end_date<=`end_date'	 // not missing
 	replace `out'_end_date = `out'_end_date + 1 
 	format %td `out'_end_date 
 
