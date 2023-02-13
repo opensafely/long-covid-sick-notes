@@ -8,7 +8,7 @@
 //
 // Authors: Robin (based on Alex & John)
 // Date: 6 Oct 2021
-// Updated: 25 Jan 2023
+// Updated: 22 Oct 2021
 // Input files: 
 // Output files: 
 //
@@ -42,17 +42,19 @@ gen indexdate = date(patient_index_date, "YMD")
 format indexdate %td
 drop patient_index_date
 
-drop if indexdate == .
+drop if indexdate ==.
 
 * remove any patient discharged after end date
 drop if indexdate > `end_date'
 
 if "$group" == "covid_2020" | "$group" == "covid_2021" { 
 	gen hosp_expo_date = date(hospital_covid, "YMD")
+	format hosp_expo_date %td
 }
 
 if "$group" == "pneumonia_2019"  { 
 	gen hosp_expo_date = date(pneumonia_admission_date, "YMD")
+	format hosp_expo_date %td
 }
 
 
@@ -95,9 +97,13 @@ foreach var of varlist sgss_positive					///
 * drop if died before discharge date
 drop if died_date_ons <= indexdate
 
+* Drop if deregistered before indexdate
+drop if deregistered < indexdate
+
 * Note: There may be deaths recorded after end of our study 
 * Set these to missing
 replace died_date_ons = . if died_date_ons>`end_date'
+
 
 **********************
 *  Recode variables  *
@@ -217,7 +223,7 @@ foreach out in sick_note {
 	* Define outcome using all data
 	replace `out' = 0 if min_end_date > `end_date'
 	gen 	`out'_end_date = `end_date' // relevant end date
-	replace `out'_end_date = min_end_date if min_end_date!=.	 // not missing
+	replace `out'_end_date = min(min_end_date, `end_date') if min_end_date!=.	 // not missing
 	replace `out'_end_date = `out'_end_date + 1 
 	format %td `out'_end_date 
 
