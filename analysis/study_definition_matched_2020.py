@@ -36,6 +36,7 @@ study = StudyDefinition(
     sgss_positive=patients.with_test_result_in_sgss(
         pathogen="SARS-CoV-2",
         test_result="positive",
+        between=["2020-02-01", "2020-11-30"],
         returning="date",
         date_format="YYYY-MM-DD",
         find_first_match_in_period=True,
@@ -43,6 +44,7 @@ study = StudyDefinition(
     ),
     primary_care_covid=patients.with_these_clinical_events(
         any_primary_care_code,
+        between=["2020-02-01", "2020-11-30"],
         returning="date",
         date_format="YYYY-MM-DD",
         find_first_match_in_period=True,
@@ -51,6 +53,7 @@ study = StudyDefinition(
     hospital_covid=patients.admitted_to_hospital(
         with_these_diagnoses=covid_codes,
         returning="date_admitted",
+        between=["2020-02-01", "2020-11-30"],
         date_format="YYYY-MM-DD",
         find_first_match_in_period=True,
         return_expectations={"incidence": 0.1, "date": {"earliest": "index_date"}},
