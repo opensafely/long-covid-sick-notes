@@ -44,7 +44,7 @@ drop patient_index_date
 
 drop if indexdate ==.
 
-* remove any patient discharged after end date
+* remove any patient with index date after end date
 drop if indexdate > `end_date'
 
 if "$group" == "covid_2020" | "$group" == "covid_2021" { 
@@ -102,8 +102,6 @@ drop if deregistered < indexdate
 * Note: There may be deaths recorded after end of our study 
 * Set these to missing
 replace died_date_ons = . if died_date_ons>`end_date'
-
-replace sick_note_1_date = . if sick_note_1_date < indexdate
 
 
 **********************
@@ -210,6 +208,10 @@ tempname outcomeDist
 * The default deregistration date is 9999-12-31, so:
 replace deregistered = . if deregistered > `end_date'
 
+* Set sick note to missing if before index date
+replace sick_note_1_date = . if sick_note_1_date < indexdate
+
+* Create new sick note flag
 gen sick_note = 1 if sick_note_1_date != .
 recode sick_note . = 0
 
