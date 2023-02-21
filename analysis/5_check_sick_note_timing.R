@@ -25,7 +25,7 @@ dir_create(here::here("output", "cohorts"), showWarnings = FALSE, recurse = TRUE
 
 
 ##### Read in data for each cohort #####
-read <- function(data, cohort){
+read <- function(data, dat, cohort){
   read_dta(here::here("output","cohorts",data)) %>%
     mutate(
         sick_note_1_date = as.Date(sick_note_1_date, format = "%Y-%m-%d"),
@@ -46,15 +46,16 @@ read <- function(data, cohort){
            time_gp = ifelse(time >=0 & time <30, "<30 days",
                             ifelse(time >=30 & time <90, "30-89 days",
                             ifelse(time >=90 & time <150, "90-149 days", "150+ days")))) %>%
+  subset(date < as.Date(dat)) %>%
   group_by(group, time_gp) %>%
-    summarise(cnt = n()) 
+  summarise(cnt = n()) 
 }
 
-covid20 <- read("cohort_rates_covid_2020.dta", "COVID20")
-covid21 <- read("cohort_rates_covid_2021.dta", "COVID21")
-gen19 <- read("cohort_rates_matched_2019.dta", "General19") 
-gen20 <- read("cohort_rates_matched_2020.dta", "General20") 
-gen21 <- read("cohort_rates_matched_2021.dta", "General21")                                                  
+covid20 <- read("cohort_rates_covid_2020.dta", "2020-11-30", "COVID20")
+covid21 <- read("cohort_rates_covid_2021.dta", "2021-11-30", "COVID21")
+gen19 <- read("cohort_rates_matched_2019.dta", "2019-11-30", "General19") 
+gen20 <- read("cohort_rates_matched_2020.dta", "2020-11-30", "General20") 
+gen21 <- read("cohort_rates_matched_2021.dta", "2021-11-30", "General21")                                                  
                        
 all <- rbind(covid20, covid21, gen19, gen20, gen21)
 
@@ -65,7 +66,7 @@ write_csv(all, here::here("output", "tabfig", "sick_notes_all_over_time.csv"))
 
 
 ##### Read in data for each cohort #####
-read2 <- function(data, cohort){
+read2 <- function(data, dat, cohort){
   read_dta(here::here("output","cohorts",data)) %>%
     mutate(
       sick_note_1_date = as.Date(sick_note_1_date, format = "%Y-%m-%d"),
@@ -80,15 +81,16 @@ read2 <- function(data, cohort){
            time_gp = ifelse(time >=0 & time <30, "<30 days",
                             ifelse(time >=30 & time <90, "30-89 days",
                                    ifelse(time >=90 & time <150, "90-149 days", "150+ days")))) %>%
+    subset(date < as.Date(dat)) %>%
     group_by(group, time_gp) %>%
     summarise(cnt = n()) 
 }
 
-covid20 <- read2("cohort_rates_covid_2020.dta", "COVID20")
-covid21 <- read2("cohort_rates_covid_2021.dta", "COVID21")
-gen19 <- read2("cohort_rates_matched_2019.dta", "General19") 
-gen20 <- read2("cohort_rates_matched_2020.dta", "General20") 
-gen21 <- read2("cohort_rates_matched_2021.dta", "General21")                                                  
+covid20 <- read2("cohort_rates_covid_2020.dta", "2020-11-30", "COVID20")
+covid21 <- read2("cohort_rates_covid_2021.dta", "2021-11-30", "COVID21")
+gen19 <- read2("cohort_rates_matched_2019.dta", "2019-11-30", "General19") 
+gen20 <- read2("cohort_rates_matched_2020.dta", "2020-11-30", "General20") 
+gen21 <- read2("cohort_rates_matched_2021.dta", "2021-11-30", "General21")  
 
 all2 <- rbind(covid20, covid21, gen19, gen20, gen21)
 
