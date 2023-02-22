@@ -41,11 +41,14 @@ noi safecount
 gen indexdate = date(patient_index_date, "YMD")
 format indexdate %td
 drop patient_index_date
-
-drop if indexdate ==.
+drop if indexdate == .
 
 * remove any patient with index date after end date
 drop if indexdate > `end_date'
+
+* Drop if missing region/IMD
+drop if imd == .
+drop if region == ""
 
 if "$group" == "covid_2020" | "$group" == "covid_2021" { 
 	gen hosp_expo_date = date(hospital_covid, "YMD")
