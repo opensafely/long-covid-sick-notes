@@ -106,7 +106,7 @@ drop if deregistered < indexdate
 
 * Note: There may be deaths recorded after end of our study 
 * Set these to missing
-replace died_date_ons = . if died_date_ons>`end_date'
+replace died_date_ons = . if died_date_ons > `end_date'
 
 
 **********************
@@ -231,8 +231,9 @@ foreach out in sick_note {
 	* Define outcome using all data
 	replace `out' = 0 if min_end_date > `end_date'
 	gen 	`out'_end_date = `end_date' // relevant end date
-	replace `out'_end_date = min_end_date if min_end_date!=. & min_end_date<=`end_date'	 // not missing
+	replace `out'_end_date = min_end_date if min_end_date!=. & min_end_date <= `end_date'	 // not missing
 	replace `out'_end_date = `out'_end_date + 1 
+	drop if `out'_end_date <= indexdate
 	format %td `out'_end_date 
 
 	drop min_end_date	

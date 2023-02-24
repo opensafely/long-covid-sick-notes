@@ -57,11 +57,11 @@ tempname measures
 			noi di "$group: Calculate rate for variable `c' and level `l'" 
 			qui  count if `c' ==`l'
 			if `r(N)' > 0 {
-			stptime if `c'==`l'
-			* Save measures
-			local events .
-			local events round(`r(failures)'/ 7 ) * 7
-			post `measures' ("$group") ("`out'") ("Full period") ("`c'") (`l') (`r(ptime)')	///
+				stptime if `c'==`l'
+				* Save measures
+				local events .
+				local events round(`r(failures)'/ 7 ) * 7
+				post `measures' ("$group") ("`out'") ("Full period") ("`c'") (`l') (`r(ptime)')	///
 							(`events') (`r(rate)') 							///
 							(`r(lb)') (`r(ub)')
 			}
@@ -84,6 +84,8 @@ tempname measures
 	if `r(N)' > 0 {
 		stptime if time ==`t'
 		* Save measure
+		local num .
+		local num round(_N/ 7) * 7
 		local events .
 		local events round(`r(failures)'/ 7 ) * 7
 		post `measures' ("$group") ("`out'") ("`t' days") ("Overall") (0) (`r(ptime)') 	///
