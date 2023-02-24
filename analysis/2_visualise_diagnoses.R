@@ -95,9 +95,9 @@ covidhosp2020 <- diag(covidhosp20, "COVID-19 hospitalised 2020")
 covidhosp2021 <- diag(covidhosp21, "COVID-19 hospitalised 2021")
 pneumo2019 <- diag(pneumo19, "Pneumonia 2019")
 
-gen2019 <- diag(gen20, "General population 2019")
+gen2019 <- diag(gen19, "General population 2019")
 gen2020 <- diag(gen20, "General population 2020")
-gen2021 <- diag(gen20, "General population 2021")
+gen2021 <- diag(gen21, "General population 2021")
 
 all_diag <- rbind(covid2020, covid2021, covidhosp2020, covidhosp2021,
                   pneumo2019, gen2019, gen2020, gen2021)
