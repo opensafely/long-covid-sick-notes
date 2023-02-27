@@ -213,8 +213,13 @@ tempname outcomeDist
 * The default deregistration date is 9999-12-31, so:
 replace deregistered = . if deregistered > `end_date'
 
-* Set sick note to missing if before index date
+* Set sick note to missing if outside study period
 replace sick_note_1_date = . if sick_note_1_date < indexdate
+replace sick_note_1_date = . if sick_note_1_date > `end_date'
+
+* Set covid diagnosis to missing if outside study period
+replace covid_diagnosis_date = . if covid_diagnosis_date < indexdate
+replace covid_diagnosis_date = . if covid_diagnosis_date > `end_date'
 
 * Create new sick note flag
 gen sick_note = 1 if sick_note_1_date != .
@@ -233,7 +238,6 @@ foreach out in sick_note {
 	gen 	`out'_end_date = `end_date' // relevant end date
 	replace `out'_end_date = min_end_date if min_end_date!=. & min_end_date <= `end_date'	 // not missing
 	replace `out'_end_date = `out'_end_date + 1 
-	drop if `out'_end_date <= indexdate
 	format %td `out'_end_date 
 
 	drop min_end_date	
