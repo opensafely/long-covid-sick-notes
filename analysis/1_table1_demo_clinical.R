@@ -25,18 +25,26 @@ dir_create(here::here("output", "tabfig"), showWarnings = FALSE, recurse = TRUE)
 
 ##### Read in data for each cohort #####
 
-covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) 
+covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
+  subset(!is.na(imd) & !is.na(region_9))
 covidhosp20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
-  subset(!is.na(hosp_expo_date))
+  subset(!is.na(hosp_expo_date))%>%
+  subset(!is.na(imd) & !is.na(region_9))
 
-covid21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta"))
+covid21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta"))%>%
+  subset(!is.na(imd) & !is.na(region_9))
 covidhosp21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta")) %>%
-  subset(!is.na(hosp_expo_date))
-pneumo19 <- read_dta(here::here("output", "cohorts", "cohort_rates_pneumonia_2019.dta"))
+  subset(!is.na(hosp_expo_date))%>%
+  subset(!is.na(imd) & !is.na(region_9))
+pneumo19 <- read_dta(here::here("output", "cohorts", "cohort_rates_pneumonia_2019.dta"))%>%
+  subset(!is.na(imd) & !is.na(region_9))
 
-gen19 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2019.dta"))
-gen20 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2020.dta"))
-gen21 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2021.dta"))
+gen19 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2019.dta"))%>%
+  subset(!is.na(imd) & !is.na(region_9))
+gen20 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2020.dta"))%>%
+  subset(!is.na(imd) & !is.na(region_9))
+gen21 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2021.dta"))%>%
+  subset(!is.na(imd) & !is.na(region_9))
 
 
 ###### Function to calculate number of people with each diagnosis #####
@@ -76,8 +84,7 @@ freq <- function(cohort, var, name) {
                  ethnicity == 3 ~ "Asian or Asian British",
                  ethnicity == 4 ~ "Black",
                  ethnicity == 5 ~ "Other",
-                 ethnicity == 6 ~ "Unknown",
-                 TRUE ~ NA_character_
+                 ethnicity == 6 ~ "Unknown"
                ),
                region_9 = fct_case_when(
                  region_9 == 1 ~ "East Midlands",
@@ -88,8 +95,7 @@ freq <- function(cohort, var, name) {
                  region_9 == 6 ~ "South East",
                  region_9 == 7 ~ "South West",
                  region_9 == 8 ~ "West Midlands",
-                 region_9 == 9 ~ "Yorkshire and The Humber",
-                 TRUE ~ NA_character_
+                 region_9 == 9 ~ "Yorkshire and The Humber"
                ),
                imd = fct_case_when(
                  imd == 1 ~ "1 (most deprived)",
@@ -125,7 +131,7 @@ freq <- function(cohort, var, name) {
   summ <- cohort1 %>%
     subset(sick_note == 1) %>% 
     group_by({{var}}) %>%
-    summarise( n_sick_note = sum(sick_note)) %>%
+    summarise( n_sick_note = n()) %>%
     rename(category = {{var}}) %>%
     mutate(n_sick_note = case_when(n_sick_note > 5 ~ n_sick_note),
           n_sick_note = round(n_sick_note / 7) * 7)
