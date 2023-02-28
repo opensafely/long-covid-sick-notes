@@ -25,26 +25,29 @@ dir_create(here::here("output", "tabfig"), showWarnings = FALSE, recurse = TRUE)
 
 ##### Read in data for each cohort #####
 
-covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
-  subset(!is.na(imd) & !is.na(region_9))
-covidhosp20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
-  subset(!is.na(hosp_expo_date))%>%
-  subset(!is.na(imd) & !is.na(region_9))
+covid20 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_general_2019.dta")) %>%
+  subset(case == 1)
 
-covid21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta"))%>%
-  subset(!is.na(imd) & !is.na(region_9))
-covidhosp21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta")) %>%
-  subset(!is.na(hosp_expo_date))%>%
-  subset(!is.na(imd) & !is.na(region_9))
-pneumo19 <- read_dta(here::here("output", "cohorts", "cohort_rates_pneumonia_2019.dta"))%>%
-  subset(!is.na(imd) & !is.na(region_9))
+covidhosp20 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
+  subset(case == 1)
 
-gen19 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2019.dta"))%>%
-  subset(!is.na(imd) & !is.na(region_9))
-gen20 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2020.dta"))%>%
-  subset(!is.na(imd) & !is.na(region_9))
-gen21 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2021.dta"))%>%
-  subset(!is.na(imd) & !is.na(region_9))
+covid21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_general_2019.dta")) %>%
+  subset(case == 1)
+
+covidhosp21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_pneumonia.dta")) %>%
+  subset(case == 1)
+
+pneumo19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
+  subset(case ==0)
+
+gen19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_general_2019.dta")) %>%
+  subset(case ==0)
+gen20 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2020.dta")) %>%
+  subset(case ==0)
+gen21 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2021.dta")) %>%
+  subset(case ==0)
+
+
 
 
 ###### Function to calculate number of people with each diagnosis #####
@@ -150,7 +153,6 @@ freq <- function(cohort, var, name) {
   table <- merge(counts, summ, by = c("category")) %>%
     mutate(pcent_sick_note = n_sick_note / n * 100)
   
-  
   col_order <- c("variable", "category", "n", "total", "pcent_total", "n_sick_note",
                  "pcent_sick_note")
   
@@ -209,7 +211,7 @@ table1_covidhosp2020 <- combine(covidhosp20)
 write.csv(table1_covidhosp2020, here::here("output", "tabfig", "table1_covid_hosp_2020.csv"),
           row.names = FALSE)
 
-table1_covidhosp2021 <- combine(covidhosp20)
+table1_covidhosp2021 <- combine(covidhosp21)
 write.csv(table1_covidhosp2021, here::here("output", "tabfig", "table1_covid_hosp_2021.csv"),
           row.names = FALSE)
 

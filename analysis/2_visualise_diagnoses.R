@@ -21,24 +21,32 @@ library(RColorBrewer)
 
 ## Create directories if needed
 dir_create(here::here("output", "tabfig"), showWarnings = FALSE, recurse = TRUE)
+dir_create(here::here("output", "cohorts"), showWarnings = FALSE, recurse = TRUE)
 
 
 ##### Read in data for each cohort #####
 
-covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta"))
-                    
-covidhosp20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
-  subset(!is.na(hosp_expo_date))
+covid20 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_general_2019.dta")) %>%
+  subset(case == 1)
+                  
+covidhosp20 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
+  subset(case == 1)
 
-covid21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta"))
-covidhosp21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta")) %>%
-  subset(!is.na(hosp_expo_date))
+covid21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_general_2019.dta")) %>%
+  subset(case == 1)
 
-pneumo19 <- read_dta(here::here("output", "cohorts", "cohort_rates_pneumonia_2019.dta"))
+covidhosp21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_pneumonia.dta")) %>%
+  subset(case == 1)
 
-gen19 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2019.dta"))
-gen20 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2020.dta"))
-gen21 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2021.dta"))
+pneumo19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
+  subset(case ==0)
+
+gen19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_general_2019.dta")) %>%
+  subset(case ==0)
+gen20 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2020.dta")) %>%
+  subset(case ==0)
+gen21 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2021.dta")) %>%
+  subset(case ==0)
 
 
 ###### Function to calculate number of people with each diagnosis #####
@@ -47,7 +55,7 @@ diag <- function(cohort, name){
   
 cohort %>% dplyr::select(c("patient_id", starts_with("diag_"), "sick_note")) %>%
     
-    subset(sick_note ==1 ) %>%
+    subset(sick_note == 1 ) %>%
     # Calculate total population for denominator
     mutate(total = n()) %>%
     
