@@ -31,8 +31,6 @@ drop if hosp_expo_date == .
 drop indexdate
 gen indexdate = hosp_expo_date
 
-* Drop if sick note between initial diagnosis and hospitalisation
-drop if sick_note_end_date <= indexdate
 
 tempname measures
 																	 

@@ -84,8 +84,6 @@ tempname measures
 	if `r(N)' > 0 {
 		stptime if time ==`t'
 		* Save measure
-		local num .
-		local num round(_N/ 7) * 7
 		local events .
 		local events round(`r(failures)'/ 7 ) * 7
 		post `measures' ("$group") ("`out'") ("`t' days") ("Overall") (0) (`r(ptime)') 	///
