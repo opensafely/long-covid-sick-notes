@@ -244,6 +244,8 @@ foreach out in sick_note {
 
 }
 
+drop if sick_note_end_date <= indexdate
+
 postclose `outcomeDist'
 										
 order patient_id indexdate
