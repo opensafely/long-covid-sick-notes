@@ -357,17 +357,3 @@ actions:
       moderately_sensitive:
         table: output/tabfig/diag_by_cohort.csv
         plot: output/tabfig/diag_all.png        
-
-  #check_end_date:
-  #  run: r:latest analysis/4_check_end_date.R
-  #  needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort]
-  #  outputs:
-  #    moderately_sensitive:
-  #      table: output/tabfig/end_date_*.csv
-
-  #check_timing:
-  #  run: r:latest analysis/5_check_sick_note_timing.R
-  #  needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort]
-  #  outputs:
-  #    moderately_sensitive:
-  #      table: output/tabfig/sick_notes*.csv
