@@ -123,7 +123,7 @@ label values male sexLab
 label var male "sex = 0 F, 1 M"
 
 * Ethnicity (5 category)
-replace ethnicity = 6 if ethnicity==.
+replace ethnicity = 6 if ethnicity== .
 label define ethnicity_lab 	1 "White"  						///
 							2 "Mixed" 						///
 							3 "Asian or Asian British"		///
@@ -245,6 +245,8 @@ foreach out in sick_note {
 }
 
 drop if sick_note_end_date <= indexdate
+
+duplicates drop 
 
 postclose `outcomeDist'
 										

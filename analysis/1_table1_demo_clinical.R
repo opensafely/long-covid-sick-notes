@@ -24,7 +24,6 @@ dir_create(here::here("output", "tabfig"), showWarnings = FALSE, recurse = TRUE)
 
 
 ##### Read in data for each cohort #####
-
 covid20 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_general_2019.dta")) %>%
   subset(case == 1)
 
@@ -195,7 +194,6 @@ combine <- function(cohort) {
 }
 
 
-
 ##### Create separate table/csv file for each cohort #####
 
 
@@ -230,3 +228,37 @@ write.csv(table1_gen2020, here::here("output", "tabfig", "table1_gen_2020.csv"),
 table1_gen2021 <- combine(gen21)
 write.csv(table1_gen2021, here::here("output", "tabfig", "table1_gen_2021.csv"),
           row.names = FALSE)
+
+
+##################################################################
+
+
+
+
+quantile <- scales::percent(c(.25,.5,.75))
+
+stats <- function(data, group){
+  
+  quantile <- scales::percent(c(.25,.5,.75))
+  
+  med <- data %>% 
+    summarise( p25 = quantile(age, .25, na.rm = TRUE),
+               median = quantile(age, .5, na.rm = TRUE),
+               p75 = quantile(age, .75, na.rm = TRUE)) %>%
+    mutate(cohort = group)
+  
+  return(med)
+}
+
+median_age <- rbind(
+  stats(covid20, "COVID 2020"),
+  stats(covid21, "COVID 2021"),
+  stats(covidhosp20, "COVID hospitalised 2020"),
+  stats(covidhosp21, "COVID hospitalised 2021"),
+  stats(pneumo19, "Pneumonia 2019"),
+  stats(gen19, "General 2019"),
+  stats(gen20, "General 2020"),
+  stats(gen21, "General 2021")
+  
+)
+

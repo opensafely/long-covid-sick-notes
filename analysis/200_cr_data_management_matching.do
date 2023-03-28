@@ -50,7 +50,7 @@ foreach year in 2020 2021 {
 
 	noi di "number of patients in both cohorts is `r(N)'"
 
-	drop flag 
+	drop flag
 	save $outdir/combined_covid_`year'_pneumonia.dta, replace
 }
 	
