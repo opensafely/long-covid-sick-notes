@@ -27,7 +27,7 @@ global stratifiers "age_group male ethnicity region_9 imd"
 tempname measures
 																	 
 	postfile `measures' str16(group) str25(outcome) str12(time) ///
-	str20(variable) category personTime numEvents rate lc uc ///
+	str20(variable) category personTime numEvents  ///
 	using $tabfigdir/rates_summary_$group, replace
 	
 	preserve
@@ -44,9 +44,7 @@ tempname measures
 	* Save measure
 	local events .
 	local events round(`r(failures)'/ 7 ) * 7
-	post `measures' ("$group") ("`out'") ("Full period") ("Overall") (0) (`r(ptime)') 	///
-						(`events') (`r(rate)') 								///
-						(`r(lb)') (`r(ub)')
+	post `measures' ("$group") ("`out'") ("Full period") ("Overall") (0) (`r(ptime)') (`events') 
 		
 	* Stratified
 	foreach c of global stratifiers {
@@ -61,15 +59,11 @@ tempname measures
 				* Save measures
 				local events .
 				local events round(`r(failures)'/ 7 ) * 7
-				post `measures' ("$group") ("`out'") ("Full period") ("`c'") (`l') (`r(ptime)')	///
-							(`events') (`r(rate)') 							///
-							(`r(lb)') (`r(ub)')
+				post `measures' ("$group") ("`out'") ("Full period") ("`c'") (`l') (`r(ptime)') (`events') 
 			}
 
 		else {
-			post `measures' ("$group") ("`out'") ("Full period") ("`c'") (`l') (.) 	///
-						(.) (.) 								///
-						(.) (.) 
+			post `measures' ("$group") ("`out'") ("Full period") ("`c'") (`l') (.) (.)
 			}
 					
 		}
@@ -86,16 +80,11 @@ tempname measures
 		* Save measure
 		local events .
 		local events round(`r(failures)'/ 7 ) * 7
-		post `measures' ("$group") ("`out'") ("`t' days") ("Overall") (0) (`r(ptime)') 	///
-							(`events') (`r(rate)') 								///
-							(`r(lb)') (`r(ub)')
-			
+		post `measures' ("$group") ("`out'") ("`t' days") ("Overall") (0) (`r(ptime)') (`events') 
 		
 	}
 	else {
-		post `measures' ("$group") ("`out'") ("`t' days") ("Overall") (0) (.) 	///
-							(.) (.) 								///
-							(.) (.) 
+		post `measures' ("$group") ("`out'") ("`t' days") ("Overall") (0) (.) (.) 
 		}
 	}
  
@@ -107,9 +96,8 @@ postclose `measures'
 use $tabfigdir/rates_summary_$group, replace
 
 * Change from per person-day to per 100 person-months
+gen rate = numEvents / personTime 
 gen rate_ppm = 100*(rate * 365.25 / 12)
-gen lc_ppm = 100*(lc * 365.25 /12)
-gen uc_ppm = 100*(uc * 365.25 /12)
 
 export delimited using $tabfigdir/rates_summary_$group.csv, replace
 
