@@ -162,105 +162,105 @@ actions:
         cohort_with_duration: output/cohorts/input_pneumonia_2019_with_duration.csv
 
   covid_2020_rates_cohort:
-    run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "covid_2020" --output-dir=output/cohorts
+    run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "covid_2020" --output-dir=output/cohorts
     needs: [reconcile_sick_note_spells_covid_2020]
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_*.dta
   
   covid_2021_rates_cohort:
-    run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "covid_2021" --output-dir=output/cohorts
+    run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "covid_2021" --output-dir=output/cohorts
     needs: [reconcile_sick_note_spells_covid_2021]
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates*.dta
 
   general_2019_rates_cohort:
-    run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "matched_2019" --output-dir=output/cohorts
+    run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "matched_2019" --output-dir=output/cohorts
     needs: [reconcile_sick_note_spells_general_2019]
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_matched_2019.dta
 
   general_2020_rates_cohort:
-    run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "matched_2020" --output-dir=output/cohorts
+    run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "matched_2020" --output-dir=output/cohorts
     needs: [reconcile_sick_note_spells_general_2020]
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_matched_2020.dta
 
   general_2021_rates_cohort:
-    run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "matched_2021" --output-dir=output/cohorts
+    run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "matched_2021" --output-dir=output/cohorts
     needs: [reconcile_sick_note_spells_general_2021]
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_matched_2021.dta
 
   pneumonia_2019_rates_cohort:
-    run: stata-mp:latest analysis/000_cr_define_covariates_simple_rates.do "pneumonia_2019" --output-dir=output/cohorts
+    run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "pneumonia_2019" --output-dir=output/cohorts
     needs: [reconcile_sick_note_spells_pneumonia_2019]
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_pneumonia_2019.dta
 
   covid_2020_rates:
-    run: stata-mp:latest analysis/100_cr_simple_rates.do "covid_2020" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/rates/100_cr_simple_rates.do "covid_2020" --output-dir=output/tabfig
     needs: [covid_2020_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_covid_2020.csv
 
   covid_2021_rates:
-    run: stata-mp:latest analysis/100_cr_simple_rates.do "covid_2021" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/rates/100_cr_simple_rates.do "covid_2021" --output-dir=output/tabfig
     needs: [covid_2021_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_covid_2021.csv
 
   general_2019_rates:
-    run: stata-mp:latest analysis/100_cr_simple_rates.do "matched_2019" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/rates/100_cr_simple_rates.do "matched_2019" --output-dir=output/tabfig
     needs: [general_2019_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_matched_2019.csv
 
   general_2020_rates:
-    run: stata-mp:latest analysis/100_cr_simple_rates.do "matched_2020" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/rates/100_cr_simple_rates.do "matched_2020" --output-dir=output/tabfig
     needs: [general_2020_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_matched_2020.csv
 
   general_2021_rates:
-    run: stata-mp:latest analysis/100_cr_simple_rates.do "matched_2021" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/rates/100_cr_simple_rates.do "matched_2021" --output-dir=output/tabfig
     needs: [general_2021_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_matched_2021.csv
         
   pneumonia_2019_rates:
-    run: stata-mp:latest analysis/100_cr_simple_rates_hosp.do "pneumonia_2019" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/rates/100_cr_simple_rates_hosp.do "pneumonia_2019" --output-dir=output/tabfig
     needs: [pneumonia_2019_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_hosp_pneumonia_2019.csv
 
   covid_hosp_2020_rates:
-    run: stata-mp:latest analysis/100_cr_simple_rates_hosp.do "covid_2020" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/rates/100_cr_simple_rates_hosp.do "covid_2020" --output-dir=output/tabfig
     needs: [covid_2020_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_hosp_covid_2020.csv
 
   covid_hosp_2021_rates:
-    run: stata-mp:latest analysis/100_cr_simple_rates_hosp.do "covid_2021" --output-dir=output/tabfig
+    run: stata-mp:latest analysis/rates/100_cr_simple_rates_hosp.do "covid_2021" --output-dir=output/tabfig
     needs: [covid_2021_rates_cohort]
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_hosp_covid_2021.csv
 
   append_cohorts:
-    run: stata-mp:latest analysis/200_cr_data_management_matching.do --output-dir=output/cohorts
+    run: stata-mp:latest analysis/cox_models/200_cr_data_management_matching.do --output-dir=output/cohorts
     needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, pneumonia_2019_rates_cohort, general_2021_rates_cohort, general_2020_rates_cohort, general_2019_rates_cohort]
     outputs:
       moderately_sensitive:
@@ -274,7 +274,7 @@ actions:
         dataset6: output/cohorts/combined_covid_general_2021.dta
 
   cox_models:
-    run: stata-mp:latest analysis/201_cox_models.do
+    run: stata-mp:latest analysis/cox_models/201_cox_models.do
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
@@ -282,7 +282,7 @@ actions:
         dataset: output/tabfig/cox_model_summary.csv
 
   cox_models_split_2020_pneumo:
-    run: stata-mp:latest analysis/202_cox_models_split.do "2020_pneumonia"
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_pneumonia"
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
@@ -290,7 +290,7 @@ actions:
         dataset: output/tabfig/cox_model_split_summary_2020_pneumonia.csv
 
   cox_models_split_2021_pneumo:
-    run: stata-mp:latest analysis/202_cox_models_split.do "2021_pneumonia"
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_pneumonia"
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
@@ -298,7 +298,7 @@ actions:
         dataset: output/tabfig/cox_model_split_summary_2021_pneumonia.csv
   
   cox_models_split_2020_gen_2019:
-    run: stata-mp:latest analysis/202_cox_models_split.do "2020_general_2019"
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_general_2019"
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
@@ -306,7 +306,7 @@ actions:
         dataset: output/tabfig/cox_model_split_summary_2020_general_2019.csv
         
   cox_models_split_2021_gen_2019:
-    run: stata-mp:latest analysis/202_cox_models_split.do "2021_general_2019"
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_general_2019"
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
@@ -314,7 +314,7 @@ actions:
         dataset: output/tabfig/cox_model_split_summary_2021_general_2019.csv
 
   cox_models_split_gen_2020:
-    run: stata-mp:latest analysis/202_cox_models_split.do "general_2020"
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2020"
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
@@ -322,36 +322,36 @@ actions:
         dataset: output/tabfig/cox_model_split_summary_general_2020.csv
         
   cox_models_split_gen_2021:
-    run: stata-mp:latest analysis/202_cox_models_split.do "general_2021"
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2021"
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_general_2021.txt
         dataset: output/tabfig/cox_model_split_summary_general_2021.csv
 
-  describe_duration_diagnoses:
-    run: jupyter:latest jupyter nbconvert /workspace/notebooks/describe_duration_diagnoses.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
-    needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort]
-    outputs:
-      moderately_sensitive:
-        notebook: output/describe_duration_diagnoses.html
-        table: output/tabfig/med_mean_overall.csv
-        table2: output/tabfig/med_mean_age_group.csv
-        table3: output/tabfig/med_mean_sex.csv
-        table4: output/tabfig/med_mean_ethnicity.csv
-        table5: output/tabfig/med_mean_imd.csv
-        table6: output/tabfig/med_mean_region.csv
-        subplots: output/tabfig/diag_*.png 
+  # describe_duration_diagnoses:
+  #   run: jupyter:latest jupyter nbconvert /workspace/notebooks/describe_duration_diagnoses.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
+  #   needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort]
+  #   outputs:
+  #     moderately_sensitive:
+  #       notebook: output/describe_duration_diagnoses.html
+  #       table: output/tabfig/med_mean_overall.csv
+  #       table2: output/tabfig/med_mean_age_group.csv
+  #       table3: output/tabfig/med_mean_sex.csv
+  #       table4: output/tabfig/med_mean_ethnicity.csv
+  #       table5: output/tabfig/med_mean_imd.csv
+  #       table6: output/tabfig/med_mean_region.csv
+  #       subplots: output/tabfig/diag_*.png 
 
   table1:
-    run: r:latest analysis/1_table1_demo_clinical.R
+    run: r:latest analysis/descriptive/1_table1_demo_clinical.R
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
         table: output/tabfig/table1_*.csv
 
   visualise_diagnoses:
-    run: r:latest analysis/2_visualise_diagnoses.R
+    run: r:latest analysis/descriptive/2_visualise_diagnoses.R
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
