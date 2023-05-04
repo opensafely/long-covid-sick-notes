@@ -21,7 +21,7 @@ do `c(pwd)'/analysis/global.do
 global var `1'
 
 cap log close
-log using $outdir/cox_models_stratified_$var.txt, replace t
+log using $outdir/cox_models_summary_$var.txt, replace t
 
 tempname measures
 	postfile `measures' ///
