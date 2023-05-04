@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 //
-// 201_cox_models.do
+// 202_cox_models_stsplit_2021_gen_2019.do
 //
 // This program runs Cox models to perform survival analysis.
 //
-// Authors: Robin (based on Alex & John)
-// Date: 15 Oct 2021
-// Updated: 18 Oct 2021
+// Authors: Andrea (based on Robin, Alex & John)
+// Date: 02 Dec 2022
+// Updated: 
 // Input files: 
 // Output files: 
 //
@@ -18,32 +18,32 @@ set varabbrev off
 
 clear
 do `c(pwd)'/analysis/global.do
+global group `1'
 global var `1'
 
 cap log close
-log using $outdir/cox_models_stratified_$var.txt, replace t
+log using $outdir/cox_models_split_${group}_$var.txt, replace t
 
 tempname measures
 	postfile `measures' ///
-		str20(var) str20(category) str20(comparator) str10(adjustment) ///
-		ptime_covid num_events_covid rate_covid /// 
-		ptime_comparator num_events_comparator rate_comparator hr lc uc ///
-		using $tabfigdir/cox_model_summary_$var, replace
+ 		str20(var) str20(category) str20(comparator) str10(adjustment) str10(month) ///
+		hr lc uc  ///
+		ptime_covid events_covid rate_covid /// 
+		ptime_comparator events_comparator rate_comparator ///
+		using $tabfigdir/cox_model_split_summary_${group}_$var, replace
 		
-foreach an in 2020_pneumonia 2021_pneumonia 2020_general_2019 2021_general_2019 general_2020 general_2021 {
-
-use $outdir/combined_covid_`an'.dta, replace
+use $outdir/combined_covid_${group}_$var.dta, replace
 drop patient_id
 gen new_patient_id = _n
 
-* Encode smoking status and ethnicity
+## Encode smoking status and ethnicity
 encode smoking_status, gen(smoking_category)
 
 * Crude
-global crude i.case
+global crude i.case##i.month
 
 * Full adjustment excluding age
-global age_group i.case i.male i.ethnicity i.region_9 i.imd /// 
+global age_group i.case##i.month i.male i.ethnicity i.region_9 i.imd /// 
 						 i.obese i.smoking_category i.hypertension ///
 						 i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
 						 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
@@ -51,7 +51,7 @@ global age_group i.case i.male i.ethnicity i.region_9 i.imd ///
 						 i.permanent_immunodef i.ra_sle_psoriasis
 
 * Full adjustment excluding sex
-global male i.case age1 age2 age3 i.ethnicity i.region_9 i.imd /// 
+global male i.case##i.month age1 age2 age3 i.ethnicity i.region_9 i.imd /// 
 						 i.obese i.smoking_category i.hypertension ///
 						 i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
 						 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
@@ -59,7 +59,7 @@ global male i.case age1 age2 age3 i.ethnicity i.region_9 i.imd ///
 						 i.permanent_immunodef i.ra_sle_psoriasis
 
 * Full adjustment excluding ethnicity
-global ethnicity i.case i.male age1 age2 age3 i.region_9 i.imd /// 
+global ethnicity i.case##i.month i.male age1 age2 age3 i.region_9 i.imd /// 
 						 i.obese i.smoking_category i.hypertension ///
 						 i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
 						 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
@@ -67,7 +67,7 @@ global ethnicity i.case i.male age1 age2 age3 i.region_9 i.imd ///
 						 i.permanent_immunodef i.ra_sle_psoriasis
 
 * Full adjustment excluding imd                       
-global imd i.case i.male age1 age2 age3 i.ethnicity i.region_9 /// 
+global imd i.case##i.month i.male age1 age2 age3 i.ethnicity i.region_9 /// 
 						 i.obese i.smoking_category i.hypertension ///
 						 i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
 						 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
@@ -75,7 +75,7 @@ global imd i.case i.male age1 age2 age3 i.ethnicity i.region_9 ///
 						 i.permanent_immunodef i.ra_sle_psoriasis
                          
 * Full adjustment excluding region
-global region_9 i.case i.male age1 age2 age3 i.ethnicity i.imd /// 
+global region_9 i.case##i.month i.male age1 age2 age3 i.ethnicity i.imd /// 
 						 i.obese i.smoking_category i.hypertension ///
 						 i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
 						 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
@@ -93,51 +93,57 @@ foreach v in sick_note {
 		local out `v'
 				
 		noi di "$group: stset in `a'" 
-	        
+		
 		stset `end_date', id(new_patient_id) failure(`out') enter(indexdate) origin(indexdate)
+		
+        stsplit month, at(30, 90, 150)
+
+		tab month sick_note
 
         levelsof $var
 
-        foreach level in `r(levels)' {
-		
+        foreach level in `r(levels)' {  
+
 		    foreach adjust in crude $var {
+            
+			    foreach mon in 0 30 90 150 {
+				
+				stcox $`adjust' if $var == `level',, vce(robust) 
 
-			    stcox $`adjust' if $var == `level', vce(robust)
+				lincom 1.case + 1.case#`mon'.month, hr
 
-			    matrix b = r(table)
-			    local hr = b[1,2]
-			    local lc = b[5,2] 
-			    local uc = b[6,2]
+				local hr = r(estimate)
+				local lc = r(lb)
+				local uc = r(ub)
 
-			    stptime if case == 1 & $var == `level'
-			    local rate_covid = `r(rate)'
-			    local ptime_covid = `r(ptime)'
-			    local events_covid .
-			    local events_covid round(`r(failures)'/ 7 ) * 7
+				stptime if case == 1 & month == `mon' & $var == `level'
+				local rate_covid = `r(rate)'
+				local ptime_covid = `r(ptime)'
+				local events_covid .
+				local events_covid round(`r(failures)'/ 7 ) * 7
 			
-			    stptime if case == 0 & $var == `level'
-			    local rate_comparator = `r(rate)'
-			    local ptime_comparator = `r(ptime)'
-			    local events_comparator .
-			    local events_comparator round(`r(failures)'/ 7 ) * 7
+				stptime if case == 0 & month == `mon' & $var == `level'
+				local rate_comparator = `r(rate)'
+				local ptime_comparator = `r(ptime)'
+				local events_comparator .
+				local events_comparator round(`r(failures)'/ 7 ) * 7
 
-			    post `measures' ("$var") ("`level'") ("`an'") ("`adjust'")  ///
-							(`ptime_covid') (`events_covid') (`rate_covid') (`ptime_comparator') (`events_comparator') (`rate_comparator')  ///
-							(`hr') (`lc') (`uc')
-			
-			}
+				post `measures'   ("$var") ("`level'") ("$group") ("`adjust'") ("`mon'") ///
+					(`hr') (`lc') (`uc') ///
+					(`ptime_covid') (`events_covid') (`rate_covid') ///
+					(`ptime_comparator') (`events_comparator')  (`rate_comparator') 
+
+			    }
+		    }
         }
-	restore			
+	}
+	restore	
 
-}
 
-
-}
 postclose `measures'
 
 * Change postfiles to csv
-use $tabfigdir/cox_model_summary_$var, replace
+use $tabfigdir/cox_model_split_summary_${group}_$var, replace
 
-export delimited using $tabfigdir/cox_model_summary_$var.csv, replace
-
+export delimited using $tabfigdir/cox_model_split_summary_${group}_$var, replace
 log close
