@@ -281,6 +281,52 @@ actions:
         log: output/cohorts/cox_models.txt
         dataset: output/tabfig/cox_model_summary.csv
 
+  # Cox model overall stratified by age
+  cox_models_age:
+    run: stata-mp:latest analysis/cox_models/203_cox_models_stratified.do "age_group" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_age_group.txt
+        dataset: output/tabfig/cox_model_summary_age_group*.csv
+
+  # Cox model overall stratified by ethnicity
+  cox_models_ethnicity:
+    run: stata-mp:latest analysis/cox_models/203_cox_models_stratified.do "ethnicity" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_ethnicity.txt
+        dataset: output/tabfig/cox_model_summary_ethnicity.csv
+
+   # Cox model overall stratified by IMD
+  cox_models_imd:
+    run: stata-mp:latest analysis/cox_models/203_cox_models_stratified.do "imd" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_imd.txt
+        dataset: output/tabfig/cox_model_summary_imd.csv
+
+  # Cox model overall stratified by region
+  cox_models_region:
+    run: stata-mp:latest analysis/cox_models/203_cox_models_stratified.do "region_9" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_region_9.txt
+        dataset: output/tabfig/cox_model_summary_region_9.csv
+
+  # Cox model overall stratified by sex
+  cox_models_sex:
+    run: stata-mp:latest analysis/cox_models/203_cox_models_stratified.do "male" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_male.txt
+        dataset: output/tabfig/cox_model_summary_male.csv
+
+  # Cox modes split by follow-up time
   cox_models_split_2020_pneumo:
     run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_pneumonia"
     needs: [append_cohorts]
@@ -328,6 +374,251 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_general_2021.txt
         dataset: output/tabfig/cox_model_split_summary_general_2021.csv
+
+  #  Cox modes split by follow-up time - stratified by age
+  cox_models_split_2020_pneumo_age:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_pneumonia" "age_group"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2020_pneumonia_age_group.txt
+        dataset: output/tabfig/cox_model_split_summary_2020_pneumonia_age_group.csv
+
+  cox_models_split_2021_pneumo_age:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_pneumonia" "age_group"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2021_pneumonia_age_group.txt
+        dataset: output/tabfig/cox_model_split_summary_2021_pneumonia_age_group.csv
+  
+  cox_models_split_2020_gen_2019_age:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_general_2019" "age_group"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2020_general_2019_age_group.txt
+        dataset: output/tabfig/cox_model_split_summary_2020_general_2019_age_group.csv
+        
+  cox_models_split_2021_gen_2019_age:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_general_2019" "age_group"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2021_general_2019_age_group.txt
+        dataset: output/tabfig/cox_model_split_summary_2021_general_2019_age_group.csv
+
+  cox_models_split_gen_2020_age:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2020" "age_group"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2020_age_group.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2020_age_group.csv
+        
+  cox_models_split_gen_2021_age:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2021" "age_group"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2021_age_group.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2021_age_group.csv
+
+  #  Cox models split by follow-up time - stratified by ethnicity
+  cox_models_split_2020_pneumo_ethnicity:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_pneumonia" "ethnicity"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2020_pneumonia_ethnicity.txt
+        dataset: output/tabfig/cox_model_split_summary_2020_pneumonia_ethnicity.csv
+
+  cox_models_split_2021_pneumo_ethnicity:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_pneumonia" "ethnicity"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2021_pneumonia_ethnicity.txt
+        dataset: output/tabfig/cox_model_split_summary_2021_pneumonia_ethnicity.csv
+  
+  cox_models_split_2020_gen_2019_ethnicity:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_general_2019" "ethnicity"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2020_general_2019_ethnicity.txt
+        dataset: output/tabfig/cox_model_split_summary_2020_general_2019_ethnicity.csv
+        
+  cox_models_split_2021_gen_2019_ethnicity:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_general_2019" "ethnicity"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2021_general_2019_ethnicity.txt
+        dataset: output/tabfig/cox_model_split_summary_2021_general_2019_ethnicity.csv
+
+  cox_models_split_gen_2020_ethnicity:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2020" "ethnicity"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2020_ethnicity.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2020_ethnicity.csv
+        
+  cox_models_split_gen_2021_ethnicity:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2021" "ethnicity"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2021_ethnicity.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2021_ethnicity.csv
+
+  #  Cox models split by follow-up time - stratified by IMD
+  cox_models_split_2020_pneumo_imd:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_pneumonia" "imd"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2020_pneumonia_imd.txt
+        dataset: output/tabfig/cox_model_split_summary_2020_pneumonia_imd.csv
+
+  cox_models_split_2021_pneumo_imd:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_pneumonia" "imd"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2021_pneumonia_imd.txt
+        dataset: output/tabfig/cox_model_split_summary_2021_pneumonia_imd.csv
+  
+  cox_models_split_2020_gen_2019_imd:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_general_2019" "imd"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2020_general_2019_imd.txt
+        dataset: output/tabfig/cox_model_split_summary_2020_general_2019_imd.csv
+        
+  cox_models_split_2021_gen_2019_imd:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_general_2019" "imd"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2021_general_2019_imd.txt
+        dataset: output/tabfig/cox_model_split_summary_2021_general_2019_imd.csv
+
+  cox_models_split_gen_2020_imd:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2020" "imd"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2020_imd.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2020_imd.csv
+        
+  cox_models_split_gen_2021_imd:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2021" "imd"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2021_imd.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2021_imd.csv
+
+  # Cox models split by follow-up time - stratified by region
+  cox_models_split_2020_pneumo_region:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_pneumonia" "region_9"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2020_pneumonia_region_9.txt
+        dataset: output/tabfig/cox_model_split_summary_2020_pneumonia_region_9.csv
+
+  cox_models_split_2021_pneumo_region:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_pneumonia" "region_9"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2021_pneumonia_region_9.txt
+        dataset: output/tabfig/cox_model_split_summary_2021_pneumonia_region_9.csv
+  
+  cox_models_split_2020_gen_2019_region:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_general_2019" "region_9"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2020_general_2019_region_9.txt
+        dataset: output/tabfig/cox_model_split_summary_2020_general_2019_region_9.csv
+        
+  cox_models_split_2021_gen_2019_region:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_general_2019" "region_9"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2021_general_2019_region_9.txt
+        dataset: output/tabfig/cox_model_split_summary_2021_general_2019_region_9.csv
+
+  cox_models_split_gen_2020_region:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2020" "region_9"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2020_region_9.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2020_region_9.csv
+        
+  cox_models_split_gen_2021_region:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2021" "region_9"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2021_region_9.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2021_region_9.csv
+  
+  #  Cox models split by follow-up time - stratified by sex
+  cox_models_split_2020_pneumo_male:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_pneumonia" "male"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2020_pneumonia_male.txt
+        dataset: output/tabfig/cox_model_split_summary_2020_pneumonia_male.csv
+
+  cox_models_split_2021_pneumo_sex:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_pneumonia" "male"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2021_pneumonia_male.txt
+        dataset: output/tabfig/cox_model_split_summary_2021_pneumonia_male.csv
+  
+  cox_models_split_2020_gen_2019_sex:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_general_2019" "male"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2020_general_2019_male.txt
+        dataset: output/tabfig/cox_model_split_summary_2020_general_2019_male.csv
+        
+  cox_models_split_2021_gen_2019_sex:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2021_general_2019" "male"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2021_general_2019_male.txt
+        dataset: output/tabfig/cox_model_split_summary_2021_general_2019_male.csv
+
+  cox_models_split_gen_2020_sex:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2020" "male"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2020_male.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2020_male.csv
+        
+  cox_models_split_gen_2021_sex:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2021" "male"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2021_male.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2021_male.csv
 
   # describe_duration_diagnoses:
   #   run: jupyter:latest jupyter nbconvert /workspace/notebooks/describe_duration_diagnoses.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
