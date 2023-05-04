@@ -86,13 +86,13 @@ foreach v in sick_note {
 				local rate_covid = `r(rate)'
 				local ptime_covid = `r(ptime)'
 				local events_covid .
-				local events_covid round(`r(failures)'/ 7 ) * 7
+				if `r(failures)' > 7 local events_covid round(`r(failures)'/ 7 ) * 7
 			
 				stptime if case == 0 & month == `mon' & male == `level'
 				local rate_comparator = `r(rate)'
 				local ptime_comparator = `r(ptime)'
 				local events_comparator .
-				local events_comparator round(`r(failures)'/ 7 ) * 7
+				if `r(failures)' > 7 local events_comparator round(`r(failures)'/ 7 ) * 7
 
 				post `measures'   ("male") ("`level'") ("$group") ("`adjust'") ("`mon'") ///
 					(`hr') (`lc') (`uc') ///

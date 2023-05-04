@@ -287,7 +287,7 @@ actions:
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
-        log: output/cohorts/cox_models_age_group.txt
+        log: output/cohorts/cox_models_summary_age_group.txt
         dataset: output/tabfig/cox_model_summary_age_group*.csv
 
   # Cox model overall stratified by ethnicity
@@ -296,7 +296,7 @@ actions:
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
-        log: output/cohorts/cox_models_ethnicity.txt
+        log: output/cohorts/cox_models_summary_ethnicity.txt
         dataset: output/tabfig/cox_model_summary_ethnicity.csv
 
    # Cox model overall stratified by IMD
@@ -305,7 +305,7 @@ actions:
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
-        log: output/cohorts/cox_models_imd.txt
+        log: output/cohorts/cox_models_summary_imd.txt
         dataset: output/tabfig/cox_model_summary_imd.csv
 
   # Cox model overall stratified by region
@@ -314,7 +314,7 @@ actions:
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
-        log: output/cohorts/cox_models_region_9.txt
+        log: output/cohorts/cox_models_summary_region_9.txt
         dataset: output/tabfig/cox_model_summary_region_9.csv
 
   # Cox model overall stratified by sex
@@ -323,7 +323,7 @@ actions:
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
-        log: output/cohorts/cox_models_male.txt
+        log: output/cohorts/cox_models_summary_male.txt
         dataset: output/tabfig/cox_model_summary_male.csv
 
   # Cox modes split by follow-up time
