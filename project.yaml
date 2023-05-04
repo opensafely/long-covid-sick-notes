@@ -281,6 +281,46 @@ actions:
         log: output/cohorts/cox_models.txt
         dataset: output/tabfig/cox_model_summary.csv
 
+  cox_models_age_group:
+    run: stata-mp:latest analysis/cox_models/203_cox_models_stratified.do "age_group" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_*.txt
+        dataset: output/tabfig/cox_model_summary_*.csv
+
+  cox_models_ethnicity:
+    run: stata-mp:latest analysis/cox_models/203_cox_models_stratified.do "ethnicity" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models*.txt
+        dataset: output/tabfig/cox_model_summary*.csv
+
+  cox_models_imd:
+    run: stata-mp:latest analysis/cox_models/203_cox_models_stratified.do "imd" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_*.txt
+        dataset: output/tabfig/cox_model_summary_*.csv
+
+  cox_models_region:
+    run: stata-mp:latest analysis/cox_models/203_cox_models_stratified.do "region_9" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models*.txt
+        dataset: output/tabfig/cox_model_summary*.csv
+
+  cox_models_sex:
+    run: stata-mp:latest analysis/cox_models/203_cox_models_stratified.do "male" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models*.txt
+        dataset: output/tabfig/cox_model_summary*.csv
+
   cox_models_split_2020_pneumo:
     run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_pneumonia"
     needs: [append_cohorts]
