@@ -22,7 +22,7 @@ library(ggpubr)
 
 
 # For running locally
-setwd("C:/Users/aschaffer/OneDrive - Nexus365/Documents/Released outputs/long-covid-sick-notes/")
+setwd("C:/Users/aschaffer/OneDrive - Nexus365/Documents/GitHub/long-covid-sick-notes")
 
 
 # Function for create factor variables
@@ -41,7 +41,7 @@ fct_case_when <- function(...) {
 ###############################################
 
 # By age group
-age <- read.csv(here::here("output", "cox_model_summary_age_group.csv")) %>%
+age <- read.csv(here::here("released", "cox_model_summary_age_group.csv")) %>%
   mutate(category = 
           fct_case_when(
               category == 1 ~ "18-24 y",
@@ -51,7 +51,7 @@ age <- read.csv(here::here("output", "cox_model_summary_age_group.csv")) %>%
               category == 5 ~ "55-64 y"))
 
 # By region (9)
-region <- read.csv(here::here("output", "cox_model_summary_region_9.csv")) %>%
+region <- read.csv(here::here("released", "cox_model_summary_region_9.csv")) %>%
   mutate(category = 
            fct_case_when(
               category == 1 ~ "East Midlands",
@@ -65,7 +65,7 @@ region <- read.csv(here::here("output", "cox_model_summary_region_9.csv")) %>%
               category == 9 ~ "Yorkshire & The Humber"))
 
 # By ethnicity (6 categories)
-ethnicity <- read.csv(here::here("output", "cox_model_summary_ethnicity.csv")) %>%
+ethnicity <- read.csv(here::here("released", "cox_model_summary_ethnicity.csv")) %>%
   mutate(category = 
            fct_case_when(
               category == 1 ~ "White",
@@ -76,14 +76,14 @@ ethnicity <- read.csv(here::here("output", "cox_model_summary_ethnicity.csv")) %
               category == 6 ~ "Unknown"))
 
 # By sex
-sex <-  read.csv(here::here("output", "cox_model_summary_male.csv")) %>%
+sex <-  read.csv(here::here("released", "cox_model_summary_male.csv")) %>%
   mutate(category = 
            fct_case_when(
               category == 0 ~ "Female",
               category == 1 ~ "Male")) 
 
 # By IMD quintile
-imd <- read.csv(here::here("output", "cox_model_summary_imd.csv")) %>%
+imd <- read.csv(here::here("released", "cox_model_summary_imd.csv")) %>%
   mutate(category = 
            fct_case_when(
               category == 1 ~ "1 (most deprived)",
@@ -193,7 +193,7 @@ ggplot(aes(x = hr, y = category, col = year, group = year, shape = year)) +
    guides(col = guide_legend(title = "COVID-19 cohort"),
           shape = guide_legend(title = "COVID-19 cohort"))
  
-ggsave(here::here("Graphs", "figure1.png"),
+ggsave(here::here("manuscript", "plots", "figure1.png"),
        dpi= 300, height = 6, width = 6.5, units = "in")
 
  
@@ -228,5 +228,5 @@ ggplot(aes(x = hr, y = category, col = year, group = year, shape = year)) +
   guides(col = guide_legend(title = "COVID-19 cohort"),
          shape = guide_legend(title = "COVID-19 cohort"))
 
-ggsave(here::here("Graphs", "supp_figure1.png"),
+ggsave(here::here("manuscript", "plots", "supp_figure1.png"),
        dpi= 300, height = 6, width = 5, units = "in")
