@@ -5,6 +5,7 @@ __pycache__
 .python-version
 output/*
 metadata/*
+released/*
 venv/
 notebooks/.ipynb_checkpoints/describe_duration-checkpoint.ipynb
 notebooks/.ipynb_checkpoints/rates_over_time-checkpoint.ipynb
