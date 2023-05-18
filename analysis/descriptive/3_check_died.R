@@ -80,7 +80,7 @@ died <- function(dat, cohort, enddate){
   
   dat2 <- dat %>% 
     mutate(died_censor = if_else(!is.na(died_date_ons) & 
-                            died_date_ons == sick_note_end_date, 1, 0, 0),
+                            died_date_ons == sick_note_end_date - 1, 1, 0, 0),
            died_any = if_else(!is.na(died_date_ons) &
                                 died_date_ons >= indexdate &
                                 died_date_ons <= enddate, 1, 0, 0),
