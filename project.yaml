@@ -648,3 +648,10 @@ actions:
       moderately_sensitive:
         table: output/tabfig/diag_by_cohort.csv
         plot: output/tabfig/diag_all.png        
+
+  check_died:
+    run: r:latest analysis/descriptive/3_check_died.R
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        table: output/tabfig/check_died.csv
