@@ -651,7 +651,8 @@ actions:
 
   check_died:
     run: r:latest analysis/descriptive/3_check_died.R
-    needs: [append_cohorts]
+    needs: [covid_2020_rates_cohort, covid_2021_rates_cohort, general_2019_rates_cohort,
+            general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort]
     outputs:
       moderately_sensitive:
         table: output/tabfig/check_died.csv

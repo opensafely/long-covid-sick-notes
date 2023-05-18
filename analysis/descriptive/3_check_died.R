@@ -26,50 +26,48 @@ dir_create(here::here("output", "tabfig"), showWarnings = FALSE, recurse = TRUE)
 
 ##### Read in data for each cohort #####
 
-covid20 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_general_2019.dta")) %>%
-  subset(case == 1) %>%
+covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
   mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
          died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
          sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
 
-covidhosp20 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
-  subset(case == 1) %>%
+covidhosp20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
+  subset(!is.na(hosp_expo_date) &
+           hosp_expo_date < sick_note_end_date) %>%
+  mutate(indexdate = hosp_expo_date,
+         indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
+         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
+         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
+
+covid21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta")) %>%
   mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
          died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
          sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
 
-covid21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_general_2019.dta")) %>%
-  subset(case == 1)%>%
+covidhosp21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta")) %>%
+  subset(!is.na(hosp_expo_date) &
+           hosp_expo_date < sick_note_end_date) %>%
+  mutate(indexdate = hosp_expo_date,
+         indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
+         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
+         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
+
+pneumo19 <- read_dta(here::here("output", "cohorts", "cohort_rates_pneumonia_2019.dta")) %>%
   mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
          died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
          sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
 
-covidhosp21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_pneumonia.dta")) %>%
-  subset(case == 1) %>%
+gen19 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2019.dta")) %>%
   mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
          died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
          sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
 
-pneumo19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
-  subset(case ==0)%>%
+gen20 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2020.dta")) %>%
   mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
          died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
          sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
 
-gen19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_general_2019.dta")) %>%
-  subset(case ==0)%>%
-  mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
-         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
-         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
-
-gen20 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2020.dta")) %>%
-  subset(case ==0)%>%
-  mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
-         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
-         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
-
-gen21 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2021.dta")) %>%
-  subset(case ==0)%>%
+gen21 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2021.dta")) %>%
   mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
          died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
          sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
