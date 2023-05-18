@@ -1,7 +1,6 @@
 ###############################################################
 # This script:
-# - Calculates number of people in each diagnosis category
-#     within each cohort and visualises the results
+# - Calculates number of people who died, and median/IQR follow-up time by cohort
 #
 # Author: Andrea Schaffer
 ################################################################
@@ -23,63 +22,38 @@ library(RColorBrewer)
 dir_create(here::here("output", "tabfig"), showWarnings = FALSE, recurse = TRUE)
 
 
-
 ##### Read in data for each cohort #####
 
-covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
-  mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
-         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
-         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
+covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) 
 
 covidhosp20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
-  subset(!is.na(hosp_expo_date) &
-           hosp_expo_date < sick_note_end_date) %>%
-  mutate(indexdate = hosp_expo_date,
-         indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
-         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
-         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
+  subset(!is.na(hosp_expo_date) & hosp_expo_date < sick_note_end_date)
 
-covid21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta")) %>%
-  mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
-         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
-         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
+covid21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta")) 
 
 covidhosp21 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2021.dta")) %>%
-  subset(!is.na(hosp_expo_date) &
-           hosp_expo_date < sick_note_end_date) %>%
-  mutate(indexdate = hosp_expo_date,
-         indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
-         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
-         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
+  subset(!is.na(hosp_expo_date) & hosp_expo_date < sick_note_end_date) 
 
-pneumo19 <- read_dta(here::here("output", "cohorts", "cohort_rates_pneumonia_2019.dta")) %>%
-  mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
-         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
-         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
+pneumo19 <- read_dta(here::here("output", "cohorts", "cohort_rates_pneumonia_2019.dta")) 
 
-gen19 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2019.dta")) %>%
-  mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
-         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
-         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
+gen19 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2019.dta")) 
 
-gen20 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2020.dta")) %>%
-  mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
-         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
-         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
+gen20 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2020.dta")) 
 
-gen21 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2021.dta")) %>%
-  mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
-         died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
-         sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"))
+gen21 <- read_dta(here::here("output", "cohorts", "cohort_rates_matched_2021.dta")) 
 
 
-###### Number who died #####
+###### Number who died and follow-up time #####
 died <- function(dat, cohort, enddate){
   
   enddate <- as.Date(enddate)
   
   dat2 <- dat %>% 
-    mutate(died_censor = if_else(!is.na(died_date_ons) & 
+    mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
+           died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
+           sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"),
+           
+           died_censor = if_else(!is.na(died_date_ons) & 
                             died_date_ons == sick_note_end_date - 1, 1, 0, 0),
            died_any = if_else(!is.na(died_date_ons) &
                                 died_date_ons >= indexdate &
@@ -122,5 +96,5 @@ all <- rbind(
          pcent_any = n_died_any / n * 100,
          pcent_censor = n_died_censor / n *100)
   
-
+# Save
 write.csv(all, here::here("output", "tabfig", "check_died.csv"))
