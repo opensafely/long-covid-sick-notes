@@ -50,30 +50,42 @@ gen21 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2021.d
 
 
 ###### Number who died #####
-died <- function(dat, cohort){
-  dat %>% 
-    mutate(died = if_else(!is.na(died_date_ons), 1, 0, 0),
+died <- function(dat, cohort, enddate){
+  
+  enddate = as.Date(enddate)
+  
+  dat2 <- dat %>% 
+    mutate(died = if_else(!is.na(died_date_ons) & 
+                            died_date_ons > indexdate &
+                            died_date_ons <= enddate, 1, 0, 0),
            time = as.integer(sick_note_end_date - indexdate),
-           cohort = cohort) %>%
+           cohort = cohort,
+           indexmissing = if_else(is.na(indexdate), 1, 0, 0),
+           endmissing = if_else(is.na(sick_note_end_date), 1, 0, 0)) %>%
     group_by(cohort) %>%
     summarise(n = n(),
               n_died = sum(died),
+              n_indexmiss = sum(indexmissing),
+              n_endmiss = sum(endmissing),
               median_time = median(time, na.rm = TRUE),
               q25 = quantile(time, 0.25, na.rm = TRUE), 
               q75 = quantile(time, 0.75, na.rm = TRUE))
+  
+  return(dat2)
 
 }
 
 
 ###### Apply function to each cohort and combine into one ######
 all <- rbind(
-              died(covid20, "COVID 2020"),
-              died(covid21, "COVID 2021"),
-              died(covidhosp20, "COVID hospitalised 2020"),
-              died(covidhosp21, "COVID hospitalised 2021"),
-              died(pneumo19, "Pneumonia 2019"),
-              died(gen20, "General pop 2020"),
-              died(gen21, "General pop 2021")
+              died(covid20, "COVID 2020", "2020-11-30"),
+              died(covid21, "COVID 2021", "2021-11-30"),
+              died(covidhosp20, "COVID hospitalised 2020", "2020-11-30"),
+              died(covidhosp21, "COVID hospitalised 2021", "2021-11-30"),
+              died(pneumo19, "Pneumonia 2019", "2019-11-30"),
+              died(gen20, "General pop 2020","2020-11-30"),
+              died(gen21, "General pop 2021", "2021-11-30"),
+              died(gen19, "General pop 2019", "2019-11-30")
               ) %>%
   mutate(n = case_when(n > 5 ~ n),
          n = round(n / 7) * 7,
