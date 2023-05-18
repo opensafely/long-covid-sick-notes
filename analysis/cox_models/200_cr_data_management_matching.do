@@ -44,9 +44,10 @@ foreach year in 2020 2021 {
 	* replace indexdate with admission date
 	drop indexdate
 	gen indexdate = hosp_expo_date
+	format indexdate %td
 	
 	* Drop if sick note between initial diagnosis and hospitalisation
-	drop if sick_note_end_date <= indexdate
+	drop if sick_note_end_date < indexdate
 
 	noi di "number of patients in both cohorts is `r(N)'"
 
