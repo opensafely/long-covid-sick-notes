@@ -49,7 +49,7 @@ died <- function(dat, cohort, enddate){
   
   dat2 <- dat %>% 
     mutate(indexdate = as.Date(indexdate, format = "%Y-%m-%d"),
-           died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
+           died_date_ons = as.Date(died_date_ons, format = "%Y-%m-%d"),
            sick_note_end_date = as.Date(sick_note_end_date, format = "%Y-%m-%d"),
            
            died_censor = if_else(!is.na(died_date_ons) & 
@@ -98,6 +98,27 @@ all <- rbind(
   
 # Save
 write.csv(all, here::here("output", "tabfig", "check_died.csv"))
+
+
+# Check death date
+dat1 <- gen19 %>%
+  group_by(died_date_ons) %>%
+  summarise(n = n())
+write.csv(dat1, here::here("output", "tabfig", "check_died_gen2019.csv"))
+
+
+dat2 <- gen20 %>%
+  group_by(died_date_ons) %>%
+  summarise(n = n()) 
+write.csv(dat2, here::here("output", "tabfig", "check_died_gen2020.csv"))
+
+
+dat3 <- gen21 %>%
+  group_by(died_date_ons) %>%
+  summarise(n = n())
+write.csv(dat3, here::here("output", "tabfig", "check_died_gen2021.csv"))
+
+
 
 
 #########################################################################
