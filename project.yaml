@@ -657,7 +657,7 @@ actions:
             reconcile_sick_note_spells_general_2021]
     outputs:
       moderately_sensitive:
-        table1: output/tabfig/check_died.csv        
+        table1: output/tabfig/check_died_g*.csv        
         table2: output/tabfig/check_died_input.csv       
         table3: output/tabfig/check_ons*.csv
         table4: output/tabfig/check_index*.csv
