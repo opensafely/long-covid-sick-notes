@@ -23,7 +23,6 @@ dir_create(here::here("output", "tabfig"), showWarnings = FALSE, recurse = TRUE)
 
 
 ##### Read in data for each cohort #####
-
 covid20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) 
 
 covidhosp20 <- read_dta(here::here("output", "cohorts", "cohort_rates_covid_2020.dta")) %>%
@@ -98,3 +97,54 @@ all <- rbind(
   
 # Save
 write.csv(all, here::here("output", "tabfig", "check_died.csv"))
+
+
+#########################################################################
+
+# Check earlier datasets to find source of issue
+
+##### Read in data for each cohort #####
+gen19 <- read.csv(here::here("output", "cohorts", "input_matched_2019_with_duration.csv")) 
+
+gen20 <- read.csv(here::here("output", "cohorts", "input_matched_2020_with_duration.csv")) 
+
+gen21 <- read.csv(here::here("output", "cohorts", "input_matched_2021_with_duration.csv")) 
+
+
+###### Number who died and follow-up time #####
+died <- function(dat, cohort, enddate){
+  
+  enddate <- as.Date(enddate)
+  
+  dat2 <- dat %>% 
+    mutate(patient_index_date = as.Date(patient_index_date, format = "%Y-%m-%d"),
+           died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
+           died_any = if_else(!is.na(died_date_ons) &
+                                died_date_ons >= patient_index_date &
+                                died_date_ons <= enddate, 1, 0, 0),
+           cohort = cohort) %>%
+    group_by(cohort) %>%
+    summarise(n = n(),
+              n_died_any = sum(died_any))
+  
+  return(dat2)
+  
+}
+
+
+###### Apply function to each cohort and combine into one ######
+all <- rbind(
+  died(gen20, "General pop 2020", "2020-11-30"),
+  died(gen21, "General pop 2021", "2021-11-30"),
+  died(gen19, "General pop 2019", "2019-11-30")
+) %>%
+  mutate(n = case_when(n > 5 ~ n),
+         n = round(n / 7) * 7,
+         
+         n_died_any = case_when(n_died_any > 5 ~ n_died_any),
+         n_died_any = round(n_died_any / 7) * 7,
+         
+         pcent_any = n_died_any / n * 100)
+
+# Save
+write.csv(all, here::here("output", "tabfig", "check_died_input.csv"))
