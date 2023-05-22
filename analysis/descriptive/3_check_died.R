@@ -54,6 +54,7 @@ died <- function(dat, cohort, enddate){
            
            died_censor = if_else(!is.na(died_date_ons) & 
                             died_date_ons == sick_note_end_date - 1, 1, 0, 0),
+           
            died_any = if_else(!is.na(died_date_ons) &
                                 died_date_ons >= indexdate &
                                 died_date_ons <= enddate, 1, 0, 0),
@@ -152,7 +153,7 @@ all <- rbind(
 write.csv(all, here::here("output", "tabfig", "check_died_input.csv"))
 
 
-# Check index and death dates
+# Check death date
 dat1 <- gen19 %>%
   group_by(died_date_ons) %>%
   summarise(n = n())
@@ -171,16 +172,14 @@ dat3 <- gen21 %>%
 write.csv(dat3, here::here("output", "tabfig", "check_ons_dates_gen2021.csv"))
 
 
-
-
-# Check index and death dates
+# Check index date
 dat1 <- gen19 %>%
   group_by(patient_index_date) %>%
   summarise(n = n()) 
 write.csv(dat1, here::here("output", "tabfig", "check_index_dates_gen2019.csv"))
 
 
-dat1 <- gen20 %>%
+dat2 <- gen20 %>%
   group_by(patient_index_date) %>%
   summarise(n = n()) 
 write.csv(dat2, here::here("output", "tabfig", "check_index_dates_gen2020.csv"))
@@ -192,16 +191,14 @@ dat3 <- gen21 %>%
 write.csv(dat3, here::here("output", "tabfig", "check_index_dates_gen2021.csv"))
 
 
-
-
-# Check index and death dates
+# Check deregistered date
 dat1 <- gen19 %>%
   group_by(deregistered) %>%
   summarise(n = n()) 
 write.csv(dat1, here::here("output", "tabfig", "check_deregister_dates_gen2019.csv"))
 
 
-dat1 <- gen20 %>%
+dat2 <- gen20 %>%
   group_by(deregistered) %>%
   summarise(n = n()) 
 write.csv(dat2, here::here("output", "tabfig", "check_deregister_dates_gen2020.csv"))
