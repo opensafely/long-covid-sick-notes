@@ -189,4 +189,25 @@ write.csv(dat2, here::here("output", "tabfig", "check_index_dates_gen2020.csv"))
 dat3 <- gen21 %>%
   group_by(patient_index_date) %>%
   summarise(n = n())
-write.csv(dat3, here::here("output", "tabfig", "check_uidex_dates_gen2021.csv"))
+write.csv(dat3, here::here("output", "tabfig", "check_index_dates_gen2021.csv"))
+
+
+
+
+# Check index and death dates
+dat1 <- gen19 %>%
+  group_by(deregistered) %>%
+  summarise(n = n()) 
+write.csv(dat1, here::here("output", "tabfig", "check_deregister_dates_gen2019.csv"))
+
+
+dat1 <- gen20 %>%
+  group_by(deregistered) %>%
+  summarise(n = n()) 
+write.csv(dat2, here::here("output", "tabfig", "check_deregister_dates_gen2020.csv"))
+
+
+dat3 <- gen21 %>%
+  group_by(deregistered) %>%
+  summarise(n = n())
+write.csv(dat3, here::here("output", "tabfig", "check_deregister_dates_gen2021.csv"))

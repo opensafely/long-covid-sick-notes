@@ -661,3 +661,4 @@ actions:
         table2: output/tabfig/check_died_input.csv       
         table3: output/tabfig/check_ons*.csv
         table4: output/tabfig/check_index*.csv
+        table5: output/tabfig/check_deregister*.csv
