@@ -112,7 +112,7 @@ gen21 <- read.csv(here::here("output", "cohorts", "input_matched_2021_with_durat
 
 
 ###### Number who died and follow-up time #####
-died <- function(dat, cohort, enddate){
+died2 <- function(dat, cohort, enddate){
   
   enddate <- as.Date(enddate)
   
@@ -122,10 +122,12 @@ died <- function(dat, cohort, enddate){
            died_any = if_else(!is.na(died_date_ons) &
                                 died_date_ons >= patient_index_date &
                                 died_date_ons <= enddate, 1, 0, 0),
-           cohort = cohort) %>%
+           indexmissing = if_else(is.na(patient_index_date), 1, 0, 0),
+           cohort = cohort,) %>%
     group_by(cohort) %>%
     summarise(n = n(),
-              n_died_any = sum(died_any))
+              n_died_any = sum(died_any),
+              n_indexmiss = sum(indexmissing))
   
   return(dat2)
   
@@ -134,9 +136,9 @@ died <- function(dat, cohort, enddate){
 
 ###### Apply function to each cohort and combine into one ######
 all <- rbind(
-  died(gen20, "General pop 2020", "2020-11-30"),
-  died(gen21, "General pop 2021", "2021-11-30"),
-  died(gen19, "General pop 2019", "2019-11-30")
+  died2(gen20, "General pop 2020", "2020-11-30"),
+  died2(gen21, "General pop 2021", "2021-11-30"),
+  died2(gen19, "General pop 2019", "2019-11-30")
 ) %>%
   mutate(n = case_when(n > 5 ~ n),
          n = round(n / 7) * 7,
@@ -148,3 +150,43 @@ all <- rbind(
 
 # Save
 write.csv(all, here::here("output", "tabfig", "check_died_input.csv"))
+
+
+# Check index and death dates
+dat1 <- gen19 %>%
+  group_by(died_date_ons) %>%
+  summarise(n = n())
+write.csv(dat1, here::here("output", "tabfig", "check_ons_dates_gen2019.csv"))
+
+
+dat2 <- gen20 %>%
+  group_by(died_date_ons) %>%
+  summarise(n = n()) 
+write.csv(dat2, here::here("output", "tabfig", "check_ons_dates_gen2020.csv"))
+
+
+dat3 <- gen21 %>%
+    group_by(died_date_ons) %>%
+    summarise(n = n())
+write.csv(dat3, here::here("output", "tabfig", "check_ons_dates_gen2021.csv"))
+
+
+
+
+# Check index and death dates
+dat1 <- gen19 %>%
+  group_by(patient_index_date) %>%
+  summarise(n = n()) 
+write.csv(dat1, here::here("output", "tabfig", "check_index_dates_gen2019.csv"))
+
+
+dat1 <- gen20 %>%
+  group_by(patient_index_date) %>%
+  summarise(n = n()) 
+write.csv(dat2, here::here("output", "tabfig", "check_index_dates_gen2020.csv"))
+
+
+dat3 <- gen21 %>%
+  group_by(patient_index_date) %>%
+  summarise(n = n())
+write.csv(dat3, here::here("output", "tabfig", "check_uidex_dates_gen2021.csv"))
