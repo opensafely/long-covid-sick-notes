@@ -119,6 +119,42 @@ dat3 <- gen21 %>%
 write.csv(dat3, here::here("output", "tabfig", "check_died_gen2021.csv"))
 
 
+# Check index date
+dat1 <- gen19 %>%
+  group_by(indexdate) %>%
+  summarise(n = n()) 
+write.csv(dat1, here::here("output", "tabfig", "check_index_dates_gen2019.csv"))
+
+
+dat2 <- gen20 %>%
+  group_by(indexdate) %>%
+  summarise(n = n()) 
+write.csv(dat2, here::here("output", "tabfig", "check_index_dates_gen2020.csv"))
+
+
+dat3 <- gen21 %>%
+  group_by(indexdate) %>%
+  summarise(n = n())
+write.csv(dat3, here::here("output", "tabfig", "check_index_dates_gen2021.csv"))
+
+
+# Check deregistered date
+dat1 <- gen19 %>%
+  group_by(deregistered_date) %>%
+  summarise(n = n()) 
+write.csv(dat1, here::here("output", "tabfig", "check_deregister_dates_gen2019.csv"))
+
+
+dat2 <- gen20 %>%
+  group_by(deregistered_date) %>%
+  summarise(n = n()) 
+write.csv(dat2, here::here("output", "tabfig", "check_deregister_dates_gen2020.csv"))
+
+
+dat3 <- gen21 %>%
+  group_by(deregistered_date) %>%
+  summarise(n = n())
+write.csv(dat3, here::here("output", "tabfig", "check_deregister_dates_gen2021.csv"))
 
 
 #########################################################################
@@ -126,33 +162,43 @@ write.csv(dat3, here::here("output", "tabfig", "check_died_gen2021.csv"))
 # Check earlier datasets to find source of issue
 
 ##### Read in data for each cohort #####
-gen19 <- read.csv(here::here("output", "cohorts", "input_matched_2019_with_duration.csv")) 
+gen19 <- read.csv(here::here("output", "cohorts", "input_matched_2019_with_duration.csv"))
 
-gen20 <- read.csv(here::here("output", "cohorts", "input_matched_2020_with_duration.csv")) 
+gen20 <- read.csv(here::here("output", "cohorts", "input_matched_2020_with_duration.csv"))
 
-gen21 <- read.csv(here::here("output", "cohorts", "input_matched_2021_with_duration.csv")) 
+gen21 <- read.csv(here::here("output", "cohorts", "input_matched_2021_with_duration.csv"))
 
 
 ###### Number who died and follow-up time #####
 died2 <- function(dat, cohort, enddate){
-  
+
   enddate <- as.Date(enddate)
-  
-  dat2 <- dat %>% 
+
+  dat2 <- dat %>%
     mutate(patient_index_date = as.Date(patient_index_date, format = "%Y-%m-%d"),
            died_date_ons = as.Date(died_date_ons,format = "%Y-%m-%d"),
            died_any = if_else(!is.na(died_date_ons) &
                                 died_date_ons >= patient_index_date &
                                 died_date_ons <= enddate, 1, 0, 0),
            indexmissing = if_else(is.na(patient_index_date), 1, 0, 0),
-           cohort = cohort,) %>%
+           cohort = cohort,
+           
+           time_index_dod = as.integer(patient_index_date - died_date_ons),
+           time_end_dod = as.integer(enddate - died_date_ons)) %>%
     group_by(cohort) %>%
     summarise(n = n(),
               n_died_any = sum(died_any),
-              n_indexmiss = sum(indexmissing))
-  
+              n_indexmiss = sum(indexmissing),
+              time_index_dod_med =  median(time_index_dod, na.rm = TRUE),
+              time_index_dod_q25 = quantile(time_index_dod, 0.25, na.rm = TRUE), 
+              time_index_dod_q75 = quantile(time_index_dod, 0.75, na.rm = TRUE),
+              
+              time_end_dod_med =  median(time_end_dod, na.rm = TRUE),
+              time_end_dod_q25 = quantile(time_end_dod, 0.25, na.rm = TRUE), 
+              time_end_dod_q75 = quantile(time_end_dod, 0.75, na.rm = TRUE))
+
   return(dat2)
-  
+
 }
 
 
@@ -164,11 +210,11 @@ all <- rbind(
 ) %>%
   mutate(n = case_when(n > 5 ~ n),
          n = round(n / 7) * 7,
-         
+
          n_died_any = case_when(n_died_any > 5 ~ n_died_any),
          n_died_any = round(n_died_any / 7) * 7,
-         
-         pcent_any = n_died_any / n * 100)
+
+         pcent_any = n_died_any / n * 100,)
 
 # Save
 write.csv(all, here::here("output", "tabfig", "check_died_input.csv"))
@@ -183,7 +229,7 @@ write.csv(dat1, here::here("output", "tabfig", "check_ons_dates_gen2019.csv"))
 
 dat2 <- gen20 %>%
   group_by(died_date_ons) %>%
-  summarise(n = n()) 
+  summarise(n = n())
 write.csv(dat2, here::here("output", "tabfig", "check_ons_dates_gen2020.csv"))
 
 
@@ -196,13 +242,13 @@ write.csv(dat3, here::here("output", "tabfig", "check_ons_dates_gen2021.csv"))
 # Check index date
 dat1 <- gen19 %>%
   group_by(patient_index_date) %>%
-  summarise(n = n()) 
+  summarise(n = n())
 write.csv(dat1, here::here("output", "tabfig", "check_index_dates_gen2019.csv"))
 
 
 dat2 <- gen20 %>%
   group_by(patient_index_date) %>%
-  summarise(n = n()) 
+  summarise(n = n())
 write.csv(dat2, here::here("output", "tabfig", "check_index_dates_gen2020.csv"))
 
 
@@ -215,13 +261,13 @@ write.csv(dat3, here::here("output", "tabfig", "check_index_dates_gen2021.csv"))
 # Check deregistered date
 dat1 <- gen19 %>%
   group_by(deregistered) %>%
-  summarise(n = n()) 
+  summarise(n = n())
 write.csv(dat1, here::here("output", "tabfig", "check_deregister_dates_gen2019.csv"))
 
 
 dat2 <- gen20 %>%
   group_by(deregistered) %>%
-  summarise(n = n()) 
+  summarise(n = n())
 write.csv(dat2, here::here("output", "tabfig", "check_deregister_dates_gen2020.csv"))
 
 
