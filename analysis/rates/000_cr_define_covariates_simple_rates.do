@@ -212,7 +212,7 @@ replace deregistered_date = . if deregistered_date > `end_date'
 
 * Note: There may be deaths recorded after end of our study 
 * Set these to missing
-replace died_date_ons = . if died_date_ons > `end_date'
+* replace died_date_ons = . if died_date_ons > `end_date'
 
 * Set sick note to missing if outside study period
 replace sick_note_1_date = . if sick_note_1_date < indexdate
