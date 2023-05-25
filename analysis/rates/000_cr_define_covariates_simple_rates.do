@@ -104,7 +104,7 @@ foreach var of varlist sgss_positive					///
 drop if died_date_ons < indexdate
 
 * Drop if deregistered before indexdate
-drop if deregistered < indexdate
+drop if deregistered_date < indexdate
 
 **********************
 *  Recode variables  *
@@ -208,7 +208,7 @@ tempname outcomeDist
 	postfile `outcomeDist' str20(outcome) str12(type) numEvents percent using $tabfigdir/outcome_distribution_$group.dta, replace
 
 * The default deregistration date is 9999-12-31, so:
-replace deregistered = . if deregistered > `end_date'
+replace deregistered_date = . if deregistered_date > `end_date'
 
 * Note: There may be deaths recorded after end of our study 
 * Set these to missing
