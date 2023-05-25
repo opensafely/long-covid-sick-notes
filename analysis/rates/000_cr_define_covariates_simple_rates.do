@@ -175,6 +175,7 @@ label define region_7 	1 "East"							///
 label values region_7 region_7
 label var region_7 "Region of England (7 regions)"
 	
+
 **************************
 *  Categorise variables  *
 **************************
@@ -188,6 +189,7 @@ drop temp
 * Create restricted cubic splines for age
 cap drop age1
 mkspline age = age, cubic nknots(4)
+
 
 ***************************
 *  Grouped comorbidities  *
@@ -248,7 +250,6 @@ foreach out in sick_note {
 
 drop if sick_note_end_date < indexdate
 
-duplicates drop 
 
 postclose `outcomeDist'
 										
