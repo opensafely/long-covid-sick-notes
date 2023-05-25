@@ -53,6 +53,17 @@ drop if imd > 5
 drop if region == ""
 
 
+if "$group" == "covid_2020" | "$group" == "covid_2021" { 
+	gen hosp_expo_date = date(hospital_covid, "YMD")
+	format hosp_expo_date %td
+}
+
+if "$group" == "pneumonia_2019"  { 
+	gen hosp_expo_date = date(pneumonia_admission_date, "YMD")
+	format hosp_expo_date %td
+}
+
+
 ******************************
 *  Convert strings to dates  *
 ******************************
@@ -94,16 +105,6 @@ drop if died_date_ons < indexdate
 
 * Drop if deregistered before indexdate
 drop if deregistered < indexdate
-
-if "$group" == "covid_2020" | "$group" == "covid_2021" { 
-	gen hosp_expo_date = date(hospital_covid, "YMD")
-	format hosp_expo_date %td
-}
-
-if "$group" == "pneumonia_2019"  { 
-	gen hosp_expo_date = date(pneumonia_admission_date, "YMD")
-	format hosp_expo_date %td
-}
 
 **********************
 *  Recode variables  *
