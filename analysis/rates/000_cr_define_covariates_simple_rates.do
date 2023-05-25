@@ -250,6 +250,7 @@ foreach out in sick_note {
 
 drop if sick_note_end_date < indexdate
 
+duplicates drop 
 
 postclose `outcomeDist'
 										
