@@ -100,11 +100,6 @@ foreach var of varlist sgss_positive					///
 		}
 }
 
-* drop if died before index date
-drop if died_date_ons < indexdate
-
-* Drop if deregistered before indexdate
-drop if deregistered_date < indexdate
 
 **********************
 *  Recode variables  *
@@ -207,20 +202,26 @@ tempname outcomeDist
 																	 
 	postfile `outcomeDist' str20(outcome) str12(type) numEvents percent using $tabfigdir/outcome_distribution_$group.dta, replace
 
+* Drop if deregistered before indexdate
+drop if deregistered_date !=. & deregistered_date < indexdate
+
 * The default deregistration date is 9999-12-31, so:
-replace deregistered_date = . if deregistered_date > `end_date'
+replace deregistered_date = . if deregistered_date !=. & deregistered_date > `end_date'
 
 * Note: There may be deaths recorded after end of our study 
 * Set these to missing
-* replace died_date_ons = . if died_date_ons > `end_date'
+replace died_date_ons = . if died_date_ons !=. & died_date_ons > `end_date'
+
+* drop if died before index date
+drop if died_date_ons !=. & died_date_ons < indexdate
 
 * Set sick note to missing if outside study period
-replace sick_note_1_date = . if sick_note_1_date < indexdate
-replace sick_note_1_date = . if sick_note_1_date > `end_date'
+replace sick_note_1_date = . if sick_note_1_date !=. & sick_note_1_date < indexdate
+replace sick_note_1_date = . if sick_note_1_date !=. & sick_note_1_date > `end_date'
 
 * Set covid diagnosis to missing if outside study period
-replace covid_diagnosis_date = . if covid_diagnosis_date < indexdate
-replace covid_diagnosis_date = . if covid_diagnosis_date > `end_date'
+replace covid_diagnosis_date = . if covid_diagnosis_date !=. & covid_diagnosis_date < indexdate
+replace covid_diagnosis_date = . if covid_diagnosis_date !=. & covid_diagnosis_date > `end_date'
 
 * Create new sick note flag
 gen sick_note = 1 if sick_note_1_date != .
