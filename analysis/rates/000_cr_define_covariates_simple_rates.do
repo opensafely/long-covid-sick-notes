@@ -20,11 +20,11 @@ do `c(pwd)'/analysis/global.do
 global group `1'
 
 if "$group" == "covid_2020"  | "$group" == "matched_2020" { 
-	local start_date  td(01/02/2020)
+	local start_date td(01/02/2020)
 	local end_date td(30/11/2020)
 }
 else if "$group" == "covid_2021"  | "$group" == "matched_2021" { 
-	local start_date  td(01/02/2021)
+	local start_date td(01/02/2021)
 	local end_date td(30/11/2021)
 }
 else {
@@ -51,16 +51,6 @@ drop if imd == .
 drop if imd < 1
 drop if imd > 5
 drop if region == ""
-
-if "$group" == "covid_2020" | "$group" == "covid_2021" { 
-	gen hosp_expo_date = date(hospital_covid, "YMD")
-	format hosp_expo_date %td
-}
-
-if "$group" == "pneumonia_2019"  { 
-	gen hosp_expo_date = date(pneumonia_admission_date, "YMD")
-	format hosp_expo_date %td
-}
 
 
 ******************************
@@ -99,15 +89,21 @@ foreach var of varlist sgss_positive					///
 		}
 }
 
-* drop if died before discharge date
+* drop if died before index date
 drop if died_date_ons < indexdate
+
 * Drop if deregistered before indexdate
 drop if deregistered < indexdate
 
-* Note: There may be deaths recorded after end of our study 
-* Set these to missing
-replace died_date_ons = . if died_date_ons > `end_date'
+if "$group" == "covid_2020" | "$group" == "covid_2021" { 
+	gen hosp_expo_date = date(hospital_covid, "YMD")
+	format hosp_expo_date %td
+}
 
+if "$group" == "pneumonia_2019"  { 
+	gen hosp_expo_date = date(pneumonia_admission_date, "YMD")
+	format hosp_expo_date %td
+}
 
 **********************
 *  Recode variables  *
@@ -213,6 +209,10 @@ tempname outcomeDist
 * The default deregistration date is 9999-12-31, so:
 replace deregistered = . if deregistered > `end_date'
 
+* Note: There may be deaths recorded after end of our study 
+* Set these to missing
+replace died_date_ons = . if died_date_ons > `end_date'
+
 * Set sick note to missing if outside study period
 replace sick_note_1_date = . if sick_note_1_date < indexdate
 replace sick_note_1_date = . if sick_note_1_date > `end_date'
@@ -244,7 +244,7 @@ foreach out in sick_note {
 
 }
 
-drop if sick_note_end_date <= indexdate
+drop if sick_note_end_date < indexdate
 
 duplicates drop 
 
