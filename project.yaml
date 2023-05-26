@@ -5,6 +5,7 @@ expectations:
 
 actions:
 
+  ### Generate COVID study population - 2020, 2021, 2022
   generate_study_population_covid_2020:
     run: cohortextractor:latest generate_cohort
       --study-definition study_definition_covid_2020
@@ -22,7 +23,17 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/cohorts/input_covid_2021.csv.gz
+        
+  generate_study_population_covid_2022:
+    run: cohortextractor:latest generate_cohort
+      --study-definition study_definition_covid_2022
+      --output-dir=output/cohorts
+      --output-format=csv.gz
+    outputs:
+      highly_sensitive:
+        cohort: output/cohorts/input_covid_2022.csv.gz
 
+  ### Generate matching variables for general population comparators
   generate_study_population_general_match_vars_2019:
     run: cohortextractor:latest generate_cohort
       --study-definition study_definition_general_match_vars
@@ -52,7 +63,18 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/cohorts/input_general_match_vars_2021-02-01.csv.gz
+  
+  generate_study_population_general_match_vars_2022:
+    run: cohortextractor:latest generate_cohort
+      --study-definition study_definition_general_match_vars
+      --output-dir=output/cohorts
+      --output-format=csv.gz
+      --index-date-range="2022-02-01"
+    outputs:
+      highly_sensitive:
+        cohort: output/cohorts/input_general_match_vars_2022-02-01.csv.gz
 
+  # Generate pneumonia comparator
   generate_study_population_pneumonia_2019:
     run: cohortextractor:latest generate_cohort
       --study-definition study_definition_pneumonia_2019
@@ -62,6 +84,7 @@ actions:
       highly_sensitive:
         cohort: output/cohorts/input_pneumonia_2019.csv.gz
 
+  # Perform matching for general population comparators
   matching_2019:
     run: python:latest python analysis/match_running.py "2019" --output-dir=output/cohorts
     needs: [generate_study_population_covid_2020, generate_study_population_general_match_vars_2019]
@@ -89,6 +112,16 @@ actions:
       highly_sensitive:
         matched_cohort: output/cohorts/matched_matches_general_2021.csv
 
+  matching_2022:
+    run: python:latest python analysis/match_running.py "2022" --output-dir=output/cohorts
+    needs: [generate_study_population_covid_2022, generate_study_population_general_match_vars_2022]
+    outputs:
+      moderately_sensitive:
+        matching_report: output/cohorts/matching_report_general_2022.txt
+      highly_sensitive:
+        matched_cohort: output/cohorts/matched_matches_general_2022.csv
+
+  # Generate matched general population comparators
   generate_study_population_matched_2019:
     run: cohortextractor:latest generate_cohort
       --study-definition study_definition_matched_2019
@@ -118,7 +151,18 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/cohorts/input_matched_2021.csv.gz
+        
+  generate_study_population_matched_2022:
+    run: cohortextractor:latest generate_cohort
+      --study-definition study_definition_matched_2022
+      --output-dir=output/cohorts
+      --output-format=csv.gz
+    needs: [matching_2022]
+    outputs:
+      highly_sensitive:
+        cohort: output/cohorts/input_matched_2022.csv.gz
 
+  # Extract sick note data
   reconcile_sick_note_spells_covid_2020:
     run: python:latest python analysis/reconcile_sick_note_spells.py "_covid_2020"
     needs: [generate_study_population_covid_2020]
@@ -153,6 +197,13 @@ actions:
     outputs:
       highly_sensitive:
         cohort_with_duration: output/cohorts/input_matched_2021_with_duration.csv
+        
+  reconcile_sick_note_spells_general_2022:
+    run: python:latest python analysis/reconcile_sick_note_spells.py "_matched_2022"
+    needs: [generate_study_population_matched_2022]
+    outputs:
+      highly_sensitive:
+        cohort_with_duration: output/cohorts/input_matched_2022_with_duration.csv
 
   reconcile_sick_note_spells_pneumonia_2019:
     run: python:latest python analysis/reconcile_sick_note_spells.py "_pneumonia_2019"
@@ -161,6 +212,7 @@ actions:
       highly_sensitive:
         cohort_with_duration: output/cohorts/input_pneumonia_2019_with_duration.csv
 
+  # Process data 
   covid_2020_rates_cohort:
     run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "covid_2020" --output-dir=output/cohorts
     needs: [reconcile_sick_note_spells_covid_2020]
@@ -171,6 +223,13 @@ actions:
   covid_2021_rates_cohort:
     run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "covid_2021" --output-dir=output/cohorts
     needs: [reconcile_sick_note_spells_covid_2021]
+    outputs:
+      highly_sensitive:
+        analysis_dataset: output/cohorts/cohort_rates*.dta
+        
+  covid_2022_rates_cohort:
+    run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "covid_2022" --output-dir=output/cohorts
+    needs: [reconcile_sick_note_spells_covid_2022]
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates*.dta
@@ -195,6 +254,13 @@ actions:
     outputs:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_matched_2021.dta
+        
+  general_2022_rates_cohort:
+    run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "matched_2022" --output-dir=output/cohorts
+    needs: [reconcile_sick_note_spells_general_2022]
+    outputs:
+      highly_sensitive:
+        analysis_dataset: output/cohorts/cohort_rates_matched_2022.dta
 
   pneumonia_2019_rates_cohort:
     run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "pneumonia_2019" --output-dir=output/cohorts
@@ -203,6 +269,7 @@ actions:
       highly_sensitive:
         analysis_dataset: output/cohorts/cohort_rates_pneumonia_2019.dta
 
+  # Generate fit note rates by cohort and demographics
   covid_2020_rates:
     run: stata-mp:latest analysis/rates/100_cr_simple_rates.do "covid_2020" --output-dir=output/tabfig
     needs: [covid_2020_rates_cohort]
@@ -238,6 +305,13 @@ actions:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_matched_2021.csv
         
+  general_2022_rates:
+    run: stata-mp:latest analysis/rates/100_cr_simple_rates.do "matched_2022" --output-dir=output/tabfig
+    needs: [general_2022_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_matched_2022.csv
+        
   pneumonia_2019_rates:
     run: stata-mp:latest analysis/rates/100_cr_simple_rates_hosp.do "pneumonia_2019" --output-dir=output/tabfig
     needs: [pneumonia_2019_rates_cohort]
@@ -258,21 +332,33 @@ actions:
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_hosp_covid_2021.csv
+        
+  covid_hosp_2022_rates:
+    run: stata-mp:latest analysis/rates/100_cr_simple_rates_hosp.do "covid_2022" --output-dir=output/tabfig
+    needs: [covid_2022_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_hosp_covid_2022.csv
 
+  # Combine COVID cohort with comparator for regression models
   append_cohorts:
     run: stata-mp:latest analysis/cox_models/200_cr_data_management_matching.do --output-dir=output/cohorts
-    needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, pneumonia_2019_rates_cohort, general_2021_rates_cohort, general_2020_rates_cohort, general_2019_rates_cohort]
+    needs: [covid_2021_rates_cohort, covid_2020_rates_cohort, covid_2022_rates_cohort, pneumonia_2019_rates_cohort, general_2021_rates_cohort, general_2020_rates_cohort, general_2019_rates_cohort, general_2022_rates_cohort]
     outputs:
       moderately_sensitive:
         log: output/cohorts/append_cohorts.txt
       highly_sensitive: 
         dataset: output/cohorts/combined_covid_2020_pneumonia.dta
         dataset2: output/cohorts/combined_covid_2021_pneumonia.dta
-        dataset3: output/cohorts/combined_covid_2020_general_2019.dta
-        dataset4: output/cohorts/combined_covid_2021_general_2019.dta
-        dataset5: output/cohorts/combined_covid_general_2020.dta
-        dataset6: output/cohorts/combined_covid_general_2021.dta
+        dataset3: output/cohorts/combined_covid_2022_pneumonia.dta
+        dataset4: output/cohorts/combined_covid_2020_general_2019.dta
+        dataset5: output/cohorts/combined_covid_2021_general_2019.dta
+        dataset6: output/cohorts/combined_covid_2022_general_2019.dta
+        dataset7: output/cohorts/combined_covid_general_2020.dta
+        dataset8: output/cohorts/combined_covid_general_2021.dta
+        dataset9: output/cohorts/combined_covid_general_2022.dta
 
+  # Run overall Cox models
   cox_models:
     run: stata-mp:latest analysis/cox_models/201_cox_models.do
     needs: [append_cohorts]
@@ -342,6 +428,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_2021_pneumonia.txt
         dataset: output/tabfig/cox_model_split_summary_2021_pneumonia.csv
+
+  cox_models_split_2022_pneumo:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2022_pneumonia"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_pneumonia.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_pneumonia.csv
   
   cox_models_split_2020_gen_2019:
     run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2020_general_2019"
@@ -359,6 +453,14 @@ actions:
         log: output/cohorts/cox_models_split_2021_general_2019.txt
         dataset: output/tabfig/cox_model_split_summary_2021_general_2019.csv
 
+  cox_models_split_2022_gen_2019:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "2022_general_2019"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_general_2019.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_general_2019.csv
+
   cox_models_split_gen_2020:
     run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2020"
     needs: [append_cohorts]
@@ -374,6 +476,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_general_2021.txt
         dataset: output/tabfig/cox_model_split_summary_general_2021.csv
+
+  cox_models_split_gen_2022:
+    run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2022"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2022.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2022.csv
 
   #  Cox modes split by follow-up time - stratified by age
   cox_models_split_2020_pneumo_age:
@@ -391,6 +501,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_2021_pneumonia_age_group.txt
         dataset: output/tabfig/cox_model_split_summary_2021_pneumonia_age_group.csv
+        
+  cox_models_split_2022_pneumo_age:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_age.do "2022_pneumonia"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_pneumonia_age_group.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_pneumonia_age_group.csv
   
   cox_models_split_2020_gen_2019_age:
     run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_age.do "2020_general_2019"
@@ -408,6 +526,14 @@ actions:
         log: output/cohorts/cox_models_split_2021_general_2019_age_group.txt
         dataset: output/tabfig/cox_model_split_summary_2021_general_2019_age_group.csv
 
+  cox_models_split_2022_gen_2019_age:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_age.do "2022_general_2019" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_general_2019_age_group.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_general_2019_age_group.csv
+
   cox_models_split_gen_2020_age:
     run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_age.do "general_2020"
     needs: [append_cohorts]
@@ -422,7 +548,15 @@ actions:
     outputs:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_general_2021_age_group.txt
-        dataset: output/tabfig/cox_model_split_summary_general_2021_age_group.csv
+        dataset: output/tabfig/cox_model_split_summary_general_2021_age_group.csv        
+
+  cox_models_split_gen_2022_age:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_age.do "general_2022" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2022_age_group.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2022_age_group.csv
 
   #  Cox models split by follow-up time - stratified by ethnicity
   cox_models_split_2020_pneumo_ethnicity:
@@ -440,6 +574,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_2021_pneumonia_ethnicity.txt
         dataset: output/tabfig/cox_model_split_summary_2021_pneumonia_ethnicity.csv
+
+  cox_models_split_2022_pneumo_ethnicity:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_ethnicity.do "2022_pneumonia" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_pneumonia_ethnicity.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_pneumonia_ethnicity.csv
   
   cox_models_split_2020_gen_2019_ethnicity:
     run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_ethnicity.do "2020_general_2019" 
@@ -455,7 +597,15 @@ actions:
     outputs:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_2021_general_2019_ethnicity.txt
-        dataset: output/tabfig/cox_model_split_summary_2021_general_2019_ethnicity.csv
+        dataset: output/tabfig/cox_model_split_summary_2021_general_2019_ethnicity.csv  
+  
+  cox_models_split_2022_gen_2019_ethnicity:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_ethnicity.do "2022_general_2019"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_general_2019_ethnicity.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_general_2019_ethnicity.csv
 
   cox_models_split_gen_2020_ethnicity:
     run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_ethnicity.do "general_2020" 
@@ -472,6 +622,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_general_2021_ethnicity.txt
         dataset: output/tabfig/cox_model_split_summary_general_2021_ethnicity.csv
+        
+  cox_models_split_gen_2022_ethnicity:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_ethnicity.do "general_2022" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2022_ethnicity.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2022_ethnicity.csv
 
   #  Cox models split by follow-up time - stratified by IMD
   cox_models_split_2020_pneumo_imd:
@@ -490,6 +648,14 @@ actions:
         log: output/cohorts/cox_models_split_2021_pneumonia_imd.txt
         dataset: output/tabfig/cox_model_split_summary_2021_pneumonia_imd.csv
   
+  cox_models_split_2022_pneumo_imd:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_imd.do "2022_pneumonia" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_pneumonia_imd.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_pneumonia_imd.csv
+  
   cox_models_split_2020_gen_2019_imd:
     run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_imd.do "2020_general_2019"
     needs: [append_cohorts]
@@ -505,6 +671,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_2021_general_2019_imd.txt
         dataset: output/tabfig/cox_model_split_summary_2021_general_2019_imd.csv
+        
+  cox_models_split_2022_gen_2019_imd:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_imd.do "2022_general_2019"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_general_2019_imd.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_general_2019_imd.csv
 
   cox_models_split_gen_2020_imd:
     run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_imd.do "general_2020" 
@@ -521,6 +695,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_general_2021_imd.txt
         dataset: output/tabfig/cox_model_split_summary_general_2021_imd.csv
+        
+  cox_models_split_gen_2022_imd:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_imd.do "general_2022" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2022_imd.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2022_imd.csv
 
   # Cox models split by follow-up time - stratified by region
   cox_models_split_2020_pneumo_region:
@@ -538,6 +720,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_2021_pneumonia_region.txt
         dataset: output/tabfig/cox_model_split_summary_2021_pneumonia_region.csv
+        
+  cox_models_split_2022_pneumo_region:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_region.do "2022_pneumonia" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_pneumonia_region.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_pneumonia_region.csv
   
   cox_models_split_2020_gen_2019_region:
     run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_region.do "2020_general_2019"
@@ -554,6 +744,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_2021_general_2019_region.txt
         dataset: output/tabfig/cox_model_split_summary_2021_general_2019_region.csv
+    
+  cox_models_split_2022_gen_2019_region:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_region.do "2022_general_2019"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_general_2019_region.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_general_2019_region.csv
 
   cox_models_split_gen_2020_region:
     run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_region.do "general_2020"
@@ -570,6 +768,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_general_2021_region.txt
         dataset: output/tabfig/cox_model_split_summary_general_2021_region.csv
+        
+  cox_models_split_gen_2022_region:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_region.do "general_2022" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2022_region.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2022_region.csv
   
   #  Cox models split by follow-up time - stratified by sex
   cox_models_split_2020_pneumo_sex:
@@ -588,6 +794,14 @@ actions:
         log: output/cohorts/cox_models_split_2021_pneumonia_sex.txt
         dataset: output/tabfig/cox_model_split_summary_2021_pneumonia_sex.csv
   
+  cox_models_split_2022_pneumo_sex:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_sex.do "2022_pneumonia" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_pneumonia_sex.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_pneumonia_sex.csv
+  
   cox_models_split_2020_gen_2019_sex:
     run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_sex.do "2020_general_2019" 
     needs: [append_cohorts]
@@ -603,6 +817,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_2021_general_2019_sex.txt
         dataset: output/tabfig/cox_model_split_summary_2021_general_2019_sex.csv
+        
+  cox_models_split_2022_gen_2019_sex:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_sex.do "2022_general_2019"
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_2022_general_2019_sex.txt
+        dataset: output/tabfig/cox_model_split_summary_2022_general_2019_sex.csv
 
   cox_models_split_gen_2020_sex:
     run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_sex.do "general_2020"
@@ -619,6 +841,14 @@ actions:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_general_2021_sex.txt
         dataset: output/tabfig/cox_model_split_summary_general_2021_sex.csv
+
+  cox_models_split_gen_2022_sex:
+    run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_sex.do "general_2022" 
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        log: output/cohorts/cox_models_split_general_2022_sex.txt
+        dataset: output/tabfig/cox_model_split_summary_general_2022_sex.csv
 
   # describe_duration_diagnoses:
   #   run: jupyter:latest jupyter nbconvert /workspace/notebooks/describe_duration_diagnoses.ipynb --execute --to html --template basic --output-dir=/workspace/output --ExecutePreprocessor.timeout=86400 --no-input
@@ -651,13 +881,14 @@ actions:
 
   check_died:
     run: r:latest analysis/descriptive/3_check_died.R
-    needs: [covid_2020_rates_cohort, covid_2021_rates_cohort, general_2019_rates_cohort,
-            general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort,
+    needs: [covid_2020_rates_cohort, covid_2021_rates_cohort, covid_2022_rates_cohort, general_2019_rates_cohort,
+            general_2020_rates_cohort, general_2021_rates_cohort, general_2022_rates_cohort,
+            pneumonia_2019_rates_cohort,
             reconcile_sick_note_spells_general_2020, reconcile_sick_note_spells_general_2019,
-            reconcile_sick_note_spells_general_2021]
+            reconcile_sick_note_spells_general_2021, reconcile_sick_ntoe_spells_general_2022]
     outputs:
       moderately_sensitive:
         table1: output/tabfig/check_died_*.csv        
-#        table3: output/tabfig/check_ons*.csv
+#       table3: output/tabfig/check_ons*.csv
         table4: output/tabfig/check_index*.csv
         table5: output/tabfig/check_deregister*.csv
