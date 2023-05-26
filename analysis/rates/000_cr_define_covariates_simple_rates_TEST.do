@@ -44,7 +44,7 @@ drop patient_index_date
 drop if indexdate == .
 
 * remove any patient with index date after end date
-drop if indexdate > `end_date'
+*drop if indexdate > `end_date'
 
 * Drop if missing region/IMD
 drop if imd == .
