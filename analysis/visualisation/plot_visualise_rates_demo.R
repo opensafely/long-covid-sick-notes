@@ -7,7 +7,7 @@
 ################################################################
 
 
-setwd("C:/Users/aschaffer/OneDrive - Nexus365/Documents/Released outputs/long-covid-sick-notes/output/release03APR2023")
+setwd("C:/Users/aschaffer/OneDrive - Nexus365/Documents/Released outputs/long-covid-sick-notes/output")
 
 library(haven)
 library(tidyverse)
@@ -30,7 +30,7 @@ calc_rates <- function(dat){
            uc = rate + 1.96 * sqrt( (rate * (1 - rate)) / personTime),
            
            lc_ppm = 100 * (lc * 365.25 / 12),
-           uc_ppm = 100 * (lc * 365.25 / 12)) 
+           uc_ppm = 100 * (uc * 365.25 / 12)) 
 }
 
 gen20 <-  calc_rates("rates_summary_matched_2020.csv")
@@ -154,5 +154,5 @@ b <- ggplot(
 ggarrange(a, b, ncol=2, nrow=1, common.legend = TRUE, legend = "bottom", labels = c("a","b")) +  
   bgcolor("White")  
 
-ggsave(here::here("Graphs","figure1.png"), dpi= 300, height = 6, width = 9, units = "in")
+ggsave("C:/Users/aschaffer/OneDrive - Nexus365/Documents/Released outputs/long-covid-sick-notes/Graphs/figure1.png", dpi= 300, height = 6, width = 9, units = "in")
 

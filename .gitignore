@@ -10,3 +10,4 @@ final_results/*
 venv/
 notebooks/.ipynb_checkpoints/describe_duration-checkpoint.ipynb
 notebooks/.ipynb_checkpoints/rates_over_time-checkpoint.ipynb
+*.png

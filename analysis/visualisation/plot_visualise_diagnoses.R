@@ -18,7 +18,7 @@ library(dplyr)
 
 ### Read in data ### 
 
-diag <- read_csv("C:/Users/aschaffer/OneDrive - Nexus365/Documents/Released outputs/long-covid-sick-notes/output/release03APR2023/diag_by_cohort.csv") %>%
+diag <- read_csv("C:/Users/aschaffer/OneDrive - Nexus365/Documents/Released outputs/long-covid-sick-notes/output/diag_by_cohort.csv") %>%
   mutate(pcent = as.numeric(ifelse(pcent == "[REDACTED]", NA, pcent)),
          lci = as.numeric(ifelse(lci == "[REDACTED]", NA, lci)),
          uci = as.numeric(ifelse(uci == "[REDACTED]", NA, uci)))
@@ -103,7 +103,7 @@ ggplot(# Exclude diagnoses with very small counts
   theme(axis.text.x = element_blank(), 
         axis.ticks.x = element_blank(),
         legend.title = element_blank(),
-        panel.background = element_rect(fill = "gray90"),
+        panel.background = element_rect(fill = "gray95"),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
         strip.background = element_blank(),

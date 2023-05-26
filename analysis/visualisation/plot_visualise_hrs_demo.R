@@ -19,7 +19,7 @@ library(dplyr)
 library(ggplot2)
 library(PNWColors)
 library(ggpubr)
-
+library(here)
 
 # For running locally
 setwd("C:/Users/aschaffer/OneDrive - Nexus365/Documents/GitHub/long-covid-sick-notes")
@@ -168,7 +168,7 @@ all$category <- factor(all$category, levels = c("55-64 y","45-54 y","35-44 y","2
 
 # General cohorts, fully adjusted
 all %>% subset(cat == "Not hospitalised" & adjustment != "crude") %>%
-ggplot(aes(x = hr, y = category, col = year, group = year, shape = year)) +
+ggplot(aes(x = hr, y = category, col = comp_type, group = comp_type, shape = comp_type)) +
   geom_errorbar(aes(xmax = uc, xmin = lc), 
                 position = position_dodge(width = .6), 
                 width = 0.5, col="gray50") +
@@ -177,24 +177,22 @@ ggplot(aes(x = hr, y = category, col = year, group = year, shape = year)) +
   scale_color_manual(values = pnw_palette("Bay", 2)) +
   scale_shape_manual(values = c("circle", "square")) +
   xlab("HR (95% CI)") + ylab(NULL) +
-  facet_grid(var ~ comp_type, scales = "free_y", space = "free",switch= "y")+
+  facet_grid(var ~ year, scales = "free_y", space = "free",switch= "y")+
   theme_bw()+
   theme(text = element_text(size = 9),
         legend.position = "right",
-        legend.title = element_text(size = 8),
         axis.title.x = element_text(size = 8),
         strip.placement = "outside",
         panel.grid.major.y = element_blank(),
         panel.grid.minor.y = element_blank(),
         panel.grid.major.x = element_line(color="gray90"),
         panel.grid.minor.x = element_blank(),
+        legend.title = element_blank(),
         axis.text.x = element_text(angle= 45, hjust=1),
-        strip.background = element_blank()) +
-   guides(col = guide_legend(title = "COVID-19 cohort"),
-          shape = guide_legend(title = "COVID-19 cohort"))
+        strip.background = element_blank())
  
 ggsave(here::here("manuscript", "plots", "figure1.png"),
-       dpi= 300, height = 6, width = 6.5, units = "in")
+       dpi= 300, height = 6, width = 7.5, units = "in")
 
  
 # Hospitalised cohorts
