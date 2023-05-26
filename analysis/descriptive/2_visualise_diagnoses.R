@@ -38,6 +38,12 @@ covid21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_general
 covidhosp21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_pneumonia.dta")) %>%
   subset(case == 1)
 
+covid22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_general_2019.dta")) %>%
+  subset(case == 1)
+
+covidhosp22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_pneumonia.dta")) %>%
+  subset(case == 1)
+
 pneumo19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
   subset(case ==0)
 
@@ -46,6 +52,8 @@ gen19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_general_2
 gen20 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2020.dta")) %>%
   subset(case ==0)
 gen21 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2021.dta")) %>%
+  subset(case ==0)
+gen22 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2022.dta")) %>%
   subset(case ==0)
 
 
@@ -99,16 +107,22 @@ cohort %>% dplyr::select(c("patient_id", starts_with("diag_"), "sick_note")) %>%
 
 covid2020 <- diag(covid20, "COVID-19 2020")
 covid2021 <- diag(covid21, "COVID-19 2021")
+covid2022 <- diag(covid22, "COVID-19 2022")
+
 covidhosp2020 <- diag(covidhosp20, "COVID-19 hospitalised 2020")
 covidhosp2021 <- diag(covidhosp21, "COVID-19 hospitalised 2021")
+covidhosp2022 <- diag(covidhosp22, "COVID-19 hospitalised 2022")
+
 pneumo2019 <- diag(pneumo19, "Pneumonia 2019")
 
 gen2019 <- diag(gen19, "General population 2019")
 gen2020 <- diag(gen20, "General population 2020")
 gen2021 <- diag(gen21, "General population 2021")
+gen2022 <- diag(gen22, "General population 2022")
 
-all_diag <- rbind(covid2020, covid2021, covidhosp2020, covidhosp2021,
-                  pneumo2019, gen2019, gen2020, gen2021)
+all_diag <- rbind(covid2020, covid2021, covid22, covidhosp2020, covidhosp2021,
+                  covidhosp2022,
+                  pneumo2019, gen2019, gen2020, gen2021, gen2022)
 
 # Save
 write.csv(all_diag, here::here("output", "tabfig", "diag_by_cohort.csv"),

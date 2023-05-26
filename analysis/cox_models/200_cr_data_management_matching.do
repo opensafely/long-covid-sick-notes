@@ -27,7 +27,7 @@ ls $outdir/
 cap log close
 log using $outdir/append_cohorts.txt, replace t
 
-foreach year in 2020 2021 {
+foreach year in 2020 2021 2022 {
 	* Gen flag for covid patients  (case = 1)
 	use $outdir/cohort_rates_covid_`year', replace
 	gen case = 1 
@@ -59,8 +59,8 @@ foreach year in 2020 2021 {
 * Append covid/gen pop. cohorts 
 ********************************************************************************
 
-foreach year in 2020 2021 {
-	*** 2020 and 2021
+foreach year in 2020 2021 2022 {
+	*** 2020 and 2021 and 2022
 	* Gen flag for covid patients  (case = 1)
 	use $outdir/cohort_rates_covid_`year', replace
 	gen case = 1 

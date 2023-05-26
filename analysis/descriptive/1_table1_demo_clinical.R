@@ -36,6 +36,12 @@ covid21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_general
 covidhosp21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_pneumonia.dta")) %>%
   subset(case == 1)
 
+covid22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_general_2019.dta")) %>%
+  subset(case == 1)
+
+covidhosp22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_pneumonia.dta")) %>%
+  subset(case == 1)
+
 pneumo19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
   subset(case ==0)
 
@@ -45,8 +51,8 @@ gen20 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2020.d
   subset(case ==0)
 gen21 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2021.dta")) %>%
   subset(case ==0)
-
-
+gen22 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2022.dta")) %>%
+  subset(case ==0)
 
 
 ###### Function to calculate number of people with each diagnosis #####
@@ -204,6 +210,10 @@ write.csv(table1_covid2020, here::here("output", "tabfig", "table1_covid_2020.cs
 table1_covid2021 <- combine(covid21)
 write.csv(table1_covid2021, here::here("output", "tabfig", "table1_covid_2021.csv"),
                                        row.names = FALSE)
+
+table1_covid2022 <- combine(covid22)
+write.csv(table1_covid2022, here::here("output", "tabfig", "table1_covid_2022.csv"),
+                                       row.names = FALSE)
           
 table1_covidhosp2020 <- combine(covidhosp20)
 write.csv(table1_covidhosp2020, here::here("output", "tabfig", "table1_covid_hosp_2020.csv"),
@@ -211,6 +221,10 @@ write.csv(table1_covidhosp2020, here::here("output", "tabfig", "table1_covid_hos
 
 table1_covidhosp2021 <- combine(covidhosp21)
 write.csv(table1_covidhosp2021, here::here("output", "tabfig", "table1_covid_hosp_2021.csv"),
+          row.names = FALSE)
+
+table1_covidhosp2022 <- combine(covidhosp22)
+write.csv(table1_covidhosp2022, here::here("output", "tabfig", "table1_covid_hosp_2022.csv"),
           row.names = FALSE)
 
 table1_pneumo2019 <- combine(pneumo19)
@@ -229,36 +243,41 @@ table1_gen2021 <- combine(gen21)
 write.csv(table1_gen2021, here::here("output", "tabfig", "table1_gen_2021.csv"),
           row.names = FALSE)
 
+table1_gen2022 <- combine(gen22)
+write.csv(table1_gen2021, here::here("output", "tabfig", "table1_gen_2022.csv"),
+          row.names = FALSE)
+
 
 ##################################################################
 
 
 
 
-quantile <- scales::percent(c(.25,.5,.75))
+# quantile <- scales::percent(c(.25,.5,.75))
 
-stats <- function(data, group){
+# stats <- function(data, group){
   
-  quantile <- scales::percent(c(.25,.5,.75))
+#   quantile <- scales::percent(c(.25,.5,.75))
   
-  med <- data %>% 
-    summarise( p25 = quantile(age, .25, na.rm = TRUE),
-               median = quantile(age, .5, na.rm = TRUE),
-               p75 = quantile(age, .75, na.rm = TRUE)) %>%
-    mutate(cohort = group)
+#   med <- data %>% 
+#     summarise( p25 = quantile(age, .25, na.rm = TRUE),
+#                median = quantile(age, .5, na.rm = TRUE),
+#                p75 = quantile(age, .75, na.rm = TRUE)) %>%
+#     mutate(cohort = group)
   
-  return(med)
-}
+#   return(med)
+# }
 
-median_age <- rbind(
-  stats(covid20, "COVID 2020"),
-  stats(covid21, "COVID 2021"),
-  stats(covidhosp20, "COVID hospitalised 2020"),
-  stats(covidhosp21, "COVID hospitalised 2021"),
-  stats(pneumo19, "Pneumonia 2019"),
-  stats(gen19, "General 2019"),
-  stats(gen20, "General 2020"),
-  stats(gen21, "General 2021")
+# median_age <- rbind(
+#   stats(covid20, "COVID 2020"),
+#   stats(covid21, "COVID 2021"),
+#   stats(covid22, "COVID 2022"),
+#   stats(covidhosp20, "COVID hospitalised 2020"),
+#   stats(covidhosp21, "COVID hospitalised 2021"),
+#   stats(pneumo19, "Pneumonia 2019"),
+#   stats(gen19, "General 2019"),
+#   stats(gen20, "General 2020"),
+#   stats(gen21, "General 2021")
   
-)
+# )
 

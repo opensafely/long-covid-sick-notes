@@ -27,6 +27,10 @@ else if "$group" == "covid_2021"  | "$group" == "matched_2021" {
 	local start_date td(01/02/2021)
 	local end_date td(30/11/2021)
 }
+else if "$group" == "covid_2022"  | "$group" == "matched_2022" { 
+	local start_date td(01/02/2022)
+	local end_date td(30/11/2022)
+}
 else {
 	local start_date  td(01/02/2019)
 	local end_date td(30/11/2019)
@@ -53,7 +57,7 @@ drop if imd > 5
 drop if region == ""
 
 
-if "$group" == "covid_2020" | "$group" == "covid_2021" { 
+if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "covid_2022" { 
 	gen hosp_expo_date = date(hospital_covid, "YMD")
 	format hosp_expo_date %td
 }
