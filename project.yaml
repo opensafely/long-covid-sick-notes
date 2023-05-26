@@ -1,3 +1,11 @@
+######################################
+
+# This script defines the project pipeline - it specifies the execution orders for all the code in this
+# repo using a series of actions.
+
+######################################
+
+
 version: '3.0'
 
 expectations:
@@ -649,15 +657,43 @@ actions:
         table: output/tabfig/diag_by_cohort.csv
         plot: output/tabfig/diag_all.png        
 
-  check_died:
-    run: r:latest analysis/descriptive/3_check_died.R
-    needs: [covid_2020_rates_cohort, covid_2021_rates_cohort, general_2019_rates_cohort,
-            general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort,
-            reconcile_sick_note_spells_general_2020, reconcile_sick_note_spells_general_2019,
-            reconcile_sick_note_spells_general_2021]
+#   check_died:
+#     run: r:latest analysis/descriptive/3_check_died.R
+#     needs: [covid_2020_rates_cohort, covid_2021_rates_cohort, general_2019_rates_cohort,
+#             general_2020_rates_cohort, general_2021_rates_cohort, pneumonia_2019_rates_cohort,
+#             reconcile_sick_note_spells_general_2020, reconcile_sick_note_spells_general_2019,
+#             reconcile_sick_note_spells_general_2021]
+#     outputs:
+#       moderately_sensitive:
+#         table1: output/tabfig/check_died_*.csv        
+# #        table3: output/tabfig/check_ons*.csv
+#         table4: output/tabfig/check_index*.csv
+#         table5: output/tabfig/check_deregister*.csv
+
+  general_2019_rates_cohort_TEST:
+    run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates_TEST.do "matched_2019" --output-dir=output/cohorts
+    needs: [reconcile_sick_note_spells_general_2019]
+    outputs:
+      highly_sensitive:
+        analysis_dataset: output/cohorts/cohort_rates_matched_2019_TEST.dta
+
+  general_2020_rates_cohort_TEST:
+    run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates_TEST.do "matched_2020" --output-dir=output/cohorts
+    needs: [reconcile_sick_note_spells_general_2020]
+    outputs:
+      highly_sensitive:
+        analysis_dataset: output/cohorts/cohort_rates_matched_2020_TEST.dta
+
+  general_2021_rates_cohort_TEST:
+    run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates_TEST.do "matched_2021" --output-dir=output/cohorts
+    needs: [reconcile_sick_note_spells_general_2021]
+    outputs:
+      highly_sensitive:
+        analysis_dataset: output/cohorts/cohort_rates_matched_2021_TEST.dta
+
+  check_died_step:
+    run: r:latest analysis/descriptive/3_check_died_step.R
+    needs: [general_2019_rates_cohort_TEST, general_2020_rates_cohort_TEST, general_2021_rates_cohort_TEST]
     outputs:
       moderately_sensitive:
-        table1: output/tabfig/check_died_*.csv        
-#        table3: output/tabfig/check_ons*.csv
-        table4: output/tabfig/check_index*.csv
-        table5: output/tabfig/check_deregister*.csv
+        table1: output/tabfig/check_*.csv       
