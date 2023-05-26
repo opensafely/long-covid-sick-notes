@@ -885,7 +885,7 @@ actions:
             general_2020_rates_cohort, general_2021_rates_cohort, general_2022_rates_cohort,
             pneumonia_2019_rates_cohort,
             reconcile_sick_note_spells_general_2020, reconcile_sick_note_spells_general_2019,
-            reconcile_sick_note_spells_general_2021, reconcile_sick_ntoe_spells_general_2022]
+            reconcile_sick_note_spells_general_2021, reconcile_sick_note_spells_general_2022]
     outputs:
       moderately_sensitive:
         table1: output/tabfig/check_died_*.csv        
