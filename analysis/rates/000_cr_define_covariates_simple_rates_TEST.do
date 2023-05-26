@@ -44,13 +44,13 @@ drop patient_index_date
 drop if indexdate == .
 
 * remove any patient with index date after end date
-*drop if indexdate > `end_date'
+drop if indexdate > `end_date'
 
 * Drop if missing region/IMD
 *drop if imd == .
 *drop if imd < 1
 *drop if imd > 5
-*drop if region == ""
+drop if region == ""
 
 
 if "$group" == "covid_2020" | "$group" == "covid_2021" { 
