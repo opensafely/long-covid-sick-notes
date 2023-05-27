@@ -38,6 +38,11 @@ gen new_patient_id = _n
 * Encode smoking status 
 encode smoking_status, gen(smoking_category)
 
+* Recode age
+gen age_group_tmp = age_group
+replace age_group = 2 if age_group_tmp == 1
+drop age_group_tmp
+
 * Crude
 global crude i.case##i.month
 
