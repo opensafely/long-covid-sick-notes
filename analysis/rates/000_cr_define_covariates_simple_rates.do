@@ -51,9 +51,7 @@ drop if indexdate == .
 drop if indexdate > `end_date'
 
 * Drop if missing region/IMD
-drop if imd == .
-drop if imd < 1
-drop if imd > 5
+drop if imd == . | imd < 1 | imd > 5
 drop if region == ""
 
 

@@ -149,7 +149,7 @@ def generate_common_variables(index_date_variable):
             }
         ),
         stp=patients.registered_practice_as_of(
-            "index_date",
+             f"{index_date_variable}",
             returning="stp_code",
             return_expectations={
                 "rate": "universal",
@@ -170,7 +170,7 @@ def generate_common_variables(index_date_variable):
             },
         ),
         practice_id=patients.registered_practice_as_of(
-            "index_date",
+            f"{index_date_variable}",
             returning="pseudo_id",
             return_expectations={
                 "int": {"distribution": "normal", "mean": 1000, "stddev": 100},
@@ -178,7 +178,7 @@ def generate_common_variables(index_date_variable):
             },
         ),
         region=patients.registered_practice_as_of(
-            "index_date",
+            f"{index_date_variable}",
             returning="nuts1_region_name",
             return_expectations={
                 "rate": "universal",
@@ -222,7 +222,7 @@ def generate_common_variables(index_date_variable):
                     """,
             },
             index_of_multiple_deprivation=patients.address_as_of(
-                "index_date",
+                f"{index_date_variable}",
                 returning="index_of_multiple_deprivation",
                 round_to_nearest=100,
             ),

@@ -1,7 +1,7 @@
 version: '3.0'
 
 expectations:
-  population_size: 10000
+  population_size: 100000
 
 actions:
 
@@ -290,6 +290,13 @@ actions:
     outputs:
       moderately_sensitive:
         rates: output/tabfig/rates_summary_covid_2021.csv
+        
+  covid_2022_rates:
+    run: stata-mp:latest analysis/rates/100_cr_simple_rates.do "covid_2022" --output-dir=output/tabfig
+    needs: [covid_2022_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        rates: output/tabfig/rates_summary_covid_2022.csv
 
   general_2019_rates:
     run: stata-mp:latest analysis/rates/100_cr_simple_rates.do "matched_2019" --output-dir=output/tabfig

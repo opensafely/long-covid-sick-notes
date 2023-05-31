@@ -244,7 +244,7 @@ write.csv(table1_gen2021, here::here("output", "tabfig", "table1_gen_2021.csv"),
           row.names = FALSE)
 
 table1_gen2022 <- combine(gen22)
-write.csv(table1_gen2021, here::here("output", "tabfig", "table1_gen_2022.csv"),
+write.csv(table1_gen2022, here::here("output", "tabfig", "table1_gen_2022.csv"),
           row.names = FALSE)
 
 
