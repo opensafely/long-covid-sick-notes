@@ -1,3 +1,11 @@
+######################################
+
+# This script defines the project pipeline - it specifies the execution orders for all the code in this
+# repo using a series of actions.
+
+######################################
+
+
 version: '3.0'
 
 expectations:
@@ -892,17 +900,3 @@ actions:
       moderately_sensitive:
         table: output/tabfig/diag_by_cohort.csv
         plot: output/tabfig/diag_all.png        
-
-  check_died:
-    run: r:latest analysis/descriptive/3_check_died.R
-    needs: [covid_2020_rates_cohort, covid_2021_rates_cohort, covid_2022_rates_cohort, general_2019_rates_cohort,
-            general_2020_rates_cohort, general_2021_rates_cohort, general_2022_rates_cohort,
-            pneumonia_2019_rates_cohort,
-            reconcile_sick_note_spells_general_2020, reconcile_sick_note_spells_general_2019,
-            reconcile_sick_note_spells_general_2021, reconcile_sick_note_spells_general_2022]
-    outputs:
-      moderately_sensitive:
-        table1: output/tabfig/check_died_*.csv        
-#       table3: output/tabfig/check_ons*.csv
-        table4: output/tabfig/check_index*.csv
-        table5: output/tabfig/check_deregister*.csv
