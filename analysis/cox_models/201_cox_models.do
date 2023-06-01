@@ -50,15 +50,8 @@ global demo_eth_clinical i.case i.male age1 age2 age3 i.ethnicity i.region_9 i.i
 						 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
 						 i.other_neuro i.organ_transplant i.dysplenia i.hiv ///
 						 i.permanent_immunodef i.ra_sle_psoriasis
-* Age, sex, region, imd WITHOUT ETHNICITY
-global demo_noeth i.case i.male age1 age2 age3 i.region_9 i.imd
-* Demographics + clinical WITHOUT ETHNICITY
-global demo_noeth_clinical i.case i.male age1 age2 age3 i.region_9 i.imd /// 
-						   i.obese i.smoking_category i.hypertension ///
-						   i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
-						   i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
-						   i.other_neuro i.organ_transplant i.dysplenia i.hiv ///
-						   i.permanent_immunodef i.ra_sle_psoriasis
+
+
 
 foreach v in sick_note {
 	
@@ -73,7 +66,7 @@ foreach v in sick_note {
 		
 		stset `end_date', id(new_patient_id) failure(`out') enter(indexdate) origin(indexdate)
 		
-		foreach adjust in crude age_sex demo_eth demo_eth_clinical demo_noeth demo_noeth_clinical {
+		foreach adjust in crude age_sex demo_eth demo_eth_clinical  {
 			stcox $`adjust', vce(robust)
 
 			matrix b = r(table)
@@ -102,8 +95,6 @@ foreach v in sick_note {
 	restore			
 
 }
-
-
 }
 postclose `measures'
 
