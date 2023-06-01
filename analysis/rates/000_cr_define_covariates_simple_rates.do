@@ -27,6 +27,10 @@ else if "$group" == "covid_2021"  | "$group" == "matched_2021" {
 	local start_date td(01/02/2021)
 	local end_date td(30/11/2021)
 }
+else if "$group" == "covid_2022"  | "$group" == "matched_2022" { 
+	local start_date td(01/02/2022)
+	local end_date td(30/11/2022)
+}
 else {
 	local start_date  td(01/02/2019)
 	local end_date td(30/11/2019)
@@ -47,13 +51,11 @@ drop if indexdate == .
 drop if indexdate > `end_date'
 
 * Drop if missing region/IMD
-drop if imd == .
-drop if imd < 1
-drop if imd > 5
+drop if imd == . | imd < 1 | imd > 5
 drop if region == ""
 
 
-if "$group" == "covid_2020" | "$group" == "covid_2021" { 
+if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "covid_2022" { 
 	gen hosp_expo_date = date(hospital_covid, "YMD")
 	format hosp_expo_date %td
 }
@@ -248,7 +250,7 @@ foreach out in sick_note {
 
 }
 
-drop if sick_note_end_date < indexdate
+drop if sick_note_end_date <= indexdate
 
 duplicates drop 
 

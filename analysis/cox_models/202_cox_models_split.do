@@ -51,15 +51,7 @@ global demo_eth_clinical i.case##i.month i.male age1 age2 age3 i.ethnicity i.reg
 						 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
 						 i.other_neuro i.organ_transplant i.dysplenia i.hiv ///
 						 i.permanent_immunodef i.ra_sle_psoriasis
-* Age, sex, region, imd WITHOUT ETHNICITY
-global demo_noeth i.case##i.month i.male age1 age2 age3 i.region_9 i.imd
-* Demographics + clinical WITHOUT ETHNICITY
-global demo_noeth_clinical i.case##i.month i.male age1 age2 age3 i.region_9 i.imd /// 
-						   i.obese i.smoking_category i.hypertension ///
-						   i.diabetes i.chronic_resp_dis i.asthma i.chronic_cardiac_dis ///
-						   i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
-						   i.other_neuro i.organ_transplant i.dysplenia i.hiv ///
-						   i.permanent_immunodef i.ra_sle_psoriasis
+
 
 
 foreach v in sick_note {
@@ -79,7 +71,7 @@ foreach v in sick_note {
 
 		tab month sick_note
 
-		foreach adjust in crude age_sex demo_eth demo_eth_clinical demo_noeth demo_noeth_clinical {
+		foreach adjust in crude age_sex demo_eth demo_eth_clinical  {
             
 			foreach mon in 0 30 90 150 {
 				
