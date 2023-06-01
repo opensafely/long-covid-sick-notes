@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 //
-// 201_cox_models.do
+// 203_cox_models_stratified.do
 //
-// This program runs Cox models to perform survival analysis.
+// This program runs subgroup Cox models.
 //
-// Authors: Robin (based on Alex & John)
+// Authors: Andrea (based on Robin, Alex & John)
 // Date: 15 Oct 2021
-// Updated: 18 Oct 2021
+// Updated: 01 Jun 2023
 // Input files: 
 // Output files: 
 //

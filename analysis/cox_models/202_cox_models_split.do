@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 //
-// 202_cox_models_stsplit_2021_gen_2019.do
+// 202_cox_models_split.do
 //
-// This program runs Cox models to perform survival analysis.
+// This program runs piecewise Cox models.
 //
 // Authors: Andrea (based on Robin, Alex & John)
-// Date: 02 Dec 2022
-// Updated: 
+// Date: 
+// Updated: 01 Jun 2023
 // Input files: 
 // Output files: 
 //
