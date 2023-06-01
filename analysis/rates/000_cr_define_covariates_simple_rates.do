@@ -250,7 +250,7 @@ foreach out in sick_note {
 
 }
 
-drop if sick_note_end_date < indexdate
+drop if sick_note_end_date <= indexdate
 
 duplicates drop 
 
