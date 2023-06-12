@@ -26,7 +26,7 @@ study = StudyDefinition(
         "incidence": 0.7,
     },
     population=patients.which_exist_in_file(MATCHES),
-    index_date="2022-01-01",  # Ignored
+    index_date="2022-02-01",  # Ignored
     patient_index_date=patients.with_value_from_file(
         MATCHES,
         returning="patient_index_date",
