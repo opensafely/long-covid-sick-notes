@@ -232,7 +232,7 @@ gen sick_note = 1 if sick_note_1_date != .
 recode sick_note . = 0
 
 foreach out in sick_note {
-	if "$group" == "covid_2020" | "$group" == "covid_2021" {
+	if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "covid_2022" {
 		gen min_end_date = min(`out'_1_date, died_date_ons, deregistered_date) // `out'_ons already captured in the study definition binary outcome
 	}
 	else {
