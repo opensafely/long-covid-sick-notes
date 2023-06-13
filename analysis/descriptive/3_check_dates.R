@@ -56,7 +56,8 @@ tab <- function(data) {
       summarise(n_end = n()) %>%
       rename(month = end_month) %>%
       mutate(n_end = case_when(n_end > 5 ~ n_end),
-             n_end = round(n_end / 7) * 7)
+             n_end = round(n_end / 7) * 7,
+             total = round(total / 7) * 7)
     
     index <- data %>%
       mutate(total = n()) %>%
@@ -65,7 +66,8 @@ tab <- function(data) {
       summarise(n_index = n()) %>%
       rename(month = index_month) %>%
       mutate(n_index = case_when(n_index > 5 ~ n_index),
-             n_index = round(n_index / 7) * 7,)
+             n_index = round(n_index / 7) * 7,
+             total = round(total / 7) * 7)
     
     both <- merge(end, index, by = c("month","total","sick_note"))
     
