@@ -40,11 +40,11 @@ covid_type <- function(cohort, name) {
     
       cohort1 <- cohort %>% 
         mutate(total = n(),
-               sgss = if_else(sick_note_end_date == sgss_positive & !is.na(sgss_positive),
+               sgss = if_else(indexdate == sgss_positive & !is.na(sgss_positive),
                               1, 0, 0),
-               primarycare = if_else(sick_note_end_date == primary_care_covid_date & !is.na(primary_care_covid_date),
+               primarycare = if_else(indexdate == primary_care_covid_date & !is.na(primary_care_covid_date),
                               1, 0, 0),
-               hospital = if_else(sick_note_end_date == hospital_covid_date & !is.na(hospital_covid_date),
+               hospital = if_else(indexdate == hospital_covid_date & !is.na(hospital_covid_date),
                               1, 0, 0)) 
   
   # Counts within each variable category
