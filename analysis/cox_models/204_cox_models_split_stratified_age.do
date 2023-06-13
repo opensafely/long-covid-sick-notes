@@ -25,10 +25,9 @@ log using $outdir/cox_models_split_${group}_age_group.txt, replace t
 
 tempname measures
 	postfile `measures' ///
- 		str20(var) str20(category) str20(comparator) str10(adjustment) str10(month) ///
-		hr lc uc  ///
-		ptime_covid events_covid rate_covid /// 
-		ptime_comparator events_comparator rate_comparator ///
+ 		str20(var) str20(category) str20(comparator) str10(adjustment) str10(month) hr lc uc  ///
+		ptime_covid events_covid /// 
+		ptime_comparator events_comparator  ///
 		using $tabfigdir/cox_model_split_summary_${group}_age_group, replace
 		
 use $outdir/combined_covid_${group}.dta, replace
@@ -54,24 +53,13 @@ global full i.case##i.month i.male i.ethnicity i.region_9 i.imd ///
 						 i.other_neuro i.organ_transplant i.dysplenia i.hiv ///
 						 i.permanent_immunodef i.ra_sle_psoriasis
 
-foreach v in sick_note {
-	
-	noi di "Starting analysis for `v' Outcome ..." 
-		
-	preserve
-	
-		local end_date `v'_end_date
-		local out `v'
-				
-		noi di "$group: stset in `a'" 
-		
-		stset `end_date', id(new_patient_id) failure(`out') enter(indexdate) origin(indexdate)
-		
-        stsplit month, at(30, 90, 150)
+stset sick_note_end_date, id(new_patient_id) failure(sick_note) enter(indexdate) origin(indexdate)
 
-		tab month sick_note
+stsplit month, at(30, 90, 150)
 
-        levelsof age_group
+tab month sick_note
+
+levelsof age_group
 
         foreach level in `r(levels)' {  
 
@@ -88,27 +76,22 @@ foreach v in sick_note {
 				local uc = r(ub)
 
 				stptime if case == 1 & month == `mon' & age_group == `level'
-				local rate_covid = `r(rate)'
 				local ptime_covid = `r(ptime)'
 				local events_covid .
 				local events_covid round(`r(failures)'/ 7 ) * 7
 			
 				stptime if case == 0 & month == `mon' & age_group == `level'
-				local rate_comparator = `r(rate)'
 				local ptime_comparator = `r(ptime)'
 				local events_comparator .
 				local events_comparator round(`r(failures)'/ 7 ) * 7
 
-				post `measures'   ("age_group") ("`level'") ("$group") ("`adjust'") ("`mon'") ///
+				post `measures' ("age_group") ("`level'") ("$group") ("`adjust'") ("`mon'") ///
 					(`hr') (`lc') (`uc') ///
-					(`ptime_covid') (`events_covid') (`rate_covid') ///
-					(`ptime_comparator') (`events_comparator')  (`rate_comparator') 
+					(`ptime_covid') (`events_covid') (`ptime_comparator') (`events_comparator')
 
 			    }
 		    }
         }
-	}
-	restore	
 
 
 postclose `measures'

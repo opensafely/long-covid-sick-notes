@@ -26,8 +26,8 @@ log using $outdir/cox_models_summary_$var.txt, replace t
 tempname measures
 	postfile `measures' ///
 		str20(var) str20(category) str20(comparator) str10(adjustment) ///
-		ptime_covid num_events_covid rate_covid /// 
-		ptime_comparator num_events_comparator rate_comparator hr lc uc ///
+		ptime_covid num_events_covid  /// 
+		ptime_comparator num_events_comparator  hr lc uc ///
 		using $tabfigdir/cox_model_summary_$var, replace
 		
 foreach an in 2020_pneumonia 2021_pneumonia 2022_pneumonia 2020_general_2019 2021_general_2019 2022_general_2019 general_2020 general_2021 general_2022 {
@@ -83,55 +83,39 @@ global region_9 i.case i.male age1 age2 age3 i.ethnicity i.imd ///
 						 i.permanent_immunodef i.ra_sle_psoriasis
 
 
-foreach v in sick_note {
-	
-	noi di "Starting analysis for `v' Outcome ..." 
-		
-	preserve
-	
-		local end_date `v'_end_date
-		local out `v'
-				
-		noi di "$group: stset in `a'" 
+ 
 	        
-		stset `end_date', id(new_patient_id) failure(`out') enter(indexdate) origin(indexdate)
+stset sick_note_end_date, id(new_patient_id) failure(sick_note) enter(indexdate) origin(indexdate)
 
-        levelsof $var
+    levelsof $var
 
-        foreach level in `r(levels)' {
+    foreach level in `r(levels)' {
 		
-		    foreach adjust in crude $var {
+		foreach adjust in crude $var {
 
-			    stcox $`adjust' if $var == `level', vce(robust)
+			stcox $`adjust' if $var == `level', vce(robust)
 
-			    matrix b = r(table)
-			    local hr = b[1,2]
-			    local lc = b[5,2] 
-			    local uc = b[6,2]
+			matrix b = r(table)
+			local hr = b[1,2]
+			local lc = b[5,2] 
+			local uc = b[6,2]
 
-			    stptime if case == 1 & $var == `level'
-			    local rate_covid = `r(rate)'
-			    local ptime_covid = `r(ptime)'
-			    local events_covid .
-			    local events_covid round(`r(failures)'/ 7 ) * 7
+			stptime if case == 1 & $var == `level'
+			local ptime_covid = `r(ptime)'
+			local events_covid .
+			local events_covid round(`r(failures)'/ 7 ) * 7
 			
-			    stptime if case == 0 & $var == `level'
-			    local rate_comparator = `r(rate)'
-			    local ptime_comparator = `r(ptime)'
-			    local events_comparator .
-			    local events_comparator round(`r(failures)'/ 7 ) * 7
+			stptime if case == 0 & $var == `level'
+			local ptime_comparator = `r(ptime)'
+			local events_comparator .
+			local events_comparator round(`r(failures)'/ 7 ) * 7
 
-			    post `measures' ("$var") ("`level'") ("`an'") ("`adjust'")  ///
-							(`ptime_covid') (`events_covid') (`rate_covid') (`ptime_comparator') (`events_comparator') (`rate_comparator')  ///
+			post `measures' ("$var") ("`level'") ("`an'") ("`adjust'")  ///
+							(`ptime_covid') (`events_covid') (`ptime_comparator') (`events_comparator') ///
 							(`hr') (`lc') (`uc')
 			
-			}
-        }
-	restore			
-
-}
-
-
+		}
+	}
 }
 postclose `measures'
 

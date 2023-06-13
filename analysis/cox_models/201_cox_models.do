@@ -24,9 +24,9 @@ log using $outdir/cox_models.txt, replace t
 
 tempname measures
 	postfile `measures' ///
-		str20(comparator) str20(outcome) str25(analysis) str10(adjustment) ///
-		ptime_covid num_events_covid rate_covid /// 
-		ptime_comparator num_events_comparator rate_comparator hr lc uc ///
+		str20(comparator) str10(adjustment) ///
+		ptime_covid num_events_covid  /// 
+		ptime_comparator num_events_comparator hr lc uc ///
 		using $tabfigdir/cox_model_summary, replace
 		
 foreach an in 2020_pneumonia 2021_pneumonia 2022_pneumonia 2020_general_2019 2021_general_2019 2022_general_2019 general_2020 general_2021 general_2022 {
@@ -52,51 +52,34 @@ global demo_eth_clinical i.case i.male age1 age2 age3 i.ethnicity i.region_9 i.i
 						 i.permanent_immunodef i.ra_sle_psoriasis
 
 
-
-foreach v in sick_note {
-	
-	noi di "Starting analysis for `v' Outcome ..." 
+stset sick_note_end_date, id(new_patient_id) failure(sick_note) enter(indexdate) origin(indexdate)
 		
-	preserve
-	
-		local end_date `v'_end_date
-		local out `v'
-				
-		noi di "$group: stset in `a'" 
-		
-		stset `end_date', id(new_patient_id) failure(`out') enter(indexdate) origin(indexdate)
-		
-		foreach adjust in crude age_sex demo_eth demo_eth_clinical  {
-			stcox $`adjust', vce(robust)
+foreach adjust in crude age_sex demo_eth demo_eth_clinical  {
+	stcox $`adjust', vce(robust)
 
-			matrix b = r(table)
-			local hr = b[1,2]
-			local lc = b[5,2] 
-			local uc = b[6,2]
+		matrix b = r(table)
+		local hr = b[1,2]
+		local lc = b[5,2] 
+		local uc = b[6,2]
 
-			stptime if case == 1
-			local rate_covid = `r(rate)'
-			local ptime_covid = `r(ptime)'
-			local events_covid .
-			local events_covid round(`r(failures)'/ 7 ) * 7
+		stptime if case == 1
+		local ptime_covid = `r(ptime)'
+		local events_covid .
+		local events_covid round(`r(failures)'/ 7 ) * 7
 			
-			stptime if case == 0
-			local rate_comparator = `r(rate)'
-			local ptime_comparator = `r(ptime)'
-			local events_comparator .
-			local events_comparator round(`r(failures)'/ 7 ) * 7
+		stptime if case == 0
+		local ptime_comparator = `r(ptime)'
+		local events_comparator .
+		local events_comparator round(`r(failures)'/ 7 ) * 7
 
-			post `measures'  ("`an'") ("`v'") ("`out'") ("`adjust'")  ///
-							(`ptime_covid') (`events_covid') (`rate_covid') (`ptime_comparator') (`events_comparator')  (`rate_comparator')  ///
-							(`hr') (`lc') (`uc')
-			
-			}
-	
-	restore			
+		post `measures'  ("`an'") ("`adjust'")  ///
+			(`ptime_covid') (`events_covid') (`ptime_comparator') (`events_comparator')  ///
+			(`hr') (`lc') (`uc')
 
+	}
 }
-}
-postclose `measures'
+
+postclose `measures'	
 
 * Change postfiles to csv
 use $tabfigdir/cox_model_summary, replace

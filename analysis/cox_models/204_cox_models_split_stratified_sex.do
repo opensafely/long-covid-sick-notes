@@ -27,8 +27,8 @@ tempname measures
 	postfile `measures' ///
  		str20(var) str20(category) str20(comparator) str10(adjustment) str10(month) ///
 		hr lc uc  ///
-		ptime_covid events_covid rate_covid /// 
-		ptime_comparator events_comparator rate_comparator ///
+		ptime_covid events_covid /// 
+		ptime_comparator events_comparator  ///
 		using $tabfigdir/cox_model_split_summary_${group}_sex, replace
 		
 use $outdir/combined_covid_${group}.dta, replace
@@ -49,24 +49,14 @@ global full i.case##i.month age1 age2 age3 i.imd i.ethnicity i.region_9  ///
 						 i.other_neuro i.organ_transplant i.dysplenia i.hiv ///
 						 i.permanent_immunodef i.ra_sle_psoriasis
 
-foreach v in sick_note {
-	
-	noi di "Starting analysis for `v' Outcome ..." 
-		
-	preserve
-	
-		local end_date `v'_end_date
-		local out `v'
-				
-		noi di "$group: stset in `a'" 
-		
-		stset `end_date', id(new_patient_id) failure(`out') enter(indexdate) origin(indexdate)
-		
-        stsplit month, at(30, 90, 150)
 
-		tab month sick_note
+stset sick_note_end_date, id(new_patient_id) failure(sick_note) enter(indexdate) origin(indexdate)
 
-        levelsof male
+stsplit month, at(30, 90, 150)
+
+tab month sick_note
+
+levelsof sex
 
         foreach level in `r(levels)' {  
 
@@ -74,7 +64,7 @@ foreach v in sick_note {
             
 			    foreach mon in 0 30 90 150 {
 				
-				stcox $`adjust' if male == `level', vce(robust) 
+				stcox $`adjust' if sex == `level', vce(robust) 
 
 				lincom 1.case + 1.case#`mon'.month, hr
 
@@ -82,28 +72,23 @@ foreach v in sick_note {
 				local lc = r(lb)
 				local uc = r(ub)
 
-				stptime if case == 1 & month == `mon' & male == `level'
-				local rate_covid = `r(rate)'
+				stptime if case == 1 & month == `mon' & sex == `level'
 				local ptime_covid = `r(ptime)'
 				local events_covid .
-				if `r(failures)' > 7 local events_covid round(`r(failures)'/ 7 ) * 7
+				local events_covid round(`r(failures)'/ 7 ) * 7
 			
-				stptime if case == 0 & month == `mon' & male == `level'
-				local rate_comparator = `r(rate)'
+				stptime if case == 0 & month == `mon' & sex == `level'
 				local ptime_comparator = `r(ptime)'
 				local events_comparator .
-				if `r(failures)' > 7 local events_comparator round(`r(failures)'/ 7 ) * 7
+				local events_comparator round(`r(failures)'/ 7 ) * 7
 
-				post `measures'   ("male") ("`level'") ("$group") ("`adjust'") ("`mon'") ///
+				post `measures' ("sex") ("`level'") ("$group") ("`adjust'") ("`mon'") ///
 					(`hr') (`lc') (`uc') ///
-					(`ptime_covid') (`events_covid') (`rate_covid') ///
-					(`ptime_comparator') (`events_comparator')  (`rate_comparator') 
+					(`ptime_covid') (`events_covid') (`ptime_comparator') (`events_comparator')
 
 			    }
 		    }
         }
-	}
-	restore	
 
 
 postclose `measures'
