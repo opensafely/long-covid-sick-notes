@@ -884,7 +884,15 @@ actions:
   #       table4: output/tabfig/med_mean_ethnicity.csv
   #       table5: output/tabfig/med_mean_imd.csv
   #       table6: output/tabfig/med_mean_region.csv
-  #       subplots: output/tabfig/diag_*.png 
+
+  check_dates:
+    run: r:latest analysis/descriptive/3_check_dates.R
+    needs: [covid_2020_rates_cohort, covid_2021_rates_cohort, covid_2022_rates_cohort,
+      pneumonia_2019_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort,
+      general_2022_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        table: output/tabfig/dates_*.csv  
 
   table1:
     run: r:latest analysis/descriptive/1_table1_demo_clinical.R
@@ -892,6 +900,13 @@ actions:
     outputs:
       moderately_sensitive:
         table: output/tabfig/table1_*.csv
+
+  table_covid:
+    run: r:latest analysis/descriptive/1_table1_covid.R
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        table: output/tabfig/table_covid*.csv
 
   visualise_diagnoses:
     run: r:latest analysis/descriptive/2_visualise_diagnoses.R
