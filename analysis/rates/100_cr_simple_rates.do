@@ -26,17 +26,14 @@ global stratifiers "age_group male ethnicity region_9 imd"
 
 tempname measures
 																	 
-	postfile `measures' str16(group) str25(outcome) str12(time) ///
+	postfile `measures' str16(group) str12(time) ///
 	str20(variable) category personTime numEvents  ///
 	using $tabfigdir/rates_summary_$group, replace
 	
 	preserve
 	cap drop time
 	
-	local out sick_note
-	local end_date sick_note_end_date
-	
-	stset `end_date', id(patient_id) failure(`out') enter(indexdate) origin(indexdate)
+	stset sick_note_end_date, id(patient_id) failure(sick_note) enter(indexdate) origin(indexdate)
 		
 	* Overall rate 
 	stptime  
@@ -44,7 +41,7 @@ tempname measures
 	* Save measure
 	local events .
 	local events round(`r(failures)'/ 7 ) * 7
-	post `measures' ("$group") ("`out'") ("Full period") ("Overall") (0) (`r(ptime)') (`events') 
+	post `measures' ("$group") ("Full period") ("Overall") (0) (`r(ptime)') (`events') 
 		
 	* Stratified
 	foreach c of global stratifiers {
@@ -59,32 +56,33 @@ tempname measures
 				* Save measures
 				local events .
 				local events round(`r(failures)'/ 7 ) * 7
-				post `measures' ("$group") ("`out'") ("Full period") ("`c'") (`l') (`r(ptime)') (`events') 
+				post `measures' ("$group") ("Full period") ("`c'") (`l') (`r(ptime)') (`events') 
 			}
 
 		else {
-			post `measures' ("$group") ("`out'") ("Full period") ("`c'") (`l') (.) (.)
+			post `measures' ("$group") ("Full period") ("`c'") (`l') (.) (.)
 			}
 					
 		}
 	}
+	
 	
 * Stsplit data into 30 day periods
 	stsplit time, at(30, 90, 150)
 		
 	* Overall rate 
 	foreach t in 0 30 90 150 {
-	qui  count if time ==`t'
+	qui count if time ==`t'
 	if `r(N)' > 0 {
 		stptime if time ==`t'
 		* Save measure
 		local events .
 		local events round(`r(failures)'/ 7 ) * 7
-		post `measures' ("$group") ("`out'") ("`t' days") ("Overall") (0) (`r(ptime)') (`events') 
+		post `measures' ("$group") ("`t' days") ("Overall") (0) (`r(ptime)') (`events') 
 		
 	}
 	else {
-		post `measures' ("$group") ("`out'") ("`t' days") ("Overall") (0) (.) (.) 
+		post `measures' ("$group") ("`t' days") ("Overall") (0) (.) (.) 
 		}
 	}
  

@@ -45,13 +45,10 @@ noi safecount
 gen indexdate = date(patient_index_date, "YMD")
 format indexdate %td
 drop patient_index_date
-drop if indexdate == .
-
-* remove any patient with index date after end date
-drop if indexdate > `end_date'
+drop if indexdate == . | indexdate > `end_date'
 
 * Drop if missing region/IMD
-drop if imd == . | imd < 1 | imd > 5
+drop if imd == . 
 drop if region == ""
 
 
@@ -193,10 +190,6 @@ cap drop age1
 mkspline age = age, cubic nknots(4)
 
 
-***************************
-*  Grouped comorbidities  *
-***************************
-
 **************
 *  Outcomes  *
 **************	
@@ -207,8 +200,7 @@ tempname outcomeDist
 	postfile `outcomeDist' str20(outcome) str12(type) numEvents percent using $tabfigdir/outcome_distribution_$group.dta, replace
 
 * Drop if deregistered before indexdate
-drop if deregistered_date !=. & deregistered_date < indexdate
-
+drop if deregistered_date != . & deregistered_date < indexdate
 * The default deregistration date is 9999-12-31, so:
 replace deregistered_date = . if deregistered_date !=. & deregistered_date > `end_date'
 
@@ -231,24 +223,22 @@ replace covid_diagnosis_date = . if covid_diagnosis_date !=. & covid_diagnosis_d
 gen sick_note = 1 if sick_note_1_date != .
 recode sick_note . = 0
 
-foreach out in sick_note {
-	if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "covid_2022" {
-		gen min_end_date = min(`out'_1_date, died_date_ons, deregistered_date) // `out'_ons already captured in the study definition binary outcome
+* Set censoring date
+if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "covid_2022" {
+		gen min_end_date = min(sick_note_1_date, died_date_ons, deregistered_date) 
 	}
 	else {
-		gen min_end_date = min(`out'_1_date, died_date_ons, deregistered_date, covid_diagnosis_date)
+		gen min_end_date = min(sick_note_1_date, died_date_ons, deregistered_date, covid_diagnosis_date)
 	}
 
 	* Define outcome using all data
-	replace `out' = 0 if min_end_date > `end_date'
-	gen 	`out'_end_date = `end_date' // relevant end date
-	replace `out'_end_date = min_end_date if min_end_date!=. & min_end_date <= `end_date'	 // not missing
-	replace `out'_end_date = `out'_end_date + 1 
-	format %td `out'_end_date 
+	replace sick_note = 0 if min_end_date > `end_date'
+	gen 	sick_note_end_date = `end_date' // relevant end date
+	replace sick_note_end_date = min_end_date if min_end_date!=. & min_end_date <= `end_date'	 // not missing
+	replace sick_note_end_date = sick_note_end_date + 1 
+	format %td sick_note_end_date 
 
 	drop min_end_date	
-
-}
 
 drop if sick_note_end_date <= indexdate
 

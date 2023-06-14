@@ -60,6 +60,7 @@ foreach year in 2020 2021 2022 {
 ********************************************************************************
 
 foreach year in 2020 2021 2022 {
+
 	*** 2020 and 2021 and 2022
 	* Gen flag for covid patients  (case = 1)
 	use $outdir/cohort_rates_covid_`year', replace

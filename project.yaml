@@ -908,10 +908,10 @@ actions:
       moderately_sensitive:
         table: output/tabfig/table_covid*.csv
 
-  visualise_diagnoses:
-    run: r:latest analysis/descriptive/2_visualise_diagnoses.R
-    needs: [append_cohorts]
-    outputs:
-      moderately_sensitive:
-        table: output/tabfig/diag_by_cohort.csv
-        plot: output/tabfig/diag_all.png        
+  # visualise_diagnoses:
+  #   run: r:latest analysis/descriptive/2_visualise_diagnoses.R
+  #   needs: [append_cohorts]
+  #   outputs:
+  #     moderately_sensitive:
+  #       table: output/tabfig/diag_by_cohort.csv
+  #       plot: output/tabfig/diag_all.png        

@@ -81,8 +81,6 @@ global region_9 i.case i.male age1 age2 age3 i.ethnicity i.imd ///
 						 i.lung_cancer i.haem_cancer i.other_cancer i.chronic_liver_dis ///
 						 i.other_neuro i.organ_transplant i.dysplenia i.hiv ///
 						 i.permanent_immunodef i.ra_sle_psoriasis
-
-
  
 	        
 stset sick_note_end_date, id(new_patient_id) failure(sick_note) enter(indexdate) origin(indexdate)
@@ -117,6 +115,7 @@ stset sick_note_end_date, id(new_patient_id) failure(sick_note) enter(indexdate)
 		}
 	}
 }
+
 postclose `measures'
 
 * Change postfiles to csv

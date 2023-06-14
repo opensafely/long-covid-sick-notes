@@ -33,20 +33,16 @@ gen indexdate = hosp_expo_date
 
 drop if sick_note_end_date < indexdate
 
-
 tempname measures
 																	 
-	postfile `measures' str16(group) str25(outcome) str12(time) ///
+	postfile `measures' str16(group) str12(time) ///
 	str20(variable) category personTime numEvents ///
 	using $tabfigdir/rates_summary_hosp_$group, replace
 	
 	preserve
 	cap drop time
 	
-	local out sick_note
-	local end_date sick_note_end_date
-	
-	stset `end_date', id(patient_id) failure(`out') enter(indexdate) origin(indexdate)
+	stset sick_note_end_date, id(patient_id) failure(sick_note) enter(indexdate) origin(indexdate)
 		
 	* Overall rate 
 	stptime  
@@ -54,7 +50,7 @@ tempname measures
 	* Save measure
 	local events .
 	local events round(`r(failures)'/ 7 ) * 7
-	post `measures' ("$group") ("`out'") ("Full period") ("Overall") (0) (`r(ptime)') (`events') 
+	post `measures' ("$group") ("Full period") ("Overall") (0) (`r(ptime)') (`events') 
 		
 	* Stratified
 	foreach c of global stratifiers {
@@ -69,11 +65,11 @@ tempname measures
 			* Save measures
 			local events .
 			local events round(`r(failures)'/ 7 ) * 7
-			post `measures' ("$group") ("`out'") ("Full period") ("`c'") (`l') (`r(ptime)')	(`events') 
+			post `measures' ("$group") ("Full period") ("`c'") (`l') (`r(ptime)') (`events') 
 			}
 
 		else {
-			post `measures' ("$group") ("`out'") ("Full period") ("`c'") (`l') (.) 	(.) 
+			post `measures' ("$group") ("Full period") ("`c'") (`l') (.) 	(.) 
 			}
 					
 		}
@@ -90,10 +86,10 @@ tempname measures
 		* Save measure
 		local events .
 		local events round(`r(failures)'/ 7 ) * 7
-		post `measures' ("$group") ("`out'") ("`t' days") ("Overall") (0) (`r(ptime)') (`events') 
+		post `measures' ("$group") ("`t' days") ("Overall") (0) (`r(ptime)') (`events') 
 	}
 	else {
-		post `measures' ("$group") ("`out'") ("`t' days") ("Overall") (0) (.) (.)
+		post `measures' ("$group") ("`t' days") ("Overall") (0) (.) (.)
 		}
 	}
  
