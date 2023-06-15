@@ -59,9 +59,9 @@ tab month sick_note
 
 foreach adjust in crude age_sex demo_eth demo_eth_clinical  {
             
-	foreach mon in 0 30 90 150 {
-				
-		stcox $`adjust', vce(robust) 
+	stcox $`adjust', vce(robust) 
+		
+		foreach mon in 0 30 90 150 {
 
 		lincom 1.case + 1.case#`mon'.month, hr
 
