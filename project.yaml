@@ -499,23 +499,49 @@ actions:
         log: output/cohorts/cox_models_split_general_2021.txt
         dataset: output/tabfig/cox_model_split_summary_general_2021.csv
 
-  # cox_models_split_gen_2022:
-  #   run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2022"
-  #   needs: [append_cohorts]
-  #   outputs:
-  #     moderately_sensitive:
-  #       log: output/cohorts/cox_models_split_general_2022.txt
-  #       dataset: output/tabfig/cox_model_split_summary_general_2022.csv
-        
-  cox_models_split_gen_2022_v2:
+  cox_models_split_gen_2022:
     run: stata-mp:latest analysis/cox_models/202_cox_models_split.do "general_2022"
     needs: [append_cohorts]
     outputs:
       moderately_sensitive:
         log: output/cohorts/cox_models_split_general_2022.txt
         dataset: output/tabfig/cox_model_split_summary_general_2022.csv
+        
 
-  # #  Cox modes split by follow-up time - stratified by age
+ 
+
+  check_dates:
+    run: r:latest analysis/descriptive/3_check_dates.R
+    needs: [covid_2020_rates_cohort, covid_2021_rates_cohort, covid_2022_rates_cohort,
+      pneumonia_2019_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort,
+      general_2022_rates_cohort]
+    outputs:
+      moderately_sensitive:
+        table: output/tabfig/dates_*.csv  
+
+  table1:
+    run: r:latest analysis/descriptive/1_table1_demo_clinical.R
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        table: output/tabfig/table1_*.csv
+
+  table_covid:
+    run: r:latest analysis/descriptive/1_table1_covid.R
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        table: output/tabfig/table_covid*.csv
+
+  # visualise_diagnoses:
+  #   run: r:latest analysis/descriptive/2_visualise_diagnoses.R
+  #   needs: [append_cohorts]
+  #   outputs:
+  #     moderately_sensitive:
+  #       table: output/tabfig/diag_by_cohort.csv
+  #       plot: output/tabfig/diag_all.png        
+
+ # #  Cox modes split by follow-up time - stratified by age
   # cox_models_split_2020_pneumo_age:
   #   run: stata-mp:latest analysis/cox_models/204_cox_models_split_stratified_age.do "2020_pneumonia" 
   #   needs: [append_cohorts]
@@ -892,34 +918,3 @@ actions:
   #       table4: output/tabfig/med_mean_ethnicity.csv
   #       table5: output/tabfig/med_mean_imd.csv
   #       table6: output/tabfig/med_mean_region.csv
-
-  check_dates:
-    run: r:latest analysis/descriptive/3_check_dates.R
-    needs: [covid_2020_rates_cohort, covid_2021_rates_cohort, covid_2022_rates_cohort,
-      pneumonia_2019_rates_cohort, general_2019_rates_cohort, general_2020_rates_cohort, general_2021_rates_cohort,
-      general_2022_rates_cohort]
-    outputs:
-      moderately_sensitive:
-        table: output/tabfig/dates_*.csv  
-
-  table1:
-    run: r:latest analysis/descriptive/1_table1_demo_clinical.R
-    needs: [append_cohorts]
-    outputs:
-      moderately_sensitive:
-        table: output/tabfig/table1_*.csv
-
-  table_covid:
-    run: r:latest analysis/descriptive/1_table1_covid.R
-    needs: [append_cohorts]
-    outputs:
-      moderately_sensitive:
-        table: output/tabfig/table_covid*.csv
-
-  # visualise_diagnoses:
-  #   run: r:latest analysis/descriptive/2_visualise_diagnoses.R
-  #   needs: [append_cohorts]
-  #   outputs:
-  #     moderately_sensitive:
-  #       table: output/tabfig/diag_by_cohort.csv
-  #       plot: output/tabfig/diag_all.png        
