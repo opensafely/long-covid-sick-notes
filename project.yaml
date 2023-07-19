@@ -537,6 +537,13 @@ actions:
       moderately_sensitive:
         table: output/tabfig/population*.csv
 
+  check_died:
+    run: r:latest analysis/descriptive/5_check_died.R
+    needs: [append_cohorts]
+    outputs:
+      moderately_sensitive:
+        table: output/tabfig/check_died.csv
+
   # visualise_diagnoses:
   #   run: r:latest analysis/descriptive/2_visualise_diagnoses.R
   #   needs: [append_cohorts]
