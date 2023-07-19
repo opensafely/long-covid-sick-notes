@@ -45,7 +45,8 @@ pop22_cnt <- pop22 %>%
   mutate(year = "2022")
 
 
-population_all <- rbind(pop20_cnt, pop21_cnt, pop22_cnt)
+population_all <- rbind(pop20_cnt, pop21_cnt, pop22_cnt) %>%
+  mutate(tot =round(tot / 7) * 7)
 
 write.csv(population_all, here::here("output","tabfig","population_by_year.csv"),
           row.names = FALSE)
