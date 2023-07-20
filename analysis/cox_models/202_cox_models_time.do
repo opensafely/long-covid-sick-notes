@@ -63,7 +63,7 @@ foreach mon in 30 90 150 {
 
     stset sick_note_end_date_tmp, id(new_patient_id) failure(sick_note_tmp) enter(indexdate) origin(indexdate)
 
-		foreach adjust in crude age_sex demo_eth demo_eth_clinical {
+		foreach adjust in crude age_sex demo_eth_clinical {
 
 			stcox $`adjust', vce(robust)
 
