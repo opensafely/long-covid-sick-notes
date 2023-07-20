@@ -38,6 +38,13 @@ covid21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_general
 covidhosp21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_pneumonia.dta")) %>%
   subset(case == 1)
 
+covid22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_general_2019.dta")) %>%
+  subset(case == 1)
+
+covidhosp22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_pneumonia.dta")) %>%
+  subset(case == 1)
+
+
 pneumo19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
   subset(case ==0)
 
@@ -46,6 +53,8 @@ gen19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_general_2
 gen20 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2020.dta")) %>%
   subset(case ==0)
 gen21 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2021.dta")) %>%
+  subset(case ==0)
+gen22 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2022.dta")) %>%
   subset(case ==0)
 
 
@@ -69,11 +78,14 @@ died <- function(dat, cohort){
 all <- rbind(
   died(covid20, "COVID 2020"),
   died(covid21, "COVID 2021"),
+  died(covid22, "COVID 2022"),
   died(covidhosp20, "COVID hospitalised 2020"),
   died(covidhosp21, "COVID hospitalised 2021"),
+  died(covidhosp22, "COVID hospitalised 2022"),
   died(pneumo19, "Pneumonia 2019"),
   died(gen20, "General pop 2020"),
-  died(gen21, "General pop 2021")
+  died(gen21, "General pop 2021"),
+  died(gen22, "General pop 2022")
 ) %>%
   mutate(n = case_when(n > 5 ~ n),
          n = round(n / 7) * 7,
