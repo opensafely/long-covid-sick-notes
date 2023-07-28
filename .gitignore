@@ -12,3 +12,4 @@ notebooks/.ipynb_checkpoints/describe_duration-checkpoint.ipynb
 notebooks/.ipynb_checkpoints/rates_over_time-checkpoint.ipynb
 *.png
 fit_notes_protocol_v1.0.pdf
+.Rhistory
