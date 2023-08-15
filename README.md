@@ -1,8 +1,8 @@
 # Fit notes and associated diagnoses in long COVID patients
 
-You can run this project via [Gitpod](https://gitpod.io) in a web browser by clicking on this badge: [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-908a85?logo=gitpod)](https://gitpod.io/#https://github.com/long-covid-sick-notes)
-
 [View on OpenSAFELY](https://jobs.opensafely.org/repo/https%253A%252F%252Fgithub.com%252Fopensafely%252Flong-covid-sick-notes)
+
+[Link to preprint](https://www.medrxiv.org/content/10.1101/2023.07.28.23293269v1)
 
 Details of the purpose and any published outputs from this project can be found at the link above.
 
