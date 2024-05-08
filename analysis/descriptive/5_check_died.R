@@ -3,7 +3,7 @@
 # - Calculates number of people in each diagnosis category
 #     within each cohort and visualises the results
 #
-# Author: Andrea Schaffer
+# Author: Andrea Schaffer (updated 07/05/2024 Rose)
 ################################################################
 
 library(haven)
@@ -44,6 +44,17 @@ covid22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_general
 covidhosp22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_pneumonia.dta")) %>%
   subset(case == 1)
 
+covid23 <- read_dta(here::here("output", "cohorts", "combined_covid_2023_general_2019.dta")) %>%
+  subset(case == 1)
+
+covidhosp23 <- read_dta(here::here("output", "cohorts", "combined_covid_2023_pneumonia.dta")) %>%
+  subset(case == 1)
+
+covid24 <- read_dta(here::here("output", "cohorts", "combined_covid_2024_general_2019.dta")) %>%
+  subset(case == 1)
+
+covidhosp24 <- read_dta(here::here("output", "cohorts", "combined_covid_2024_pneumonia.dta")) %>%
+  subset(case == 1)
 
 pneumo19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
   subset(case ==0)
@@ -55,6 +66,10 @@ gen20 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2020.d
 gen21 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2021.dta")) %>%
   subset(case ==0)
 gen22 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2022.dta")) %>%
+  subset(case ==0)
+gen23 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2023.dta")) %>%
+  subset(case ==0)
+gen24 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2024.dta")) %>%
   subset(case ==0)
 
 
@@ -79,13 +94,19 @@ all <- rbind(
   died(covid20, "COVID 2020"),
   died(covid21, "COVID 2021"),
   died(covid22, "COVID 2022"),
+  died(covid23, "COVID 2023"),
+  died(covid24, "COVID 2024"),
   died(covidhosp20, "COVID hospitalised 2020"),
   died(covidhosp21, "COVID hospitalised 2021"),
   died(covidhosp22, "COVID hospitalised 2022"),
+  died(covidhosp23, "COVID hospitalised 2023"),
+  died(covidhosp24, "COVID hospitalised 2024"),
   died(pneumo19, "Pneumonia 2019"),
   died(gen20, "General pop 2020"),
   died(gen21, "General pop 2021"),
-  died(gen22, "General pop 2022")
+  died(gen22, "General pop 2022"),
+  died(gen23, "General pop 2023"),
+  died(gen24, "General pop 2024")
 ) %>%
   mutate(n = case_when(n > 5 ~ n),
          n = round(n / 7) * 7,

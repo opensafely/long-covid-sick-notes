@@ -3,7 +3,7 @@
 # - Calculates number of people in each diagnosis category
 #     within each cohort and visualises the results
 #
-# Author: Andrea Schaffer
+# Author: Andrea Schaffer (updated 07/05/2024 Rose)
 ################################################################
 
 library(haven)
@@ -44,6 +44,18 @@ covid22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_general
 covidhosp22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_pneumonia.dta")) %>%
   subset(case == 1)
 
+covid23 <- read_dta(here::here("output", "cohorts", "combined_covid_2023_general_2019.dta")) %>%
+  subset(case == 1)
+
+covidhosp23 <- read_dta(here::here("output", "cohorts", "combined_covid_2023_pneumonia.dta")) %>%
+  subset(case == 1)
+
+covid24 <- read_dta(here::here("output", "cohorts", "combined_covid_2024_general_2019.dta")) %>%
+  subset(case == 1)
+
+covidhosp24 <- read_dta(here::here("output", "cohorts", "combined_covid_2024_pneumonia.dta")) %>%
+  subset(case == 1)
+
 pneumo19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
   subset(case ==0)
 
@@ -54,6 +66,10 @@ gen20 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2020.d
 gen21 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2021.dta")) %>%
   subset(case ==0)
 gen22 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2022.dta")) %>%
+  subset(case ==0)
+gen23 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2023.dta")) %>%
+  subset(case ==0)
+gen24 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2024.dta")) %>%
   subset(case ==0)
 
 
@@ -108,10 +124,14 @@ cohort %>% dplyr::select(c("patient_id", starts_with("diag_"), "sick_note")) %>%
 covid2020 <- diag(covid20, "COVID-19 2020")
 covid2021 <- diag(covid21, "COVID-19 2021")
 covid2022 <- diag(covid22, "COVID-19 2022")
+covid2023 <- diag(covid23, "COVID-19 2023")
+covid2024 <- diag(covid24, "COVID-19 2024")
 
 covidhosp2020 <- diag(covidhosp20, "COVID-19 hospitalised 2020")
 covidhosp2021 <- diag(covidhosp21, "COVID-19 hospitalised 2021")
 covidhosp2022 <- diag(covidhosp22, "COVID-19 hospitalised 2022")
+covidhosp2023 <- diag(covidhosp23, "COVID-19 hospitalised 2023")
+covidhosp2024 <- diag(covidhosp24, "COVID-19 hospitalised 2024")
 
 pneumo2019 <- diag(pneumo19, "Pneumonia 2019")
 
@@ -119,10 +139,12 @@ gen2019 <- diag(gen19, "General population 2019")
 gen2020 <- diag(gen20, "General population 2020")
 gen2021 <- diag(gen21, "General population 2021")
 gen2022 <- diag(gen22, "General population 2022")
+gen2023 <- diag(gen23, "General population 2023")
+gen2024 <- diag(gen24, "General population 2024")
 
-all_diag <- rbind(covid2020, covid2021, covid22, covidhosp2020, covidhosp2021,
-                  covidhosp2022,
-                  pneumo2019, gen2019, gen2020, gen2021, gen2022)
+all_diag <- rbind(covid2020, covid2021, covid22, covid23, covid24, covidhosp2020, covidhosp2021,
+                  covidhosp2022, covidhosp2023, covidhosp2024,
+                  pneumo2019, gen2019, gen2020, gen2021, gen2022, gen2023, gen2024)
 
 # Save
 write.csv(all_diag, here::here("output", "tabfig", "diag_by_cohort.csv"),

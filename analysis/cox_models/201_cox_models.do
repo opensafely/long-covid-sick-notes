@@ -5,9 +5,9 @@
 //
 // This program runs Cox models to perform survival analysis.
 //
-// Authors: Robin (based on Alex & John)
+// Authors: Robin (based on Alex & John) updated by Rose
 // Date: 15 Oct 2021
-// Updated: 01 Jun 2023
+// Updated: 07 May 2024
 // Input files: 
 // Output files: 
 //
@@ -29,7 +29,7 @@ tempname measures
 		ptime_comparator num_events_comparator hr lc uc ///
 		using $tabfigdir/cox_model_summary, replace
 		
-foreach an in 2020_pneumonia 2021_pneumonia 2022_pneumonia 2020_general_2019 2021_general_2019 2022_general_2019 general_2020 general_2021 general_2022 {
+foreach an in 2020_pneumonia 2021_pneumonia 2022_pneumonia 2023_pneumonia 2024_pneumonia 2020_general_2019 2021_general_2019 2022_general_2019 2023_general_2019 2024_general_2019 general_2020 general_2021 general_2022 general_2023 general_2024 {
 use $outdir/combined_covid_`an'.dta, replace
 drop patient_id
 gen new_patient_id = _n

@@ -5,7 +5,7 @@
 # - Creates frequency table of COVID diagnosis type
 #   (SGSS test, primary care, hospital diagnosis)
 #
-# Author: Andrea Schaffer
+# Author: Andrea Schaffer (updated 07/05/2024 Rose)
 ################################################################
 
 library(haven)
@@ -30,6 +30,8 @@ dir_create(here::here("output", "cohorts"), showWarnings = FALSE, recurse = TRUE
 pop20 <- read_csv(here::here("output", "cohorts", "input_general_match_vars_2020-02-01.csv.gz")) 
 pop21 <- read_csv(here::here("output", "cohorts", "input_general_match_vars_2021-02-01.csv.gz")) 
 pop22 <- read_csv(here::here("output", "cohorts", "input_general_match_vars_2022-02-01.csv.gz")) 
+pop23 <- read_csv(here::here("output", "cohorts", "input_general_match_vars_2023-02-01.csv.gz")) 
+pop24 <- read_csv(here::here("output", "cohorts", "input_general_match_vars_2024-02-01.csv.gz")) 
 
 
 pop20_cnt <- pop20 %>%
@@ -44,8 +46,16 @@ pop22_cnt <- pop22 %>%
   summarise(tot = n()) %>%
   mutate(year = "2022")
 
+pop23_cnt <- pop23 %>%
+  summarise(tot = n()) %>%
+  mutate(year = "2023")
 
-population_all <- rbind(pop20_cnt, pop21_cnt, pop22_cnt) %>%
+pop24_cnt <- pop24 %>%
+  summarise(tot = n()) %>%
+  mutate(year = "2024")
+
+
+population_all <- rbind(pop20_cnt, pop21_cnt, pop22_cnt, pop23_cnt, pop24_cnt) %>%
   mutate(tot =round(tot / 7) * 7)
 
 write.csv(population_all, here::here("output","tabfig","population_by_year.csv"),

@@ -6,9 +6,9 @@
 // This program takes inputs generated from the study 
 //   definitions and converts dates into usable format
 //
-// Authors: Robin (based on Alex & John)
+// Authors: Robin (based on Alex & John) updated by Rose
 // Date: 6 Oct 2021
-// Updated: 01 Jun 2023
+// Updated: 07 May 2024
 // Input files: 
 // Output files: 
 //
@@ -31,6 +31,14 @@ else if "$group" == "covid_2022"  | "$group" == "matched_2022" {
 	local start_date td(01/02/2022)
 	local end_date td(30/11/2022)
 }
+else if "$group" == "covid_2023"  | "$group" == "matched_2023" { 
+	local start_date td(01/02/2023)
+	local end_date td(30/11/2023)
+}
+else if "$group" == "covid_2024"  | "$group" == "matched_2024" { 
+	local start_date td(01/02/2024)
+	local end_date td(30/11/2024)
+}
 else {
 	local start_date  td(01/02/2019)
 	local end_date td(30/11/2019)
@@ -52,7 +60,7 @@ drop if imd == .
 drop if region == ""
 
 
-if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "covid_2022" { 
+if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "covid_2022" | "$group" == "covid_2023" | "$group" == "covid_2024" { 
 	gen hosp_expo_date = date(hospital_covid, "YMD")
 	format hosp_expo_date %td
 }
@@ -224,7 +232,7 @@ gen sick_note = 1 if sick_note_1_date != .
 recode sick_note . = 0
 
 * Set censoring date
-if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "covid_2022" {
+if "$group" == "covid_2020" | "$group" == "covid_2021" | "$group" == "covid_2022"  | "$group" == "covid_2023"  | "$group" == "covid_2024" {
 		gen min_end_date = min(sick_note_1_date, died_date_ons, deregistered_date) 
 	}
 	else {
