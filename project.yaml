@@ -547,18 +547,18 @@ actions:
         dataset: output/cohorts/combined_covid_2020_pneumonia.dta
         dataset2: output/cohorts/combined_covid_2021_pneumonia.dta
         dataset3: output/cohorts/combined_covid_2022_pneumonia.dta
-        dataset3: output/cohorts/combined_covid_2023_pneumonia.dta
-        dataset3: output/cohorts/combined_covid_2024_pneumonia.dta
-        dataset4: output/cohorts/combined_covid_2020_general_2019.dta
-        dataset5: output/cohorts/combined_covid_2021_general_2019.dta
-        dataset6: output/cohorts/combined_covid_2022_general_2019.dta
-        dataset7: output/cohorts/combined_covid_2023_general_2019.dta
-        dataset7: output/cohorts/combined_covid_2024_general_2019.dta
-        dataset8: output/cohorts/combined_covid_general_2020.dta
-        dataset9: output/cohorts/combined_covid_general_2021.dta
-        dataset10: output/cohorts/combined_covid_general_2022.dta
-        dataset10: output/cohorts/combined_covid_general_2023.dta
-        dataset10: output/cohorts/combined_covid_general_2024.dta
+        dataset4: output/cohorts/combined_covid_2023_pneumonia.dta
+        dataset5: output/cohorts/combined_covid_2024_pneumonia.dta
+        dataset6: output/cohorts/combined_covid_2020_general_2019.dta
+        dataset7: output/cohorts/combined_covid_2021_general_2019.dta
+        dataset8: output/cohorts/combined_covid_2022_general_2019.dta
+        dataset9: output/cohorts/combined_covid_2023_general_2019.dta
+        dataset10: output/cohorts/combined_covid_2024_general_2019.dta
+        dataset11: output/cohorts/combined_covid_general_2020.dta
+        dataset12: output/cohorts/combined_covid_general_2021.dta
+        dataset13: output/cohorts/combined_covid_general_2022.dta
+        dataset14: output/cohorts/combined_covid_general_2023.dta
+        dataset15: output/cohorts/combined_covid_general_2024.dta
 
   # Run overall Cox models
   cox_models:
