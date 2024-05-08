@@ -358,14 +358,14 @@ actions:
     needs: [reconcile_sick_note_spells_covid_2023]
     outputs:
       highly_sensitive:
-        analysis_dataset: output/cohorts/cohort_rate*.dta
+        analysis_dataset: output/cohorts/cohort_rat*.dta
 
   covid_2024_rates_cohort:
     run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "covid_2024" --output-dir=output/cohorts
     needs: [reconcile_sick_note_spells_covid_2024]
     outputs:
       highly_sensitive:
-        analysis_dataset: output/cohorts/cohort_rate*.dta
+        analysis_dataset: output/cohorts/cohort_ra*.dta
 
   general_2019_rates_cohort:
     run: stata-mp:latest analysis/rates/000_cr_define_covariates_simple_rates.do "matched_2019" --output-dir=output/cohorts
