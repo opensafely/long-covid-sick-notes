@@ -6,9 +6,9 @@
 // This program combines the main cohort data with  
 //   comparator population data 
 //
-// Authors: Robin (based on Alex & John)
+// Authors: Robin (based on Alex & John) updated by Rose
 // Date: 15 Oct 2021
-// Updated: 01 Jun 2023
+// Updated: 07 May 2024
 // Input files: 
 // Output files: 
 //
@@ -27,7 +27,7 @@ ls $outdir/
 cap log close
 log using $outdir/append_cohorts.txt, replace t
 
-foreach year in 2020 2021 2022 {
+foreach year in 2020 2021 2022 2023 2024 {
 	* Gen flag for covid patients  (case = 1)
 	use $outdir/cohort_rates_covid_`year', replace
 	gen case = 1 
@@ -59,9 +59,9 @@ foreach year in 2020 2021 2022 {
 * Append covid/gen pop. cohorts 
 ********************************************************************************
 
-foreach year in 2020 2021 2022 {
+foreach year in 2020 2021 2022 2023 2024 {
 
-	*** 2020 and 2021 and 2022
+	*** 2020 and 2021 and 2022 and 2023 and 2024
 	* Gen flag for covid patients  (case = 1)
 	use $outdir/cohort_rates_covid_`year', replace
 	gen case = 1 

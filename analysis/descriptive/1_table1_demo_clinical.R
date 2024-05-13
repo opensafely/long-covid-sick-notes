@@ -3,7 +3,7 @@
 # - Creates frequency table for all demographic/clinical 
 #    covariates by cohort 
 #
-# Author: Andrea Schaffer
+# Author: Andrea Schaffer (updated 07/05/2024 by Rose)
 ################################################################
 
 library(haven)
@@ -42,6 +42,18 @@ covid22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_general
 covidhosp22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_pneumonia.dta")) %>%
   subset(case == 1)
 
+covid23 <- read_dta(here::here("output", "cohorts", "combined_covid_2023_general_2019.dta")) %>%
+  subset(case == 1)
+
+covidhosp23 <- read_dta(here::here("output", "cohorts", "combined_covid_2023_pneumonia.dta")) %>%
+  subset(case == 1)
+
+covid24 <- read_dta(here::here("output", "cohorts", "combined_covid_2024_general_2019.dta")) %>%
+  subset(case == 1)
+
+covidhosp24 <- read_dta(here::here("output", "cohorts", "combined_covid_2024_pneumonia.dta")) %>%
+  subset(case == 1)
+
 pneumo19 <- read_dta(here::here("output", "cohorts", "combined_covid_2020_pneumonia.dta")) %>%
   subset(case ==0)
 
@@ -52,6 +64,10 @@ gen20 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2020.d
 gen21 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2021.dta")) %>%
   subset(case ==0)
 gen22 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2022.dta")) %>%
+  subset(case ==0)
+gen23 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2023.dta")) %>%
+  subset(case ==0)
+gen24 <- read_dta(here::here("output", "cohorts", "combined_covid_general_2024.dta")) %>%
   subset(case ==0)
 
 
@@ -214,6 +230,14 @@ write.csv(table1_covid2021, here::here("output", "tabfig", "table1_covid_2021.cs
 table1_covid2022 <- combine(covid22)
 write.csv(table1_covid2022, here::here("output", "tabfig", "table1_covid_2022.csv"),
                                        row.names = FALSE)
+
+table1_covid2023 <- combine(covid23)
+write.csv(table1_covid2023, here::here("output", "tabfig", "table1_covid_2023.csv"),
+                                       row.names = FALSE)
+
+table1_covid2024 <- combine(covid24)
+write.csv(table1_covid2024, here::here("output", "tabfig", "table1_covid_2024.csv"),
+                                       row.names = FALSE)
           
 table1_covidhosp2020 <- combine(covidhosp20)
 write.csv(table1_covidhosp2020, here::here("output", "tabfig", "table1_covid_hosp_2020.csv"),
@@ -225,6 +249,14 @@ write.csv(table1_covidhosp2021, here::here("output", "tabfig", "table1_covid_hos
 
 table1_covidhosp2022 <- combine(covidhosp22)
 write.csv(table1_covidhosp2022, here::here("output", "tabfig", "table1_covid_hosp_2022.csv"),
+          row.names = FALSE)
+
+table1_covidhosp2023 <- combine(covidhosp23)
+write.csv(table1_covidhosp2023, here::here("output", "tabfig", "table1_covid_hosp_2023.csv"),
+          row.names = FALSE)
+
+table1_covidhosp2024 <- combine(covidhosp24)
+write.csv(table1_covidhosp2024, here::here("output", "tabfig", "table1_covid_hosp_2024.csv"),
           row.names = FALSE)
 
 table1_pneumo2019 <- combine(pneumo19)
@@ -247,6 +279,13 @@ table1_gen2022 <- combine(gen22)
 write.csv(table1_gen2022, here::here("output", "tabfig", "table1_gen_2022.csv"),
           row.names = FALSE)
 
+table1_gen2023 <- combine(gen23)
+write.csv(table1_gen2023, here::here("output", "tabfig", "table1_gen_2023.csv"),
+          row.names = FALSE)
+
+table1_gen2024 <- combine(gen24)
+write.csv(table1_gen2024, here::here("output", "tabfig", "table1_gen_2024.csv"),
+          row.names = FALSE)
 
 ##################################################################
 

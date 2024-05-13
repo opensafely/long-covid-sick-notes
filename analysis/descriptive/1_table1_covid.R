@@ -3,7 +3,7 @@
 # - Creates frequency table of COVID diagnosis type
 #   (SGSS test, primary care, hospital diagnosis)
 #
-# Author: Andrea Schaffer
+# Author: Andrea Schaffer (updated 07/05/2024 Rose)
 ################################################################
 
 library(haven)
@@ -33,7 +33,11 @@ covid21 <- read_dta(here::here("output", "cohorts", "combined_covid_2021_general
 covid22 <- read_dta(here::here("output", "cohorts", "combined_covid_2022_general_2019.dta")) %>%
   subset(case == 1)
 
+covid23 <- read_dta(here::here("output", "cohorts", "combined_covid_2023_general_2019.dta")) %>%
+  subset(case == 1)
 
+covid24 <- read_dta(here::here("output", "cohorts", "combined_covid_2024_general_2019.dta")) %>%
+  subset(case == 1)
 
 # Frequencies for COVID diagnosis type
 covid_type <- function(cohort, name) {
@@ -75,7 +79,9 @@ covid_type <- function(cohort, name) {
 
 covid_all <- rbind(covid_type(covid20, "COVID2020"),
                    covid_type(covid21, "COVID2021"),
-                   covid_type(covid22, "COVID2022"))
+                   covid_type(covid22, "COVID2022"),
+                   covid_type(covid23, "COVID2023"),
+                   covid_type(covid24, "COVID2024"))
 
 
 ##### Create separate table/csv file for each cohort #####

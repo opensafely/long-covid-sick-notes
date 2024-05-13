@@ -2,7 +2,7 @@
 # This script:
 # - Checks if dates makes sense
 #
-# Author: Andrea Schaffer
+# Author: Andrea Schaffer (updated 07/05/2024 by Rose)
 ################################################################
 
 library(haven)
@@ -40,11 +40,15 @@ read <- function(data){
 covid20 <- read("cohort_rates_covid_2020.dta")
 covid21 <- read("cohort_rates_covid_2021.dta")
 covid22 <- read("cohort_rates_covid_2022.dta")
+covid23 <- read("cohort_rates_covid_2023.dta")
+covid24 <- read("cohort_rates_covid_2024.dta")
 pneumo19 <- read("cohort_rates_pneumonia_2019.dta")
 gen19 <- read("cohort_rates_matched_2019.dta") 
 gen20 <- read("cohort_rates_matched_2020.dta") 
 gen21 <- read("cohort_rates_matched_2021.dta") 
 gen22 <- read("cohort_rates_matched_2022.dta") 
+gen23 <- read("cohort_rates_matched_2023.dta") 
+gen24 <- read("cohort_rates_matched_2024.dta") 
 
 
 ###### Create distribution of end dates #########
@@ -88,6 +92,12 @@ write_csv(covid21_tab, here::here("output", "tabfig", "dates_covid21.csv"))
 covid22_tab <- tab(covid22)
 write_csv(covid22_tab, here::here("output", "tabfig", "dates_covid22.csv"))
 
+covid23_tab <- tab(covid23)
+write_csv(covid23_tab, here::here("output", "tabfig", "dates_covid23.csv"))
+
+covid24_tab <- tab(covid24)
+write_csv(covid24_tab, here::here("output", "tabfig", "dates_covid24.csv"))
+
 pneumo19_tab <- tab(pneumo19)
 write_csv(pneumo19_tab, here::here("output", "tabfig", "dates_pneumo19.csv"))
 
@@ -103,3 +113,8 @@ write_csv(gen21_tab, here::here("output", "tabfig", "dates_gen21.csv"))
 gen22_tab <- tab(gen22)
 write_csv(gen22_tab, here::here("output", "tabfig", "dates_gen22.csv"))
 
+gen23_tab <- tab(gen23)
+write_csv(gen23_tab, here::here("output", "tabfig", "dates_gen23.csv"))
+
+gen24_tab <- tab(gen24)
+write_csv(gen24_tab, here::here("output", "tabfig", "dates_gen24.csv"))
