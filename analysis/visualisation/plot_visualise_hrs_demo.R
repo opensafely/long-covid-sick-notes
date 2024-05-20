@@ -22,7 +22,7 @@ library(ggpubr)
 library(here)
 
 # For running locally
-setwd("C:/Users/aschaffer/OneDrive - Nexus365/Documents/GitHub/long-covid-sick-notes")
+#setwd("C:/Users/aschaffer/OneDrive - Nexus365/Documents/GitHub/long-covid-sick-notes")
 
 
 # Function for create factor variables
@@ -107,8 +107,11 @@ all <- rbind(age, ethnicity, region, imd, sex) %>%
         comparator == "general_2020" ~  "COVID-19 2020 vs\ngeneral population 2020",
         comparator == "2021_general_2019" ~  "COVID-19 2021 vs\ngeneral population 2019",
         comparator == "general_2021" ~ "COVID-19 2021 vs\ngeneral population 2021",
-        comparator == "2020_pneumonia" ~ "Hospitalised COVID-19 2020 vs\npneumonia 2019",
-        comparator == "2021_pneumonia" ~  "Hospitalised COVID-19 2021 vs\npneumonia 2019"
+        comparator == "2022_general_2019" ~  "COVID-19 2022 vs\ngeneral population 2019",
+        comparator == "general_2022" ~ "COVID-19 2022 vs\ngeneral population 2022",
+        comparator == "2020_pneumonia" ~ "Hospitalised COVID-19 2020 vs\nhospitalised pneumonia 2019",
+        comparator == "2021_pneumonia" ~  "Hospitalised COVID-19 2021 vs\nhospitalised pneumonia 2019",
+        comparator == "2022_pneumonia" ~  "Hospitalised COVID-19 2022 vs\nhospitalised pneumonia 2019"
       ),
     
     # Relabel variable names
@@ -124,8 +127,9 @@ all <- rbind(age, ethnicity, region, imd, sex) %>%
     # Create variable for hospitalised vs not
     cat = 
       case_when(
-        comparator %in% c("Hospitalised COVID-19 2020 vs\npneumonia 2019",
-                          "Hospitalised COVID-19 2021 vs\npneumonia 2019") ~ "Hospitalised",
+        comparator %in% c("Hospitalised COVID-19 2020 vs\nhospitalised pneumonia 2019",
+                          "Hospitalised COVID-19 2021 vs\nhospitalised pneumonia 2019",
+                          "Hospitalised COVID-19 2022 vs\nhospitalised pneumonia 2019") ~ "Hospitalised",
         TRUE ~ "Not hospitalised"),
     
     # Create variable for year
@@ -133,22 +137,28 @@ all <- rbind(age, ethnicity, region, imd, sex) %>%
       case_when(
         comparator %in% c("COVID-19 2020 vs\ngeneral population 2019",
                         "COVID-19 2020 vs\ngeneral population 2020",
-                        "Hospitalised COVID-19 2020 vs\npneumonia 2019") ~ "2020",
-        TRUE ~ "2021"),
+                        "Hospitalised COVID-19 2020 vs\nhospitalised pneumonia 2019") ~ "2020",
+        comparator %in% c("COVID-19 2021 vs\ngeneral population 2019",
+                          "COVID-19 2021 vs\ngeneral population 2021",
+                          "Hospitalised COVID-19 2021 vs\nhospitalised pneumonia 2019") ~ "2021",
+        TRUE ~ "2022"),
     
     # Create variable for comparison type (historic vs contemporary)
     comp_type = 
       case_when(
         comparator %in% c("COVID-19 2020 vs\ngeneral population 2019",
                         "COVID-19 2021 vs\ngeneral population 2019",
+                        "COVID-19 2022 vs\ngeneral population 2019",
                         "Hospitalised COVID-19 2020 vs\npneumonia 2019",
-                        "Hospitalised COVID-19 2021 vs\npneumonia 2019") ~
-              "COVID-19 cohort vs\n general population 2019",
+                        "Hospitalised COVID-19 2021 vs\npneumonia 2019",
+                        "Hospitalised COVID-19 2022 vs\npneumonia 2019") ~
+              "COVID-19 cohorts vs\n general population 2019",
         comparator %in% c(
           "Hospitalised COVID-19 2020 vs\npneumonia 2019",
-          "Hospitalised COVID-19 2021 vs\npneumonia 2019") ~ 
+          "Hospitalised COVID-19 2021 vs\npneumonia 2019",
+          "Hospitalised COVID-19 2022 vs\npneumonia 2019") ~ 
               "Hospitalised COVID-19 vs pneumonia 2019",
-      TRUE ~ "COVID-19 cohort vs\n contemporary general population")
+      TRUE ~ "COVID-19 cohorts vs\n contemporary general population")
   )
 
 # Set category order for plotting
@@ -168,16 +178,16 @@ all$category <- factor(all$category, levels = c("55-64 y","45-54 y","35-44 y","2
 
 # General cohorts, fully adjusted
 all %>% subset(cat == "Not hospitalised" & adjustment != "crude") %>%
-ggplot(aes(x = hr, y = category, col = comp_type, group = comp_type, shape = comp_type)) +
+ggplot(aes(x = hr, y = category, col = year, group = year, shape = year)) +
   geom_errorbar(aes(xmax = uc, xmin = lc), 
                 position = position_dodge(width = .6), 
                 width = 0.5, col="gray50") +
   geom_point(position = position_dodge(width = .6)) +
   geom_vline(aes(xintercept = 1), linetype = "longdash", col = "black") +
-  scale_color_manual(values = pnw_palette("Bay", 2)) +
-  scale_shape_manual(values = c("circle", "square")) +
+  scale_color_manual(values = pnw_palette("Bay", 3)) +
+  scale_shape_manual(values = c("circle", "square","triangle")) +
   xlab("HR (95% CI)") + ylab(NULL) +
-  facet_grid(var ~ year, scales = "free_y", space = "free",switch= "y")+
+  facet_grid(var ~ comp_type, scales = "free_y", space = "free",switch= "y")+
   theme_bw()+
   theme(text = element_text(size = 9),
         legend.position = "right",
@@ -191,7 +201,7 @@ ggplot(aes(x = hr, y = category, col = comp_type, group = comp_type, shape = com
         axis.text.x = element_text(angle= 45, hjust=1),
         strip.background = element_blank())
  
-ggsave(here::here("manuscript", "plots", "figure1.png"),
+ggsave(here::here("manuscript", "plots", "figure2.tiff"),
        dpi= 300, height = 6, width = 7.5, units = "in")
 
  
@@ -207,14 +217,13 @@ ggplot(aes(x = hr, y = category, col = year, group = year, shape = year)) +
   geom_vline(aes(xintercept = 1), linetype = "longdash", col = "black") +
   scale_x_continuous(trans = "log2", breaks = c(0.5, 0.75, 1, 1.5), 
                      limits = c(0.35, 1.51)) +
-  scale_color_manual(values = pnw_palette("Bay", 2)) +
-  scale_shape_manual(values = c("circle", "square")) +
+  scale_color_manual(values = pnw_palette("Bay", 3)) +
+  scale_shape_manual(values = c("circle", "square", "triangle")) +
   xlab("HR (95% CI)") + ylab(NULL) +
-  facet_grid(var ~ comp_type, scales = "free_y", space = "free",switch= "y")+
+  facet_grid(var ~comparator, scales = "free_y", space = "free",switch= "y")+
   theme_bw()+
   theme(text = element_text(size = 9),
-        legend.position = "right",
-        legend.title = element_text(size = 8),
+        legend.position = "none",
         axis.title.x = element_text(size = 8),
         strip.placement = "outside",
         panel.grid.major.y = element_blank(),
@@ -222,9 +231,7 @@ ggplot(aes(x = hr, y = category, col = year, group = year, shape = year)) +
         panel.grid.major.x = element_line(color="gray90"),
         panel.grid.minor.x = element_blank(),
         axis.text.x = element_text(angle= 45, hjust=1),
-        strip.background = element_blank()) +
-  guides(col = guide_legend(title = "COVID-19 cohort"),
-         shape = guide_legend(title = "COVID-19 cohort"))
+        strip.background = element_blank()) 
 
-ggsave(here::here("manuscript", "plots", "supp_figure1.png"),
+ggsave(here::here("manuscript", "plots", "suppfigure3.png"),
        dpi= 300, height = 6, width = 5, units = "in")
