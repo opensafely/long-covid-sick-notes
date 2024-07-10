@@ -1,8 +1,8 @@
-# Fit notes and associated diagnoses in long COVID patients
+# Fit notes in people with COVID-19
+
+Final publication: [Schaffer AL, Park RY, Tazare J, et al. Changes in sick notes associated with COVID-19 from 2020 to 2022: a cohort study in 24 million primary care patients in OpenSAFELY-TPP. BMJ Open 2024;14:e080600; doi: 10.1136/bmjopen-2023-080600](https://doi.org/10.1136/bmjopen-2023-080600)
 
 [View on OpenSAFELY](https://jobs.opensafely.org/repo/https%253A%252F%252Fgithub.com%252Fopensafely%252Flong-covid-sick-notes)
-
-[Link to preprint](https://www.medrxiv.org/content/10.1101/2023.07.28.23293269v3)
 
 Details of the purpose and any published outputs from this project can be found at the link above.
 
